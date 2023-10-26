@@ -1,3 +1,4 @@
+import "server-only";
 import { FirestoreAdapter } from "@next-auth/firebase-adapter";
 import { cert } from "firebase-admin/app";
 import { type NextAuthOptions } from "next-auth";
