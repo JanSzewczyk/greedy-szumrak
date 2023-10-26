@@ -10,7 +10,6 @@ const nextConfig = withPlugins([withBundleAnalyzer({ enabled: env.ANALYZE })], {
   experimental: {
     instrumentationHook: true,
     typedRoutes: true,
-    serverActions: true,
     serverComponentsExternalPackages: ["@szum-tech/design-system"]
   },
   rewrites() {

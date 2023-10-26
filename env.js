@@ -12,16 +12,36 @@ const env = createEnv({
     CI: z
       .enum(["true", "false", "0", "1"])
       .optional()
-      .transform((value) => value === "true" || value === "1")
-  },
-  client: {
-    // Client env variables, eg:
-    // NEXT_PUBLIC_CLIENT_VAR: z.string(),
+      .transform((value) => value === "true" || value === "1"),
+    NEXTAUTH_SECRET: z.string().min(10),
+    GOOGLE_CLIENT_ID: z.string(),
+    GOOGLE_CLIENT_SECRET: z.string(),
+    ADMIN_FIREBASE_PROJECT_ID: z.string(),
+    ADMIN_FIREBASE_CLIENT_EMAIL: z.string().email(),
+    ADMIN_FIREBASE_PRIVATE_KEY: z.string().transform((value) => value.replace(/\\n/g, "\n")),
+    FIREBASE_API_KEY: z.string(),
+    FIREBASE_AUTH_DOMAIN: z.string(),
+    FIREBASE_PROJECT_ID: z.string(),
+    FIREBASE_STORAGE_BUCKET: z.string(),
+    FIREBASE_MESSAGING_SENDER_ID: z.string(),
+    FIREBASE_APP_ID: z.string()
   },
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     ANALYZE: process.env.ANALYZE,
-    CI: process.env.CI
+    CI: process.env.CI,
+    NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+    ADMIN_FIREBASE_PROJECT_ID: process.env.ADMIN_FIREBASE_PROJECT_ID,
+    ADMIN_FIREBASE_CLIENT_EMAIL: process.env.ADMIN_FIREBASE_CLIENT_EMAIL,
+    ADMIN_FIREBASE_PRIVATE_KEY: process.env.ADMIN_FIREBASE_PRIVATE_KEY,
+    FIREBASE_API_KEY: process.env.FIREBASE_API_KEY,
+    FIREBASE_APP_ID: process.env.FIREBASE_APP_ID,
+    FIREBASE_AUTH_DOMAIN: process.env.FIREBASE_AUTH_DOMAIN,
+    FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,
+    FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET,
+    FIREBASE_MESSAGING_SENDER_ID: process.env.FIREBASE_MESSAGING_SENDER_ID
   }
 });
 
