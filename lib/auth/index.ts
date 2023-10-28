@@ -33,5 +33,8 @@ export const authOptions: NextAuthOptions = {
       session.exp = token.exp as string;
       return session;
     }
+  },
+  pages: {
+    signIn: "/auth/signin"
   }
 };
