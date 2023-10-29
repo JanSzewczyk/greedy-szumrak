@@ -23,7 +23,7 @@
   "dependencies": {
     "@next-auth/firebase-adapter": "^2.0.1",
     "@next/bundle-analyzer": "^14.0.0",
-    "@szum-tech/design-system": "^1.13.1",
+    "@szum-tech/design-system": "^1.14.0",
     "@t3-oss/env-nextjs": "^0.7.1",
     "firebase": "^10.5.2",
     "firebase-admin": "^11.11.0",
@@ -67,6 +67,7 @@
     "happy-dom": "^12.10.3",
     "postcss": "^8.4.31",
     "prettier": "^3.0.3",
+    "prettier-plugin-tailwindcss": "^0.5.6",
     "semantic-release": "^22.0.5",
     "tailwindcss": "^3.3.5",
     "typescript": "^5.2.2",
