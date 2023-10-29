@@ -5,8 +5,8 @@ import { type Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Szumplate Next App",
-  description: "Template for Next App by Szum-Tech"
+  title: "Greedy Szumrak",
+  description: ""
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

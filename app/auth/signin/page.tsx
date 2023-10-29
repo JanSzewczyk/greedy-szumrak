@@ -1,5 +1,11 @@
+import { type Metadata } from "next";
+
 import { Hero } from "./components/hero";
 import { SignInButtons } from "./components/sign-in-buttons";
+
+export const metadata: Metadata = {
+  title: "Greedy Szumrak - Sign in"
+};
 
 export default function SignInPage() {
   return (

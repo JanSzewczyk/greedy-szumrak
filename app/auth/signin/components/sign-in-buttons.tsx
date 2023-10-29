@@ -1,10 +1,10 @@
 import * as React from "react";
 
-import { GoogleIcon } from "@szum-tech/design-system/icons";
+import { Card, CardContent, CardHeader, CardTitle } from "@szum-tech/design-system";
+import { GoogleLogoIcon } from "@szum-tech/design-system/icons";
 import { type BuiltInProviderType } from "next-auth/providers";
 
 import { SignInItem } from "~/app/auth/signin/components/sign-in-item";
-import { Card } from "~/components/card";
 
 export type SignInOption = {
   label: string;
@@ -18,7 +18,7 @@ export function SignInButtons() {
     {
       label: "Sign in with Google",
       providerType: "google",
-      icon: <GoogleIcon />,
+      icon: <GoogleLogoIcon />,
       description: "Use your Google account to sign in."
     }
   ];
@@ -26,15 +26,19 @@ export function SignInButtons() {
   return (
     <div className="mx-auto w-full max-w-sm">
       <Card>
-        <h3 className="mb-6 text-center typography-heading-5 md:text-left">Sign-in options</h3>
+        <CardHeader>
+          <CardTitle>Sign-in options</CardTitle>
+        </CardHeader>
 
-        <ul className="divide-y divide-gray-400">
-          {signInOptions.map((option) => (
-            <li key={option.providerType}>
-              <SignInItem {...option} />
-            </li>
-          ))}
-        </ul>
+        <CardContent>
+          <ul className="divide-y divide-gray-400">
+            {signInOptions.map((option) => (
+              <li key={option.providerType}>
+                <SignInItem {...option} />
+              </li>
+            ))}
+          </ul>
+        </CardContent>
       </Card>
     </div>
   );
