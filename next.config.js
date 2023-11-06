@@ -8,6 +8,7 @@ const { env } = require("./env");
 const nextConfig = withPlugins([withBundleAnalyzer({ enabled: env.ANALYZE })], {
   reactStrictMode: true,
   experimental: {
+    webpackBuildWorker: true,
     instrumentationHook: true,
     serverComponentsExternalPackages: ["@szum-tech/design-system"]
   },
