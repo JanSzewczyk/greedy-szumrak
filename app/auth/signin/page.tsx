@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function SignInPage() {
   return (
-    <main className="container mx-auto flex flex-1 flex-col justify-center px-4 py-16 md:px-8">
+    <main className="justify-center py-16">
       <div className="mb-16 md:mb-24">
         <h1 className="text-center typography-heading-3">Greedy Szumrak</h1>
         <div className="text-center text-gray-300 typography-overline">
@@ -17,7 +17,7 @@ export default function SignInPage() {
         </div>
       </div>
 
-      <div className="flex flex-col-reverse items-center gap-8 md:flex-row">
+      <div className="flex flex-col-reverse items-center justify-center gap-8 md:flex-row">
         <Hero />
         <SignInButtons />
       </div>

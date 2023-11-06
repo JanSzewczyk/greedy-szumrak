@@ -1,13 +1,14 @@
 import "next-auth";
 
 declare module "next-auth" {
+  type UserInfo = {
+    id: string;
+    name: string;
+    email?: string;
+    image?: string;
+  };
   interface Session {
-    user: {
-      id: string;
-      name: string;
-      email?: string;
-      image?: string;
-    };
+    user: UserInfo;
     exp: string;
   }
 }
