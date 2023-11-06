@@ -7,7 +7,6 @@ import { type UserInfo } from "next-auth";
 
 import { UserAvatar } from "~/components/header/user-panel/user-avatar/user-avatar";
 
-
 type UserPanelProps = {
   user: UserInfo;
 };

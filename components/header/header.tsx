@@ -1,5 +1,3 @@
-"use client";
-
 import { Header as SzumHeader } from "@szum-tech/design-system";
 import Link from "next/link";
 import { type UserInfo } from "next-auth";
@@ -11,8 +9,6 @@ type HeaderProps = {
 };
 
 export function Header({ user }: HeaderProps) {
-  console.log(user);
-
   return (
     <SzumHeader>
       <div className="flex-1">

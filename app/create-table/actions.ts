@@ -11,14 +11,10 @@ export async function createTableAction() {
 
   console.log("user", user);
 
-  const cx = await addDoc(collection(db, "spaces", user.id, "tables"), {
+  await addDoc(collection(db, "spaces", user.id, "tables"), {
     name: "Table name",
     createAt: serverTimestamp()
   });
-
-  // const newTable = await addDoc(collection(db, "tables", user.id), {
-
-  // });
 
   console.log("server action");
   redirect("/");

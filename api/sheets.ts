@@ -1,5 +1,6 @@
 import { db } from "~/lib/firebase";
 import { addDoc, collection, DocumentData, getDocs, serverTimestamp } from "@firebase/firestore";
+import { CreateSheetFormType } from "~/schemas/sheet";
 
 export async function getTables({ userId }: { userId: string }): Promise<[null, DocumentData[]] | [Error]> {
   try {
@@ -22,41 +23,30 @@ export async function getTables({ userId }: { userId: string }): Promise<[null, 
   }
 }
 
-export type CreateTableDto = {
+export type Sheet = {
+  id: string;
   name: string;
-  description: string;
-  columns: Array<{
-    name: string;
-    description: string;
-    orderIndex: number;
-  }>;
+  description: string | null;
+  createAt: string;
 };
 
-export async function createTable({
+export async function createSheet({
   userId,
-  createTable
+  createSheet
 }: {
   userId: string;
-  createTable: CreateTableDto;
-}): Promise<[null, DocumentData] | [Error]> {
+  createSheet: CreateSheetFormType;
+}): Promise<[null, string] | [Error, null]> {
+  const newSheet = {
+    ...createSheet,
+    description: createSheet.description ?? null,
+    createAt: serverTimestamp()
+  };
+
   try {
-    const table = await addDoc(collection(db, "spaces", userId, "tables"), {
-      name: createTable.name,
-      description: createTable.description,
-      createAt: serverTimestamp()
-    });
-
-    for (const column of createTable.columns) {
-      await addDoc(collection(db, "spaces", userId, "tables", table.id, "columns"), {
-        name: column.name,
-        description: column.description,
-        orderIndex: column.orderIndex,
-        createAt: serverTimestamp()
-      });
-    }
-
-    return [null, table];
+    const sheetDoc = await addDoc(collection(db, "spaces", userId, "sheets"), newSheet);
+    return [null, sheetDoc.id];
   } catch (error) {
-    return [new Error("Unknown error")];
+    return [new Error("Unknown error"), null];
   }
 }

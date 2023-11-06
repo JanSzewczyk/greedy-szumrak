@@ -24,7 +24,7 @@ export function SignInButtons() {
   ];
 
   return (
-    <div className="mx-auto w-full max-w-sm">
+    <div className="w-full max-w-sm">
       <Card>
         <CardHeader>
           <CardTitle>Sign-in options</CardTitle>

@@ -9,7 +9,6 @@ const nextConfig = withPlugins([withBundleAnalyzer({ enabled: env.ANALYZE })], {
   reactStrictMode: true,
   experimental: {
     instrumentationHook: true,
-    typedRoutes: true,
     serverComponentsExternalPackages: ["@szum-tech/design-system"]
   },
   rewrites() {

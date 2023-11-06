@@ -1,6 +1,6 @@
 export function Hero() {
   return (
-    <div className="flex-1">
+    <div>
       <div className="mb-12 space-y-4 text-center text-gray-200 typography-subtitle-1">
         <p>
           Are you <strong>GREEDY</strong>?
