@@ -23,7 +23,7 @@
   "dependencies": {
     "@next-auth/firebase-adapter": "^2.0.1",
     "@next/bundle-analyzer": "^14.0.0",
-    "@szum-tech/design-system": "^1.14.0",
+    "@szum-tech/design-system": "^1.17.0",
     "@t3-oss/env-nextjs": "^0.7.1",
     "firebase": "^10.5.2",
     "firebase-admin": "^11.11.0",
