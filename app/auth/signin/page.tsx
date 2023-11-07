@@ -1,7 +1,7 @@
 import { type Metadata } from "next";
 
-import { Hero } from "~/components/components/hero";
-import { SignInButtons } from "~/components/components/sign-in-buttons";
+import { Hero } from "~/app/auth/signin/components/hero";
+import { SignInButtons } from "~/app/auth/signin/components/sign-in-buttons";
 
 export const metadata: Metadata = {
   title: "Greedy Szumrak - Sign in"

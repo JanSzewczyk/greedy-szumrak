@@ -1,12 +1,10 @@
-"use client";
-
 import * as React from "react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@szum-tech/design-system";
 import { GoogleLogoIcon } from "@szum-tech/design-system/icons";
 import { type BuiltInProviderType } from "next-auth/providers";
 
-import { SignInItem } from "~/components/components/sign-in-item";
+import { SignInItem } from "~/app/auth/signin/components/sign-in-item";
 
 export type SignInOption = {
   label: string;
