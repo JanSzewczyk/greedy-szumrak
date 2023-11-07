@@ -30,7 +30,7 @@ export default function IntroductionFinalPage({ params: { sheetId } }: Introduct
           <Link href="/">Go to Dashboard</Link>
         </Button>
         <Button asChild variant="contained" endIcon={<TableIcon />}>
-          <Link href={`/sheet/${sheetId}`}>See Sheet</Link>
+          <Link href={`/sheets/${sheetId}`}>See Sheet</Link>
         </Button>
       </div>
     </div>

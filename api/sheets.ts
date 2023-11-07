@@ -1,5 +1,5 @@
 import { db } from "~/lib/firebase";
-import { addDoc, collection, DocumentData, getDocs, serverTimestamp } from "@firebase/firestore";
+import { addDoc, collection, doc, DocumentData, getDoc, getDocs, serverTimestamp } from "@firebase/firestore";
 import { CreateSheetFormType } from "~/schemas/sheet";
 
 export async function getTables({ userId }: { userId: string }): Promise<[null, DocumentData[]] | [Error]> {
@@ -29,6 +29,28 @@ export type Sheet = {
   description: string | null;
   createAt: string;
 };
+
+export async function getSheetById({
+  userId,
+  sheetId
+}: {
+  userId: string;
+  sheetId: string;
+}): Promise<[null, Sheet] | [Error, null]> {
+  try {
+    const sheetDoc = await getDoc(doc(db, "spaces", userId, "sheets", sheetId));
+
+    const sheet = {
+      ...sheetDoc.data(),
+      createAt: sheetDoc.data()?.createAt.toDate().toISOString(),
+      id: sheetDoc.id
+    } as Sheet;
+
+    return [null, sheet];
+  } catch (error) {
+    return [new Error("Unknown error"), null];
+  }
+}
 
 export async function createSheet({
   userId,

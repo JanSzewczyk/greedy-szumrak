@@ -1,6 +1,37 @@
-import { addDoc, collection, serverTimestamp } from "@firebase/firestore";
+import { addDoc, collection, getDocs, query, serverTimestamp, orderBy } from "@firebase/firestore";
 import { db } from "~/lib/firebase";
 import { CreateColumnFormType } from "~/schemas/column";
+
+type SheetColumn = {
+  id: string;
+  name: string;
+  description: string | null;
+  createAt: string;
+  orderIndex: number;
+};
+
+export async function getSheetColumnsByShopId({
+  userId,
+  sheetId
+}: {
+  userId: string;
+  sheetId: string;
+}): Promise<[null, Array<SheetColumn>] | [Error, null]> {
+  try {
+    const columnsDoc = await getDocs(
+      query(collection(db, "spaces", userId, "sheets", sheetId, "columns"), orderBy("orderIndex"))
+    );
+    const columns = columnsDoc.docs.map((doc) => ({
+      ...doc.data(),
+      id: doc.id,
+      createAt: doc.data().createAt.toDate().toISOString()
+    })) as Array<SheetColumn>;
+
+    return [null, columns];
+  } catch (error) {
+    return [new Error("Unknown error"), null];
+  }
+}
 
 export async function createSheetColumn({
   userId,
