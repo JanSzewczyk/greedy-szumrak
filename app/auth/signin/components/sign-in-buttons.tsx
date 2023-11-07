@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@szum-tech/design-syst
 import { GoogleLogoIcon } from "@szum-tech/design-system/icons";
 import { type BuiltInProviderType } from "next-auth/providers";
 
-import { SignInItem } from "~/app/auth/signin/components/sign-in-item";
+import { SignInItem } from "./sign-in-item";
 
 export type SignInOption = {
   label: string;
