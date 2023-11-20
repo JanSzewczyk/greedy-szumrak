@@ -12,7 +12,9 @@ export function Header({ user }: HeaderProps) {
   return (
     <SzumHeader>
       <div className="flex-1">
-        <Link href="/">Greedy Szumrak</Link>
+        <Link className="typography-heading-5" href="/">
+          Greedy Szumrak
+        </Link>
       </div>
 
       <div className="flex">

@@ -1,16 +1,20 @@
-import { addDoc, collection, getDocs, query, serverTimestamp, orderBy } from "@firebase/firestore";
-import { db } from "~/lib/firebase";
-import { CreateColumnFormType } from "~/schemas/column";
+import { addDoc, collection, getDocs, orderBy, query, serverTimestamp } from "@firebase/firestore";
 
-type SheetColumn = {
+import { type Expense } from "~/api/expenses";
+import { db } from "~/lib/firebase";
+import { type CreateColumnFormType } from "~/schemas/column";
+
+export type SheetColumn = {
   id: string;
   name: string;
   description: string | null;
   createAt: string;
   orderIndex: number;
+  sheetId: string;
+  expenses: Array<Expense>;
 };
 
-export async function getSheetColumnsByShopId({
+export async function getSheetColumnsBySheetId({
   userId,
   sheetId
 }: {
@@ -24,8 +28,10 @@ export async function getSheetColumnsByShopId({
     const columns = columnsDoc.docs.map((doc) => ({
       ...doc.data(),
       id: doc.id,
-      createAt: doc.data().createAt.toDate().toISOString()
-    })) as Array<SheetColumn>;
+      createAt: doc.data().createAt.toDate().toISOString(),
+      sheetId,
+      expenses: []
+    })) as unknown as Array<SheetColumn>;
 
     return [null, columns];
   } catch (error) {

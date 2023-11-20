@@ -16,12 +16,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  Input
+  Input,
+  Select,
+  SelectItem
 } from "@szum-tech/design-system";
 import { TableIcon } from "@szum-tech/design-system/icons";
 import { useForm } from "react-hook-form";
 
 import { type CreateSheetFormType, createSheetSchema } from "~/schemas/sheet";
+import { currencyList } from "~/utils/currency";
 
 type CreateSheetCardProps = {
   action: (data: CreateSheetFormType) => Promise<void>;
@@ -60,6 +63,7 @@ export function CreateSheetCard({ action }: CreateSheetCardProps) {
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="description"
@@ -68,6 +72,26 @@ export function CreateSheetCard({ action }: CreateSheetCardProps) {
                     <FormLabel caption="Optional">Description</FormLabel>
                     <FormControl>
                       <Input placeholder="Description" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="currency"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Currency</FormLabel>
+                    <FormControl>
+                      <Select onValueChange={field.onChange} defaultValue={field.value} placeholder="Currency">
+                        {currencyList.map(({ value, label }) => (
+                          <SelectItem key={value} value={value}>
+                            {label}
+                          </SelectItem>
+                        ))}
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

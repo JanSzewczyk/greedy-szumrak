@@ -1,42 +1,58 @@
-import { Button } from "@szum-tech/design-system";
 import { notFound } from "next/navigation";
 
-import { getSheetById, getSheetColumnsByShopId, getUserSession } from "~/api";
+import { getColumnExpenses, getSheetById, getSheetColumnsBySheetId, getUserSession } from "~/api";
+import { type MonthlySheetColumnSummary } from "~/types";
+
+import { ExpensesColumnDetails } from "./components/expenses-column-details";
+import "./actions";
 
 async function loadData({ sheetId }: { sheetId: string }) {
   const user = await getUserSession();
+
   const [error, sheet] = await getSheetById({ userId: user.user.id, sheetId });
+  const [columnsError, columns] = await getSheetColumnsBySheetId({ userId: user.user.id, sheetId });
 
-  if (error) {
+  if (columnsError || error) {
     return notFound();
   }
 
-  const [columnsError, columns] = await getSheetColumnsByShopId({ userId: user.user.id, sheetId });
+  const allExpenses = await Promise.all(
+    columns.map((column) => getColumnExpenses({ userId: user.user.id, sheetId, column }))
+  );
 
-  if (columnsError) {
-    return notFound();
-  }
+  const columnsExpenses = allExpenses.map((column) => {
+    const [error, columnExpenses] = column;
+    if (error) {
+      return notFound();
+    }
+    return columnExpenses;
+  });
 
-  return { sheet, columns };
+  const monthlyExpenses: Array<MonthlySheetColumnSummary> = columnsExpenses.map(({ expenses, ...column }) => {
+    const amount = expenses.reduce((acc, expense) => acc + expense.amount, 0);
+    return {
+      ...column,
+      amount
+    };
+  });
+
+  return { monthlyExpenses, sheet };
 }
 
 export default async function SheetPage({ params: { sheetId } }: { params: { sheetId: string } }) {
-  const { sheet, columns } = await loadData({ sheetId });
+  const { monthlyExpenses, sheet } = await loadData({ sheetId });
 
   return (
     <main>
-      <div className="flex flex-row justify-between px-2 py-4">
-        <div>
-          <h1 className="typography-heading-5">{sheet.name}</h1>
-          {sheet.description ? <p className="text-gray-200 typography-body-1">{sheet.description}</p> : null}
-        </div>
-        <div>
-          <Button variant="contained">CTA</Button>
-        </div>
+      <div className="mt-10">
+        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {monthlyExpenses.map((column) => (
+            <li key={column.id}>
+              <ExpensesColumnDetails columnSummary={column} sheet={sheet} />
+            </li>
+          ))}
+        </ul>
       </div>
-
-      <h1>Sheet page -- {sheetId}</h1>
-      <pre>{JSON.stringify(columns, null, 2)}</pre>
     </main>
   );
 }
