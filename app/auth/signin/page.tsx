@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Greedy Szumrak - Sign in"
 };
 
-export default function SignInPage() {
+export default function SignInPage({ searchParams }: { searchParams: { callbackUrl?: string } }) {
   return (
     <main className="justify-center py-16">
       <div className="mb-16 md:mb-24">
@@ -19,7 +19,7 @@ export default function SignInPage() {
 
       <div className="flex flex-col-reverse items-center justify-center gap-8 md:flex-row">
         <Hero />
-        <SignInButtons />
+        <SignInButtons callbackUrl={searchParams?.callbackUrl} />
       </div>
     </main>
   );

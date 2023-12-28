@@ -1,4 +1,14 @@
-import { addDoc, collection, getDocs, orderBy, query, serverTimestamp } from "@firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  orderBy,
+  query,
+  type QueryConstraint,
+  serverTimestamp
+} from "@firebase/firestore";
 
 import { type Expense } from "~/api/expenses";
 import { db } from "~/lib/firebase";
@@ -14,16 +24,44 @@ export type SheetColumn = {
   expenses: Array<Expense>;
 };
 
-export async function getSheetColumnsBySheetId({
+export async function getSheetColumnById({
   userId,
-  sheetId
+  sheetId,
+  columnId
 }: {
   userId: string;
   sheetId: string;
-}): Promise<[null, Array<SheetColumn>] | [Error, null]> {
+  columnId: string;
+}): Promise<[null, SheetColumn] | [Error, null]> {
+  try {
+    const columnDoc = await getDoc(doc(db, "spaces", userId, "sheets", sheetId, "columns", columnId));
+    const column = {
+      ...columnDoc.data(),
+      id: columnDoc.id,
+      createAt: columnDoc.data()?.createAt.toDate().toISOString(),
+      sheetId,
+      expenses: []
+    } as unknown as SheetColumn;
+
+    return [null, column];
+  } catch (error) {
+    return [new Error("Unknown error"), null];
+  }
+}
+
+export async function getSheetColumnsBySheetId(
+  {
+    userId,
+    sheetId
+  }: {
+    userId: string;
+    sheetId: string;
+  },
+  queryConstraints: QueryConstraint[] = []
+): Promise<[null, Array<SheetColumn>] | [Error, null]> {
   try {
     const columnsDoc = await getDocs(
-      query(collection(db, "spaces", userId, "sheets", sheetId, "columns"), orderBy("orderIndex"))
+      query(collection(db, "spaces", userId, "sheets", sheetId, "columns"), orderBy("orderIndex"), ...queryConstraints)
     );
     const columns = columnsDoc.docs.map((doc) => ({
       ...doc.data(),

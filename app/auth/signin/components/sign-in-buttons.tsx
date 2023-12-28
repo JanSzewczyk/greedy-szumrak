@@ -4,6 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@szum-tech/design-syst
 import { GoogleLogoIcon } from "@szum-tech/design-system/icons";
 import { type BuiltInProviderType } from "next-auth/providers";
 
+import { signIn } from "~/lib/auth";
+
 import { SignInItem } from "./sign-in-item";
 
 export type SignInOption = {
@@ -13,7 +15,7 @@ export type SignInOption = {
   description?: string;
 };
 
-export function SignInButtons() {
+export function SignInButtons({ callbackUrl }: { callbackUrl?: string }) {
   const signInOptions: Array<SignInOption> = [
     {
       label: "Sign in with Google",
@@ -31,13 +33,22 @@ export function SignInButtons() {
         </CardHeader>
 
         <CardContent>
-          <ul className="divide-y divide-gray-400">
-            {signInOptions.map((option) => (
-              <li key={option.providerType}>
-                <SignInItem {...option} />
-              </li>
-            ))}
-          </ul>
+          <form
+            action={async (formData) => {
+              "use server";
+
+              const providerType = formData.get("providerType") as BuiltInProviderType;
+              await signIn(providerType, { redirectTo: callbackUrl ?? "/" });
+            }}
+          >
+            <ul className="divide-y divide-gray-400">
+              {signInOptions.map((option) => (
+                <li key={option.providerType}>
+                  <SignInItem {...option} />
+                </li>
+              ))}
+            </ul>
+          </form>
         </CardContent>
       </Card>
     </div>

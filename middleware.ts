@@ -1,3 +1,7 @@
-export { default } from "next-auth/middleware";
+import NextAuth from "next-auth";
 
-export const config = { matcher: ["/", "/introduction", "/introduction/table"] };
+import authConfig from "~/auth.config";
+
+export const { auth: middleware } = NextAuth(authConfig);
+
+export const config = { matcher: ["/", "/introduction/:path*", "/sheets/:path*"] };

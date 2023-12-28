@@ -3,12 +3,14 @@
 import { DashboardIcon, ExitIcon } from "@radix-ui/react-icons";
 import { Separator, Sheet, SheetClose, SheetContent, SheetTrigger } from "@szum-tech/design-system";
 import Link from "next/link";
-import { type UserInfo } from "next-auth";
+import { type User } from "next-auth";
 
+import { logout } from "~/app/(app)/actions";
 import { UserAvatar } from "~/components/header/user-panel/user-avatar/user-avatar";
+import packageJson from "~/package.json";
 
 type UserPanelProps = {
-  user: UserInfo;
+  user?: User;
 };
 
 export function UserPanel({ user }: UserPanelProps) {
@@ -24,8 +26,8 @@ export function UserPanel({ user }: UserPanelProps) {
             <UserAvatar user={user} />
           </div>
           <div className="ml-4">
-            <div className="typography-subtitle-2 sm:typography-subtitle-1">{user.name}</div>
-            <div className="text-gray-200 typography-caption sm:typography-body-2">{user.email}</div>
+            <div className="typography-subtitle-2 sm:typography-subtitle-1">{user?.name}</div>
+            <div className="text-gray-200 typography-caption sm:typography-body-2">{user?.email}</div>
           </div>
         </div>
 
@@ -44,16 +46,16 @@ export function UserPanel({ user }: UserPanelProps) {
             <Separator className="my-2" />
           </div>
 
-          <SheetClose asChild>
-            <Link
-              href="/api/auth/signout"
-              className="inline-flex items-center gap-2 rounded px-4 py-2 hover:bg-gray-400"
-            >
+          <form action={logout}>
+            <button className="inline-flex w-full items-center gap-2 rounded px-4 py-2 hover:bg-gray-400">
               <ExitIcon className="h-4 w-4" />
               Sign Out
-            </Link>
-          </SheetClose>
+            </button>
+          </form>
         </nav>
+        <div className="flex flex-1 items-end justify-end">
+          <code className="font-code text-sm text-gray-300">v{packageJson.version}</code>
+        </div>
       </SheetContent>
     </Sheet>
   );

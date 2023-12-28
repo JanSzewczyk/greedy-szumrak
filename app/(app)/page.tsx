@@ -3,13 +3,14 @@ import { PlusIcon } from "@szum-tech/design-system/icons";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getSheets, getUserSession } from "~/api";
+import { getSheets } from "~/api";
+import { getUserSession } from "~/lib/auth";
 
 import { SheetCard } from "./components/sheet-card";
 
 async function loadData() {
-  const user = await getUserSession();
-  const [error, sheets = []] = await getSheets({ userId: user.user.id });
+  const { user } = await getUserSession();
+  const [error, sheets = []] = await getSheets({ userId: user?.id ?? "" });
 
   if (error) {
     return notFound();
@@ -27,7 +28,7 @@ export default async function Home() {
         <h1 className="typography-heading-5">Dashboard</h1>
         <div>
           <Button variant="contained" endIcon={<PlusIcon />} asChild>
-            <Link href="/table/new">Create new table</Link>
+            <Link href="/">Create new table</Link>
           </Button>
         </div>
       </div>

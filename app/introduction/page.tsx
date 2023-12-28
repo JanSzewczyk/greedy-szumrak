@@ -2,13 +2,13 @@ import { Button } from "@szum-tech/design-system";
 import { ArrowRightIcon, DashboardIcon } from "@szum-tech/design-system/icons";
 import Link from "next/link";
 
-import { getUserSession } from "~/api";
 import { ROUTES } from "~/constants/routes";
+import { getUserSession } from "~/lib/auth";
 
 async function loadData() {
   const { user } = await getUserSession();
 
-  return { userName: user.name.split(" ")[0] };
+  return { userName: user?.name?.split(" ")[0] };
 }
 
 export default async function IntroductionPage() {
