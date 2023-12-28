@@ -1,7 +1,7 @@
 import * as React from "react";
 
-import { getUserSession } from "~/api";
 import { Header } from "~/components/header/header";
+import { getUserSession } from "~/lib/auth";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const { user } = await getUserSession();

@@ -1,23 +1,24 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getColumnExpenses, getSheetById, getSheetColumnsBySheetId, getUserSession } from "~/api";
+import { getColumnExpenses, getSheetById, getSheetColumnsBySheetId } from "~/api";
+import { getUserSession } from "~/lib/auth";
 import { type MonthlySheetColumnSummary } from "~/types";
 
 import { ExpensesColumnDetails } from "./components/expenses-column-details";
-import "./actions";
 
 async function loadData({ sheetId }: { sheetId: string }) {
-  const user = await getUserSession();
+  const { user } = await getUserSession();
 
-  const [error, sheet] = await getSheetById({ userId: user.user.id, sheetId });
-  const [columnsError, columns] = await getSheetColumnsBySheetId({ userId: user.user.id, sheetId });
+  const [error, sheet] = await getSheetById({ userId: user?.id ?? "", sheetId });
+  const [columnsError, columns] = await getSheetColumnsBySheetId({ userId: user?.id ?? "", sheetId });
 
   if (columnsError || error) {
     return notFound();
   }
 
   const allExpenses = await Promise.all(
-    columns.map((column) => getColumnExpenses({ userId: user.user.id, sheetId, column }))
+    columns.map((column) => getColumnExpenses({ userId: user?.id ?? "", sheetId, column }))
   );
 
   const columnsExpenses = allExpenses.map((column) => {
@@ -44,15 +45,15 @@ export default async function SheetPage({ params: { sheetId } }: { params: { she
 
   return (
     <main>
-      <div className="mt-10">
-        <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {monthlyExpenses.map((column) => (
-            <li key={column.id}>
+      <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {monthlyExpenses.map((column) => (
+          <li key={column.id}>
+            <Link href={`/sheets/${column.sheetId}/columns/${column.id}`}>
               <ExpensesColumnDetails columnSummary={column} sheet={sheet} />
-            </li>
-          ))}
-        </ul>
-      </div>
+            </Link>
+          </li>
+        ))}
+      </ul>
     </main>
   );
 }

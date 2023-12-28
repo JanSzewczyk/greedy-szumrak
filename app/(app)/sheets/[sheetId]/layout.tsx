@@ -2,14 +2,16 @@ import * as React from "react";
 
 import { notFound } from "next/navigation";
 
-import { getSheetById, getSheetColumnsBySheetId, getUserSession } from "~/api";
+import { getSheetById, getSheetColumnsBySheetId } from "~/api";
 import { AddExpenseDialog } from "~/app/(app)/sheets/[sheetId]/components/add-expense-dialog/add-expense-dialog";
+import { getUserSession } from "~/lib/auth";
+import "./actions";
 
 async function loadData({ sheetId }: { sheetId: string }) {
-  const user = await getUserSession();
+  const { user } = await getUserSession();
 
-  const [error, sheet] = await getSheetById({ userId: user.user.id, sheetId });
-  const [columnsError, columns] = await getSheetColumnsBySheetId({ userId: user.user.id, sheetId });
+  const [error, sheet] = await getSheetById({ userId: user?.id ?? "", sheetId });
+  const [columnsError, columns] = await getSheetColumnsBySheetId({ userId: user?.id ?? "", sheetId });
 
   if (error || columnsError) {
     return notFound();
@@ -28,7 +30,7 @@ export default async function SheetLayout({
   const { sheet, columns } = await loadData({ sheetId });
 
   return (
-    <div>
+    <div className="divide-y divide-gray-400">
       <div className="flex flex-row justify-between px-2 py-4">
         <div>
           <h1 className="typography-heading-5">{sheet.name}</h1>
@@ -38,7 +40,7 @@ export default async function SheetLayout({
           <AddExpenseDialog columns={columns} sheet={sheet} />
         </div>
       </div>
-      {children}
+      <div className="pt-8">{children}</div>
     </div>
   );
 }

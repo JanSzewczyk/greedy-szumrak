@@ -1,12 +1,16 @@
-import "server-only";
-import { FirestoreAdapter } from "@next-auth/firebase-adapter";
+import { FirestoreAdapter } from "@auth/firebase-adapter";
 import { cert } from "firebase-admin/app";
-import { type NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+import NextAuth from "next-auth";
 
+import authConfig from "~/auth.config";
 import { env } from "~/env";
 
-export const authOptions: NextAuthOptions = {
+export const {
+  handlers: { GET, POST },
+  auth,
+  signIn,
+  signOut
+} = NextAuth({
   adapter: FirestoreAdapter({
     credential: cert({
       projectId: env.ADMIN_FIREBASE_PROJECT_ID,
@@ -14,29 +18,16 @@ export const authOptions: NextAuthOptions = {
       privateKey: env.ADMIN_FIREBASE_PRIVATE_KEY
     })
   }),
-  providers: [
-    GoogleProvider({
-      clientId: env.GOOGLE_CLIENT_ID,
-      clientSecret: env.GOOGLE_CLIENT_SECRET
-    })
-  ],
-  secret: env.NEXTAUTH_SECRET,
-  session: {
-    strategy: "jwt"
-  },
-  callbacks: {
-    async session({ session, token }) {
-      session.user = {
-        ...session.user,
-        id: token.sub as string
-      };
-      session.exp = token.exp as string;
-      return session;
-    }
-  },
-  pages: {
-    signIn: "/auth/signin",
-    newUser: "/introduction"
-  },
-  debug: env.NODE_ENV === "development"
-};
+  debug: env.NODE_ENV === "development",
+  ...authConfig
+});
+
+export async function getUserSession() {
+  const userSession = await auth();
+
+  if (!userSession) {
+    throw new Error("User session not found");
+  }
+
+  return userSession;
+}

@@ -1,14 +1,14 @@
 export const currencyList = [
   {
-    label: "US Dollar",
+    label: "US Dollar (USD)",
     value: "USD"
   },
   {
-    label: "Euro",
+    label: "Euro (EUR)",
     value: "EUR"
   },
   {
-    label: "Zloty",
+    label: "Zloty (PLN)",
     value: "PLN"
   }
 ];

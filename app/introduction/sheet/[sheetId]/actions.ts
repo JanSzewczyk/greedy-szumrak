@@ -2,8 +2,9 @@
 
 import { notFound, redirect } from "next/navigation";
 
-import { createSheetColumn, getUserSession } from "~/api";
+import { createSheetColumn } from "~/api";
 import { ROUTES } from "~/constants/routes";
+import { getUserSession } from "~/lib/auth";
 
 import { type SheetColumnsSchemaFormType } from "./components/create-sheet-columns-card";
 
@@ -13,7 +14,7 @@ export async function createColumnsAction(sheetId: string, data: SheetColumnsSch
   const newColumns = data.columns.map((column, index) => ({ ...column, orderIndex: index }));
 
   for (const createColumn of newColumns) {
-    const [error] = await createSheetColumn({ userId: user.id, sheetId, createColumn });
+    const [error] = await createSheetColumn({ userId: user?.id ?? "", sheetId, createColumn });
 
     if (error) {
       return notFound();
