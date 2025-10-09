@@ -4,7 +4,7 @@ import RootLayout from "~/app/layout";
 import Page from "~/app/page";
 
 const meta = {
-  title: "App/Home Page",
+  title: "Greedy Szumrak",
   component: Page,
   parameters: {
     nextjs: {
