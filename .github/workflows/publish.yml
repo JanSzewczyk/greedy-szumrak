@@ -1,0 +1,30 @@
+name: Publish 📦🚀
+
+on:
+  push:
+    branches: [main]
+
+env:
+  NODE_VERSION: 22.x
+
+jobs:
+  publish:
+    name: Publish 📦🚀
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code 📚
+        uses: actions/checkout@v5
+      - name: Set up Node 🟢
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+      - name: Install packages ⚙️
+        run: npm ci
+#        HERE 👇👇👇
+#        Expose block of code below
+#      - name: Publish package 📦🚀
+#        run: npx semantic-release
+#        run: yarn semantic-release
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
