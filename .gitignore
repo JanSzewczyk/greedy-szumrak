@@ -119,3 +119,5 @@ src/styles
 
 # Ignore Next files
 .next
+# clerk configuration (can include secrets)
+/.clerk/
