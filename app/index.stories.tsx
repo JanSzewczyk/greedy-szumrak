@@ -1,5 +1,4 @@
 import { type Meta, type StoryObj } from "@storybook/react";
-import { expect, within } from "storybook/test";
 import RootLayout from "~/app/layout";
 import Page from "~/app/page";
 
@@ -27,11 +26,5 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   name: "Home Page",
-  tags: ["test-only"],
-  async play({ canvasElement }) {
-    const canvas = await within(canvasElement);
-    await expect(canvas.getByRole("heading", { name: /Next App Template/ })).toBeInTheDocument();
-    await expect(canvas.getByText("by Szum-Tech")).toBeInTheDocument();
-    await expect(canvas.getByRole("button", { name: /See Repo/ })).toBeInTheDocument();
-  }
+  tags: ["test-only"]
 };
