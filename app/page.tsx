@@ -1,8 +1,7 @@
 import * as React from "react";
 
 import { SignedIn, UserButton } from "@clerk/nextjs";
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
-import { Button, Separator } from "@szum-tech/design-system";
+import { Separator } from "@szum-tech/design-system";
 import Image from "next/image";
 
 export default function Home() {
@@ -13,13 +12,6 @@ export default function Home() {
           <UserButton />
         </SignedIn>
       </header>
-      <div className="flex w-full flex-row justify-end">
-        <Button asChild endIcon={<GitHubLogoIcon />}>
-          <a target="_blank" href="https://github.com/JanSzewczyk/nextjs-szumplate" rel="noreferrer">
-            See Repo
-          </a>
-        </Button>
-      </div>
       <div className="flex flex-col">
         <h1 className="text-heading-3 lg:text-heading-2 mb-4 text-center">Next App Template</h1>
         <p className="text-subtitle-1 self-end text-gray-600 underline">by Szum-Tech</p>

@@ -16,12 +16,12 @@ const features = [
 export default function SignInPage() {
   return (
     <main className="container flex min-h-screen flex-col">
-      <div className="flex min-h-screen flex-col items-center justify-center gap-8 p-4 lg:flex-row lg:gap-12 lg:p-8">
+      <div className="flex min-h-screen flex-col items-center justify-center gap-8 py-4 lg:flex-row lg:gap-12 lg:py-8">
         {/* Left Side - Marketing Content */}
-        <div className="w-full max-w-3xl space-y-8 text-white lg:flex-1 lg:pr-8">
+        <div className="w-full max-w-3xl space-y-10 lg:flex-1 lg:pr-8">
           {/* Hero Section */}
           <div className="space-y-4">
-            <div className="mb-6 flex items-center gap-3">
+            <div className="mb-10 flex items-center gap-3">
               <div>
                 <CircleDollarSignIcon className="size-10 text-gray-100 sm:size-16" />
               </div>
