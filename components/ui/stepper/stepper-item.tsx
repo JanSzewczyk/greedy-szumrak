@@ -29,9 +29,10 @@ export function StepperItem({
   return (
     <StepItemContext.Provider value={{ step, state, isDisabled: disabled, isLoading }}>
       <div
+        data-step={step}
         data-slot="stepper-item"
         className={cn(
-          "group/step flex flex-1 flex-col items-center justify-center",
+          "group/step flex flex-1 flex-col justify-end",
           "",
           // "group-data-[orientation=horizontal]/stepper-nav:flex-row group-data-[orientation=vertical]/stepper-nav:flex-col",
           className
@@ -46,8 +47,7 @@ export function StepperItem({
           data-state={state}
           className={cn(
             "h-1 w-full bg-gray-800 transition-colors duration-300",
-            "data-[state=active]:bg-primary-500 data-[state=completed]:bg-success-500",
-            ""
+            "data-[state=active]:bg-primary-500 data-[state=completed]:bg-success-500"
           )}
         />
       </div>

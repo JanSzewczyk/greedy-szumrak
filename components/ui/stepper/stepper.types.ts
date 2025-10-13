@@ -12,3 +12,5 @@ export type StepIndicators = {
   inactive?: React.ReactNode;
   loading?: React.ReactNode;
 };
+
+export type StepperStep = string | number;

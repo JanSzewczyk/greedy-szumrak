@@ -43,10 +43,10 @@ export default function SignInPage() {
             {features.map((feature, index) => (
               <Card key={index}>
                 <div className="flex flex-row gap-x-4 p-4">
-                  <feature.icon className="text-primary-300 size-8" />
+                  <feature.icon className="text-primary-300 size-6 md:size-8" />
                   <div>
-                    <h3 className="text-heading-6 mb-1">{feature.title}</h3>
-                    <p className="text-primary-300 text-body-1">{feature.desc}</p>
+                    <h3 className="text-subtitle-1 md:text-heading-6 mb-1">{feature.title}</h3>
+                    <p className="text-primary-300 text-body-2 md:text-body-1">{feature.desc}</p>
                   </div>
                 </div>
               </Card>
