@@ -1,6 +1,11 @@
 import * as React from "react";
 
-import { type StepIndicators, type StepperOrientation, type StepState } from "~/components/ui/stepper/stepper.types";
+import {
+  type StepIndicators,
+  type StepperOrientation,
+  type StepperStep,
+  type StepState
+} from "~/components/ui/stepper/stepper.types";
 
 export type StepperContextValue = {
   activeStep: number;
@@ -14,6 +19,8 @@ export type StepperContextValue = {
   focusFirst: () => void;
   focusLast: () => void;
   indicators: StepIndicators;
+  steps: Array<StepperStep>;
+  isMounted: boolean;
 };
 
 export type StepItemContextValue = {
