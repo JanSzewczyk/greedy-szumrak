@@ -2,11 +2,11 @@
 
 import { Button } from "@szum-tech/design-system";
 import Link from "next/link";
-import { StepperContent } from "~/components/ui/stepper/stepper-content";
+import { StepperContent } from "~/components/ui/v2/stepper-content";
 
 export default function GoalsPage() {
   return (
-    <StepperContent value={3}>
+    <StepperContent value="/onboarding/goals">
       Financials Goals Step
       <Button asChild>
         <Link href="/onboarding/categories">Next</Link>
