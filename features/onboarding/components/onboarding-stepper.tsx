@@ -2,81 +2,80 @@
 
 import * as React from "react";
 
-import { CheckIcon, GoalIcon, HeartHandshakeIcon, ListIcon, Settings2Icon } from "lucide-react";
+import { GoalIcon, HeartHandshakeIcon, ListIcon, Settings2Icon } from "lucide-react";
 
+import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Stepper } from "~/components/ui/stepper/stepper";
-import { StepperDescription } from "~/components/ui/stepper/stepper-description";
-import { StepperIndicator } from "~/components/ui/stepper/stepper-indicator";
-import { StepperItem } from "~/components/ui/stepper/stepper-item";
-import { StepperNav } from "~/components/ui/stepper/stepper-nav";
-import { StepperPanel } from "~/components/ui/stepper/stepper-panel";
-import { StepperTitle } from "~/components/ui/stepper/stepper-title";
-import { StepperTrigger } from "~/components/ui/stepper/stepper-trigger";
-
-const steps: Record<string, number> = {
-  "/onboarding": 1,
-  "/onboarding/preferences": 2,
-  "/onboarding/goals": 3,
-  "/onboarding/categories": 4
-} as const;
+import { Stepper } from "~/components/ui/v2/stepper";
+import { StepperDescription } from "~/components/ui/v2/stepper-description";
+import { StepperIndicator } from "~/components/ui/v2/stepper-indicator";
+import { StepperItem } from "~/components/ui/v2/stepper-item";
+import { StepperNav } from "~/components/ui/v2/stepper-nav";
+import { StepperPanel } from "~/components/ui/v2/stepper-panel";
+import { StepperTitle } from "~/components/ui/v2/stepper-title";
+import { StepperTrigger } from "~/components/ui/v2/stepper-trigger";
 
 export function OnboardingStepper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
 
   return (
     <Stepper
-      indicators={{
-        completed: <CheckIcon className="size-4" />
-      }}
-      value={steps[pathname] || 1}
-      onValueChange={(value) => {
-        console.log(value);
-      }}
+      // indicators={{
+      //   completed: <CheckIcon className="size-4" />
+      // }}
+      value={pathname}
     >
       <StepperNav>
-        <StepperItem step={1}>
-          <StepperTrigger>
-            <StepperIndicator>
-              <HeartHandshakeIcon className="size-4" />
-            </StepperIndicator>
-            <StepperTitle>Welcome</StepperTitle>
+        <StepperItem value={"/onboarding"}>
+          <StepperTrigger asChild>
+            <Link href="/onboarding">
+              <StepperIndicator>
+                <HeartHandshakeIcon className="size-4" />
+              </StepperIndicator>
+              <StepperTitle>Welcome</StepperTitle>
+            </Link>
           </StepperTrigger>
         </StepperItem>
 
-        <StepperItem step={2}>
-          <StepperTrigger>
-            <StepperIndicator>
-              <Settings2Icon className="size-4" />
-            </StepperIndicator>
-            <div className="flex-1">
-              <StepperTitle>Preferences</StepperTitle>
-              <StepperDescription>Define your preferences</StepperDescription>
-            </div>
+        <StepperItem value={"/onboarding/preferences"}>
+          <StepperTrigger asChild>
+            <Link href="/onboarding/preferences">
+              <StepperIndicator>
+                <Settings2Icon className="size-4" />
+              </StepperIndicator>
+              <div className="flex-1">
+                <StepperTitle>Preferences</StepperTitle>
+                <StepperDescription>Define your preferences</StepperDescription>
+              </div>
+            </Link>
           </StepperTrigger>
         </StepperItem>
 
-        <StepperItem step={3}>
-          <StepperTrigger>
-            <StepperIndicator>
-              <GoalIcon className="size-4" />
-            </StepperIndicator>
-            <div className="flex-1">
-              <StepperTitle>Financial Goals</StepperTitle>
-              <StepperDescription>Set your monthly targets</StepperDescription>
-            </div>
+        <StepperItem value="/onboarding/goals">
+          <StepperTrigger asChild>
+            <Link href="/onboarding/goals">
+              <StepperIndicator>
+                <GoalIcon className="size-4" />
+              </StepperIndicator>
+              <div className="flex-1">
+                <StepperTitle>Financial Goals</StepperTitle>
+                <StepperDescription>Set your monthly targets</StepperDescription>
+              </div>
+            </Link>
           </StepperTrigger>
         </StepperItem>
 
-        <StepperItem step={4}>
-          <StepperTrigger>
-            <StepperIndicator>
-              <ListIcon className="size-4" />
-            </StepperIndicator>
-            <div className="flex-1">
-              <StepperTitle>Expense Categories</StepperTitle>
-              <StepperDescription>Choose your default categories</StepperDescription>
-            </div>
+        <StepperItem value="/onboarding/categories">
+          <StepperTrigger asChild>
+            <Link href="/onboarding/categories">
+              <StepperIndicator>
+                <ListIcon className="size-4" />
+              </StepperIndicator>
+              <div className="flex-1">
+                <StepperTitle>Expense Categories</StepperTitle>
+                <StepperDescription>Choose your default categories</StepperDescription>
+              </div>
+            </Link>
           </StepperTrigger>
         </StepperItem>
       </StepperNav>
