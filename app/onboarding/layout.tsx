@@ -12,6 +12,7 @@ export default async function OnboardingLayout({ children }: LayoutProps<"/onboa
   return (
     <main className="bg-app-foreground min-h-dvh">
       <div className="container py-20">
+        <h1 className="text-heading-4 mb-8">Greedy Szumrak</h1>
         <OnboardingStepper>{children}</OnboardingStepper>
       </div>
     </main>

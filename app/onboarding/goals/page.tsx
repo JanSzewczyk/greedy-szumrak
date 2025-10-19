@@ -2,7 +2,7 @@
 
 import { Button } from "@szum-tech/design-system";
 import Link from "next/link";
-import { StepperContent } from "~/components/ui/v2/stepper-content";
+import { StepperContent } from "../../../../design-system/src/components/stepper/stepper-content";
 
 export default function GoalsPage() {
   return (
