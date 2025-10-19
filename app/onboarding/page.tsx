@@ -13,8 +13,11 @@ import {
   StepperContent
 } from "@szum-tech/design-system";
 import Link from "next/link";
+import logger from "~/lib/logger";
 
 export default function OnboardingComponent() {
+  logger.info("Onboarding layout loaded");
+
   return (
     <StepperContent value="/onboarding">
       <div className="mx-auto max-w-xl">

@@ -14,7 +14,8 @@ export const env = createEnv({
       .optional()
       .transform((value) => value === "true" || value === "1"),
     VERCEL_URL: z.string().optional(),
-    CLERK_SECRET_KEY: z.string()
+    CLERK_SECRET_KEY: z.string(),
+    LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"]).optional().default("info")
   },
   experimental__runtimeEnv: process.env,
   /**
