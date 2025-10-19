@@ -1,20 +1,57 @@
-"use client";
-
 import * as React from "react";
 
-import { Button, Input } from "@szum-tech/design-system";
+import { ChevronRightIcon, WalletIcon } from "lucide-react";
+
+import {
+  Button,
+  Item,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemMedia,
+  ItemTitle,
+  StepperContent
+} from "@szum-tech/design-system";
 import Link from "next/link";
-import { StepperContent } from "~/components/ui/v2/stepper-content";
 
 export default function OnboardingComponent() {
   return (
-    <StepperContent value={"/onboarding"}>
-      <form>
-        <Input name={"name"} placeholder={"Name"} />
-      </form>
-      <Button asChild>
-        <Link href="/onboarding/preferences">Next</Link>
-      </Button>
+    <StepperContent value="/onboarding">
+      <div className="mx-auto max-w-xl">
+        <h4 className="text-heading-5 mt-8 mb-4 text-center">Welcome to Greedy Szumrak</h4>
+        <p className="text-subtitle-1 mb-8 text-center text-gray-400">Your personal finance management platform</p>
+
+        <ItemGroup className="gap-y-8">
+          <Item variant="outlined">
+            <ItemMedia variant="icon">
+              <WalletIcon />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>Track Expenses</ItemTitle>
+              <ItemDescription>
+                Monitor your monthly spending across different categories with detailed insights.
+              </ItemDescription>
+            </ItemContent>
+          </Item>
+
+          <Item variant="outlined">
+            <ItemMedia variant="icon">
+              <WalletIcon />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>Manage Investments</ItemTitle>
+              <ItemDescription>
+                Keep track of your investment portfolio and monitor returns in real-time.
+              </ItemDescription>
+            </ItemContent>
+          </Item>
+        </ItemGroup>
+      </div>
+      <div className="mt-10 flex justify-end">
+        <Button asChild variant="contained" endIcon={<ChevronRightIcon />}>
+          <Link href="/onboarding/preferences">Continue</Link>
+        </Button>
+      </div>
     </StepperContent>
   );
 }
