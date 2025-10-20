@@ -6,7 +6,9 @@ import { OnboardingStepper } from "~/features/onboarding/components/onboarding-s
 import logger from "~/lib/logger";
 
 export default async function OnboardingLayout({ children }: LayoutProps<"/onboarding">) {
-  if ((await auth()).sessionClaims?.metadata.onboardingComplete === true) {
+  const { sessionClaims } = await auth();
+
+  if (sessionClaims?.metadata.onboardingComplete === true) {
     logger.info("User is already onboarded, redirecting to dashboard page");
     redirect("/");
   }

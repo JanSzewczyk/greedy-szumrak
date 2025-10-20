@@ -13,6 +13,7 @@ import {
   StepperTrigger
 } from "@szum-tech/design-system";
 import { usePathname } from "next/navigation";
+import { OnboardingSteps } from "~/features/onboarding/types/onboarding";
 
 export function OnboardingStepper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -20,13 +21,10 @@ export function OnboardingStepper({ children }: { children: React.ReactNode }) {
   return (
     <Stepper value={pathname} onValueChange={(value) => console.log("value", value)}>
       <StepperNav>
-        <StepperItem value="/onboarding">
+        <StepperItem value={OnboardingSteps.WELCOME}>
           <StepperTrigger>
             <StepperIndicator />
-            <div>
-              <StepperTitle>Welcome</StepperTitle>
-              <StepperDescription>Basic Information</StepperDescription>
-            </div>
+            <StepperTitle>Welcome</StepperTitle>
           </StepperTrigger>
         </StepperItem>
         <StepperItem value="/onboarding/preferences">
@@ -34,7 +32,7 @@ export function OnboardingStepper({ children }: { children: React.ReactNode }) {
             <StepperIndicator />
             <div>
               <StepperTitle>Preferences</StepperTitle>
-              <StepperDescription>Details</StepperDescription>
+              <StepperDescription>Set Your Preferences</StepperDescription>
             </div>
           </StepperTrigger>
         </StepperItem>

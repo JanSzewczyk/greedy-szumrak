@@ -14,8 +14,14 @@ export const env = createEnv({
       .optional()
       .transform((value) => value === "true" || value === "1"),
     VERCEL_URL: z.string().optional(),
+    LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"]).optional().default("info"),
     CLERK_SECRET_KEY: z.string(),
-    LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace"]).optional().default("info")
+    FIREBASE_API_KEY: z.string(),
+    FIREBASE_APP_ID: z.string(),
+    FIREBASE_AUTH_DOMAIN: z.string(),
+    FIREBASE_MESSAGING_SENDER_ID: z.string(),
+    FIREBASE_PROJECT_ID: z.string(),
+    FIREBASE_STORAGE_BUCKET: z.string()
   },
   experimental__runtimeEnv: process.env,
   /**

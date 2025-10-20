@@ -12,14 +12,15 @@ import {
   ItemTitle,
   StepperContent
 } from "@szum-tech/design-system";
-import Link from "next/link";
+import { startOnboarding } from "~/features/onboarding/server/actions/onboarding";
+import { OnboardingSteps } from "~/features/onboarding/types/onboarding";
 import logger from "~/lib/logger";
 
-export default function OnboardingComponent() {
+export default function OnboardingWelcomePage() {
   logger.info("Onboarding layout loaded");
 
   return (
-    <StepperContent value="/onboarding">
+    <StepperContent value={OnboardingSteps.WELCOME}>
       <div className="mx-auto max-w-xl">
         <h4 className="text-heading-5 mt-8 mb-4 text-center">Welcome to Greedy Szumrak</h4>
         <p className="text-subtitle-1 mb-8 text-center text-gray-400">Your personal finance management platform</p>
@@ -51,8 +52,8 @@ export default function OnboardingComponent() {
         </ItemGroup>
       </div>
       <div className="mt-10 flex justify-end">
-        <Button asChild variant="contained" endIcon={<ChevronRightIcon />}>
-          <Link href="/onboarding/preferences">Continue</Link>
+        <Button variant="contained" endIcon={<ChevronRightIcon />} onClick={startOnboarding}>
+          Continue
         </Button>
       </div>
     </StepperContent>
