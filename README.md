@@ -2,64 +2,40 @@
 
 # Greedy Szumrak
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=github&utm_campaign=next-enterprise)
-[![GitHub stars](https://img.shields.io/github/stars/JanSzewczyk/nextjs-szumplate?style=social)](https://github.com/JanSzewczyk/nextjs-szumplate/stargazers)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-**An enterprise-ready Next.js template that accelerates your development workflow**
+Greedy Szumrak is a Next.js application that uses Clerk for authentication and Firebase (Firestore) for data storage. It includes an onboarding flow and leverages a shared design system.
 
-[Features](#-features) • [Getting Started](#-getting-started) • [Documentation](#-table-of-contents) •
-[Deployment](#-deployment)
+Quick links: [Overview](#overview) • [Requirements](#requirements) • [Setup](#setup) • [Scripts](#-scripts-overview) • [Env vars](#environment-variables) • [Tests](#-testing) • [Structure](#-project-structure) • [License](#-license)
+
+TODO: Add deployment badge/links once hosting is confirmed.
 
 </div>
 
 ---
 
-## 👋 Hello there!
+## Overview
 
-This is **Next.js Szumplate**, an open-source template for enterprise projects! It is packed with features that will
-help you create an efficient, maintainable, and enjoyable application. This template will save you a lot of time, so sit
-back, relax, and get ready to conquer the whole world with your new awesome app!
+Greedy Szumrak is a Next.js application with a focus on authenticated user flows and onboarding.
 
-## ✨ Features
+- Authentication is handled by Clerk (middleware-enforced protected routes).
+- User onboarding data is persisted in Firebase Firestore.
+- API health endpoint available at `/api/health` with rewrites from `/health`, `/healthz`, and `/ping`.
+- Uses a shared design system for UI and Tailwind CSS for styling.
 
-### 🏗️ Core Technologies
+## Tech Stack
 
-- **⚡ [Next.js](https://nextjs.org/)** - Fast by default, with config optimized for performance
-- **💅 [Tailwind CSS](https://tailwindcss.com/)** - A utility-first CSS framework
-- **🛠️ Extremely strict [TypeScript](https://www.typescriptlang.org/)** - With `ts-reset` library for ultimate type
-  safety
-- **🎯 [Absolute imports](https://nextjs.org/docs/advanced-features/module-path-aliases)** - No more spaghetti imports
-
-### 🧪 Testing & Quality
-
-- **🧪 [Vitest](https://vitest.dev/)** - Rock-solid and highly speed unit and integration tests
-- **🧬 [React Testing Library](https://testing-library.com/react)** - Component testing
-- **🎭 [Playwright](https://playwright.dev/)** - End-to-end tests with smoke testing and acceptance tests
-- **📚 [Storybook](https://storybook.js.org/)** - Create, test, and showcase your components
-- **✨ [ESLint](https://eslint.org/) & [Prettier](https://prettier.io/)** - Clean, consistent, and error-free code
-
-### 🤖 Automation & DevOps
-
-- **🚀 [GitHub Actions](https://github.com/features/actions)** - Pre-configured workflows for CI/CD
-- **🚢 [Semantic Release](https://github.com/semantic-release/semantic-release)** - Automated versioning and changelog
-  generation
-- **🤖 [Dependabot](https://github.com/dependabot)** - Automated dependency updates
-- **🧠 [ChatGPT Code Reviews](https://openai.com/chatgpt)** - AI-powered code reviews
-
-### 🔧 Developer Experience
-
-- **💻 [T3 Env](https://env.t3.gg/)** - Type-safe environment variables management
-- **📊 [Bundle Analyzer](https://www.npmjs.com/package/@next/bundle-analyzer)** - Keep an eye on your bundle size
-- **⚕️
-  [Health Checks](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/)** -
-  Kubernetes-compatible for robust deployments
-- **🎨 [Szum-Tech Design System](https://www.npmjs.com/package/@szum-tech/design-system)** - Pre-built components and
-  design tokens
-
-### 🏆 Performance
-
-- **💯 Perfect Lighthouse Score** - Optimized for performance, accessibility, and SEO
+- Next.js 15 (App Router, Turbopack)
+- React 19 + TypeScript (strict)
+- Tailwind CSS 4
+- Clerk (Auth, middleware)
+- Firebase Firestore (Data)
+- Pino logger
+- T3 Env (type-safe env management)
+- Storybook 9
+- Vitest 3, React Testing Library
+- Playwright (E2E)
+- ESLint 9, Prettier 3
 
 ---
 
@@ -105,8 +81,9 @@ Don't forget to star ⭐ and fork the repository first!
 #### 2. 📥 Clone the Repository
 
 ```bash
-git clone https://github.com/<your_username>/nextjs-szumplate.git
-cd nextjs-szumplate
+# TODO: replace with the correct repository URL once available
+git clone https://github.com/<your_org_or_user>/greedy-szumrak.git
+cd greedy-szumrak
 ```
 
 #### 3. 📦 Install Dependencies
@@ -155,18 +132,17 @@ reviews.
 
 ## 🚀 Deployment
 
-Easily deploy your Next.js app with **Vercel** by clicking the button below:
+Deployment target: TODO — document hosting provider and deployment steps for this project.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=github&utm_campaign=next-enterprise)
+Notes:
+- Health endpoint is available at `/api/health` (also `/health`, `/healthz`, `/ping`) and can be used for liveness/readiness probes.
+- Ensure all required environment variables are configured in the hosting platform.
 
-### Deployment Steps
-
-1. Click the "Deploy with Vercel" button
-2. Connect your GitHub repository
-3. Configure environment variables
-4. Deploy!
-
-Your application will be live in minutes with automatic CI/CD pipeline.
+Local production run:
+```bash
+npm run build
+npm run start
+```
 
 ---
 
@@ -348,6 +324,31 @@ const env = createEnv({
 export default env;
 ```
 
+### Environment Variables (Project)
+
+Create a `.env.local` by copying `.env.example` and set the following variables:
+
+- LOG_LEVEL (optional: fatal | error | warn | info | debug | trace)
+- NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+- CLERK_SECRET_KEY
+- NEXT_PUBLIC_CLERK_SIGN_IN_URL
+- NEXT_PUBLIC_CLERK_SIGN_IN_FALLBACK_REDIRECT_URL
+- NEXT_PUBLIC_CLERK_SIGN_UP_URL
+- NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL
+- NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL
+- FIREBASE_API_KEY
+- FIREBASE_APP_ID
+- FIREBASE_AUTH_DOMAIN
+- FIREBASE_MESSAGING_SENDER_ID
+- FIREBASE_PROJECT_ID
+- FIREBASE_STORAGE_BUCKET
+- ANALYZE (optional: 'true' | 'false')
+- CI (optional: 'true' | 'false' | '0' | '1')
+
+Notes:
+- Server-side validation of env vars is defined in `data/env/server.ts` using T3 Env and Zod.
+- Client-side variables must be prefixed with `NEXT_PUBLIC_`.
+
 ### Benefits
 
 - ✅ Type-safe environment variables
@@ -429,7 +430,7 @@ export async function getData() {
 ## 📁 Project Structure
 
 ```
-nextjs-szumplate/
+greedy-szumrak/
 ├── .github/
 │   └── workflows/        # GitHub Actions workflows (CI/CD)
 ├── .storybook/           # Storybook configuration
@@ -524,9 +525,9 @@ This template is built with amazing tools and libraries from the open-source com
 
 If you have any questions, suggestions, or issues:
 
-- 🐛 [Open an issue](https://github.com/JanSzewczyk/nextjs-szumplate/issues)
-- ⭐ [Star this repository](https://github.com/JanSzewczyk/nextjs-szumplate)
-- 👨‍💻 Check out my [GitHub profile](https://github.com/JanSzewczyk)
+- 🐛 TODO: Add link to this repository’s issue tracker
+- ⭐ Consider starring the repository to support development
+- 👨‍💻 TODO: Add maintainer contact or organization profile link
 
 ---
 
