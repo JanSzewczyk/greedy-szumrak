@@ -1,4 +1,3 @@
-import { collection, doc, getDoc, getDocs, query, where, addDoc } from "@firebase/firestore";
 import { type Onboarding, OnboardingSteps } from "~/features/onboarding/types/onboarding";
 import { db } from "~/lib/firebase";
 import { createLogger } from "~/lib/logger";
@@ -9,10 +8,7 @@ export async function getOnboardingByUserId(userId: string): Promise<[null, Onbo
   try {
     logger.info({ userId }, "Fetching onboarding by userId");
 
-    const onboardingRef = collection(db, "onboarding");
-    const onboardingQuery = query(onboardingRef, where("userId", "==", userId));
-
-    const querySnapshot = await getDocs(onboardingQuery);
+    const querySnapshot = await db.collection("onboarding").where("userId", "==", userId).get();
 
     if (querySnapshot.empty) {
       logger.info({ userId }, "No onboarding document found for userId");
@@ -25,7 +21,7 @@ export async function getOnboardingByUserId(userId: string): Promise<[null, Onbo
       throw new Error("Multiple onboarding documents found for the same user.");
     }
 
-    const doc = querySnapshot.docs[0];
+    const doc = onboardingDocs[0];
     logger.info({ userId, onboardingId: doc?.id }, "Onboarding document found successfully");
     return [null, { id: doc?.id, ...doc?.data() } as unknown as Onboarding];
   } catch (error) {
@@ -38,16 +34,15 @@ export async function getOnboardingByOnboardingId(onboardingId: string): Promise
   try {
     logger.info({ onboardingId }, "Fetching onboarding by onboardingId");
 
-    const onboardingRef = doc(db, "onboarding", onboardingId);
-    const onboardingDoc = await getDoc(onboardingRef);
+    const onboardingDoc = await db.collection("onboarding").doc(onboardingId).get();
 
-    if (!onboardingDoc.exists()) {
+    if (!onboardingDoc.exists) {
       logger.info({ onboardingId }, "Onboarding document not found");
       throw new Error("Onboarding not found.");
     }
 
     logger.info({ onboardingId }, "Onboarding document found successfully");
-    return [null, { id: onboardingDoc?.id, ...onboardingDoc?.data() } as unknown as Onboarding];
+    return [null, { id: onboardingDoc.id, ...onboardingDoc.data() } as unknown as Onboarding];
   } catch (error) {
     logger.error({ onboardingId, error }, "Error fetching onboarding by onboardingId");
     return [error as Error, null];
@@ -76,12 +71,11 @@ export async function startOnboardingByUserId(userId: string): Promise<[null, On
   try {
     logger.info({ userId }, "Starting onboarding by userId");
 
-    const onboardingCollectionRef = collection(db, "onboarding");
-    const onboardingDoc = await addDoc(onboardingCollectionRef, onboardingData);
+    const onboardingDocRef = await db.collection("onboarding").add(onboardingData);
 
-    logger.info({ onboardingId: onboardingDoc.id }, "Onboarding document created successfully");
+    logger.info({ onboardingId: onboardingDocRef.id }, "Onboarding document created successfully");
 
-    return [null, { id: onboardingDoc?.id, ...onboardingData } as unknown as Onboarding];
+    return [null, { id: onboardingDocRef.id, ...onboardingData } as unknown as Onboarding];
   } catch (error) {
     logger.error({ userId, error }, "Error starting onboarding");
     return [error as Error, null];

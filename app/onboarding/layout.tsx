@@ -6,6 +6,8 @@ import { OnboardingStepper } from "~/features/onboarding/components/onboarding-s
 import logger from "~/lib/logger";
 
 export default async function OnboardingLayout({ children }: LayoutProps<"/onboarding">) {
+  logger.info("Onboarding layout loaded");
+
   const { sessionClaims } = await auth();
 
   if (sessionClaims?.metadata.onboardingComplete === true) {
