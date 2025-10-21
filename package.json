@@ -35,7 +35,7 @@
     "@szum-tech/design-system": "^2.7.0",
     "@t3-oss/env-nextjs": "^0.13.8",
     "@tailwindcss/postcss": "^4.1.14",
-    "firebase": "^12.4.0",
+    "firebase-admin": "^13.5.0",
     "lucide-react": "^0.546.0",
     "next": "^15.5.6",
     "next-compose-plugins": "^2.2.1",
