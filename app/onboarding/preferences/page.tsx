@@ -5,9 +5,9 @@ import { OnboardingSteps } from "~/features/onboarding/types/onboarding";
 import logger from "~/lib/logger";
 
 export default async function PreferencesPage() {
-  const { onboardingId } = await getOnboardingCookie();
+  logger.info("Onboarding preferences step loaded");
 
-  logger.info("Performance step loaded");
+  const { onboardingId } = await getOnboardingCookie();
 
   return (
     <StepperContent value={OnboardingSteps.PREFERENCES}>
