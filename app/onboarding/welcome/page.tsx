@@ -17,7 +17,7 @@ import { OnboardingSteps } from "~/features/onboarding/types/onboarding";
 import logger from "~/lib/logger";
 
 export default function OnboardingWelcomePage() {
-  logger.info("Onboarding layout loaded");
+  logger.info("Onboarding welcome step loaded");
 
   return (
     <StepperContent value={OnboardingSteps.WELCOME}>
