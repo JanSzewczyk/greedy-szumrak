@@ -24,7 +24,7 @@ jobs:
       - name: Checkout code 📚
         uses: actions/checkout@v5
       - name: Set up Node 🟢
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
@@ -42,7 +42,7 @@ jobs:
       - name: Checkout code 📚
         uses: actions/checkout@v5
       - name: Set up Node 🟢
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
@@ -58,7 +58,7 @@ jobs:
       - name: Checkout code 📚
         uses: actions/checkout@v5
       - name: Set up Node 🟢
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
@@ -74,7 +74,7 @@ jobs:
       - name: Checkout code 📚
         uses: actions/checkout@v5
       - name: Set up Node 🟢
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
@@ -98,7 +98,7 @@ jobs:
       - name: Checkout code 📚
         uses: actions/checkout@v5
       - name: Set up Node 🟢
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
@@ -116,7 +116,7 @@ jobs:
       - name: Checkout code 📚
         uses: actions/checkout@v5
       - name: Set up Node 🟢
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
@@ -135,7 +135,7 @@ jobs:
       - name: Checkout code 📚
         uses: actions/checkout@v5
       - name: Set up Node 🟢
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: "npm"
@@ -147,7 +147,7 @@ jobs:
         run: npx playwright install --with-deps
       - name: Playwright tests check 🎭
         run: npm run test:e2e:ci
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: always()
         with:
           name: playwright-report
