@@ -1,9 +1,6 @@
 "use server";
 
 import { auth, clerkClient } from "@clerk/nextjs/server";
-import { setOnboardingCookie } from "~/features/onboarding/server/services/onboarding-cookie";
-import { redirect, RedirectType } from "next/navigation";
-import { Onboarding } from "~/features/onboarding/types/onboarding";
 
 export const completeOnboarding = async (formData: FormData) => {
   const { isAuthenticated, userId } = await auth();

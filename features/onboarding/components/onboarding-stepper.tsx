@@ -2,6 +2,8 @@
 
 import * as React from "react";
 
+import { GoalIcon, HandshakeIcon, ListIcon, Settings2Icon } from "lucide-react";
+
 import {
   Stepper,
   StepperDescription,
@@ -15,42 +17,50 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { OnboardingSteps } from "~/features/onboarding/types/onboarding";
 
-export function OnboardingStepper({ children }: { children: React.ReactNode }) {
+export function OnboardingStepper({ children, hideNav }: { children: React.ReactNode; hideNav: boolean }) {
   const pathname = usePathname();
   const router = useRouter();
 
   return (
     <Stepper value={pathname} onValueChange={(value) => router.push(value)}>
-      <StepperNav>
+      <StepperNav className={hideNav ? "invisible" : ""}>
         <StepperItem value={OnboardingSteps.WELCOME}>
           <StepperTrigger>
-            <StepperIndicator />
+            <StepperIndicator>
+              <HandshakeIcon className="size-4" />
+            </StepperIndicator>
             <StepperTitle>Welcome</StepperTitle>
           </StepperTrigger>
         </StepperItem>
-        <StepperItem value="/onboarding/preferences">
+        <StepperItem value={OnboardingSteps.PREFERENCES}>
           <StepperTrigger>
-            <StepperIndicator />
+            <StepperIndicator>
+              <Settings2Icon className="size-4" />
+            </StepperIndicator>
             <div>
               <StepperTitle>Preferences</StepperTitle>
               <StepperDescription>Set Your Preferences</StepperDescription>
             </div>
           </StepperTrigger>
         </StepperItem>
-        <StepperItem value="/onboarding/goals">
+        <StepperItem value={OnboardingSteps.GOALS}>
           <StepperTrigger>
-            <StepperIndicator />
+            <StepperIndicator>
+              <GoalIcon className="size-4" />
+            </StepperIndicator>
             <div>
               <StepperTitle>Goals</StepperTitle>
               <StepperDescription>Review</StepperDescription>
             </div>
           </StepperTrigger>
         </StepperItem>
-        <StepperItem value="/onboarding/categories">
+        <StepperItem value={OnboardingSteps.CATEGORIES}>
           <StepperTrigger>
-            <StepperIndicator />
+            <StepperIndicator>
+              <ListIcon className="size-4" />
+            </StepperIndicator>
             <div>
-              <StepperTitle>Goals</StepperTitle>
+              <StepperTitle>Categories</StepperTitle>
               <StepperDescription>Review</StepperDescription>
             </div>
           </StepperTrigger>

@@ -1,83 +1,106 @@
-import { type Onboarding, OnboardingSteps } from "~/features/onboarding/types/onboarding";
+import { FieldValue } from "firebase-admin/firestore";
+import { type ProductsFormData } from "~/features/onboarding/schema";
+import {
+  type CreateOnboardingDto,
+  type Onboarding,
+  OnboardingSteps,
+  type UpdateOnboardingDto
+} from "~/features/onboarding/types/onboarding";
 import { db } from "~/lib/firebase";
 import { createLogger } from "~/lib/logger";
 
 const logger = createLogger({ module: "onboarding-db" });
 
-export async function getOnboardingByUserId(userId: string): Promise<[null, Onboarding | null] | [Error, null]> {
+export async function getOnboardingById(userId: string): Promise<[null, Onboarding] | [Error, null]> {
   try {
     logger.info({ userId }, "Fetching onboarding by userId");
 
-    const querySnapshot = await db.collection("onboarding").where("userId", "==", userId).get();
+    const onboardingDoc = await db.collection("onboarding").doc(userId).get();
 
-    if (querySnapshot.empty) {
-      logger.info({ userId }, "No onboarding document found for userId");
-      return [null, null];
+    if (!onboardingDoc.exists) {
+      logger.info({ userId }, "Onboarding document not found");
+      throw new Error("Onboarding not found.");
     }
 
-    const onboardingDocs = querySnapshot.docs;
-    if (onboardingDocs.length > 1) {
-      logger.error({ userId, count: onboardingDocs.length }, "Multiple onboarding documents found for the same user");
-      throw new Error("Multiple onboarding documents found for the same user.");
-    }
-
-    const doc = onboardingDocs[0];
-    logger.info({ userId, onboardingId: doc?.id }, "Onboarding document found successfully");
-    return [null, { id: doc?.id, ...doc?.data() } as unknown as Onboarding];
+    logger.info({ userId }, "Onboarding document found successfully");
+    return [
+      null,
+      {
+        id: onboardingDoc.id,
+        ...onboardingDoc.data(),
+        updatedAt: onboardingDoc.data()?.createdAt?.toDate(),
+        createdAt: onboardingDoc.data()?.createdAt?.toDate()
+      } as unknown as Onboarding
+    ];
   } catch (error) {
     logger.error({ userId, error }, "Error fetching onboarding by userId");
     return [error as Error, null];
   }
 }
 
-export async function getOnboardingByOnboardingId(onboardingId: string): Promise<[null, Onboarding] | [Error, null]> {
-  try {
-    logger.info({ onboardingId }, "Fetching onboarding by onboardingId");
-
-    const onboardingDoc = await db.collection("onboarding").doc(onboardingId).get();
-
-    if (!onboardingDoc.exists) {
-      logger.info({ onboardingId }, "Onboarding document not found");
-      throw new Error("Onboarding not found.");
-    }
-
-    logger.info({ onboardingId }, "Onboarding document found successfully");
-    return [null, { id: onboardingDoc.id, ...onboardingDoc.data() } as unknown as Onboarding];
-  } catch (error) {
-    logger.error({ onboardingId, error }, "Error fetching onboarding by onboardingId");
-    return [error as Error, null];
-  }
-}
-
-export async function startOnboardingByUserId(userId: string): Promise<[null, Onboarding] | [Error, null]> {
-  const onboardingData: Onboarding = {
-    userId,
+export async function createOnboardingByUserId(
+  userId: string,
+  products: ProductsFormData
+): Promise<[null, Onboarding] | [Error, null]> {
+  const onboardingData: CreateOnboardingDto = {
     completed: false,
     currentStep: OnboardingSteps.PREFERENCES,
-    preferences: {
-      currency: null,
-      language: null
-    },
-    goals: {
-      budget: null,
-      savings: null,
-      investmentTarget: null
-    },
-    expenses: {
-      categories: []
-    }
+    products,
+    updatedAt: FieldValue.serverTimestamp(),
+    createdAt: FieldValue.serverTimestamp()
   };
 
   try {
     logger.info({ userId }, "Starting onboarding by userId");
 
-    const onboardingDocRef = await db.collection("onboarding").add(onboardingData);
-
+    const onboardingDocRef = db.collection("onboarding").doc(userId);
+    await onboardingDocRef.create(onboardingData);
     logger.info({ onboardingId: onboardingDocRef.id }, "Onboarding document created successfully");
 
-    return [null, { id: onboardingDocRef.id, ...onboardingData } as unknown as Onboarding];
+    const createdDoc = await onboardingDocRef.get();
+    if (!createdDoc.exists) {
+      logger.warn({ onboardingId: onboardingDocRef.id }, "Onboarding document not found");
+      throw new Error("Onboarding not found.");
+    }
+
+    return [
+      null,
+      {
+        id: createdDoc.id,
+        ...createdDoc.data(),
+        updatedAt: createdDoc.data()?.createdAt?.toDate(),
+        createdAt: createdDoc.data()?.createdAt?.toDate()
+      } as unknown as Onboarding
+    ];
   } catch (error) {
     logger.error({ userId, error }, "Error starting onboarding");
+    return [error as Error, null];
+  }
+}
+
+export async function updateOnboarding(
+  onboardingId: string,
+  onboardingData: Onboarding
+): Promise<[null, Onboarding] | [Error, null]> {
+  try {
+    logger.info({ onboardingId, onboardingData }, "Updating onboarding by onboardingId");
+
+    const onboardingDocRef = db.collection("onboarding").doc(onboardingId);
+    await onboardingDocRef.update(onboardingData);
+    const updatedDoc = await onboardingDocRef.get();
+
+    logger.info({ onboardingId }, "Onboarding document updated successfully");
+    return [
+      null,
+      {
+        id: updatedDoc.id,
+        ...updatedDoc.data(),
+        updatedAt: updatedDoc.data()?.createdAt?.toDate(),
+        createdAt: updatedDoc.data()?.createdAt?.toDate()
+      } as unknown as Onboarding
+    ];
+  } catch (error) {
+    logger.error({ onboardingId, error }, "Error updating onboarding");
     return [error as Error, null];
   }
 }

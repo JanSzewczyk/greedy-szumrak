@@ -2,11 +2,11 @@
 
 import * as React from "react";
 
-import { CheckCircle2, CircleDollarSignIcon, Sparkles } from "lucide-react";
+import { CheckCircle2, CircleDollarSignIcon, Sparkles, SparklesIcon } from "lucide-react";
 
 import { SignUp } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
-import { Badge } from "@szum-tech/design-system";
+import { Badge, Item, ItemContent, ItemDescription, ItemGroup, ItemMedia, ItemTitle } from "@szum-tech/design-system";
 
 const benefits = [
   "Free account with no hidden fees",
@@ -28,11 +28,11 @@ export default function SignUpPage() {
     <main className="container flex min-h-screen flex-col pb-6">
       {/* Header */}
       <div className="py-4 lg:py-6">
-        <div className="flex items-center gap-3 text-gray-100">
+        <div className="flex items-center gap-3">
           <div>
-            <CircleDollarSignIcon className="size-6 text-gray-100 sm:size-8" />
+            <CircleDollarSignIcon className="size-6 sm:size-8" />
           </div>
-          <span className="text-heading-5">Greedy Szumrak</span>
+          <span className="typography-heading-3">Greedy Szumrak</span>
         </div>
       </div>
 
@@ -50,46 +50,42 @@ export default function SignUpPage() {
             <div className="space-y-4">
               {/* Badge */}
               <Badge>
-                <Sparkles className="size-4" />
+                <SparklesIcon className="size-4" />
                 100% free, unlimited
               </Badge>
 
-              <h1 className="lg:text-heading-2 sm:text-heading-3 text-heading-4 text-gray-100">
-                Take control of your finances today
-              </h1>
+              <h1 className="typography-heading-2">Take control of your finances today</h1>
 
-              <p className="text-primary-100 text-heading-5">
+              <p className="text-primary-100 typography-heading-4 text-muted-foreground">
                 Join thousands of users who save an average of $500 per month with Greedy Szumrak
               </p>
             </div>
 
             {/* Benefits List */}
             <div className="space-y-3">
-              <h3 className="text-heading-6 mb-4 text-gray-100">What do you get?</h3>
+              <h3 className="typography-large mb-4">What do you get?</h3>
               {benefits.map((benefit, idx) => (
-                <div key={idx} className="flex items-start gap-3">
-                  <CheckCircle2 className="text-success-400 mt-0.5 size-6 flex-shrink-0" />
-                  <span className="text-success-100">{benefit}</span>
+                <div key={idx} className="flex items-center gap-3">
+                  <CheckCircle2 className="text-success mt-0.5 size-6 flex-shrink-0" />
+                  <span className="text-success-foreground typography-small">{benefit}</span>
                 </div>
               ))}
             </div>
 
             {/* How it works */}
             <div className="space-y-4">
-              <h3 className="text-heading-6 text-gray-100">How it works?</h3>
-              <div className="space-y-4">
+              <h3 className="typography-large">How it works?</h3>
+              <ItemGroup>
                 {steps.map((step, idx) => (
-                  <div key={idx} className="flex items-start gap-4">
-                    <div className="bg-primary-500 flex size-10 flex-shrink-0 items-center justify-center rounded-full">
-                      {step.number}
-                    </div>
-                    <div>
-                      <h4 className="text-heading-6">{step.title}</h4>
-                      <p className="text-primary-200 text-body-2">{step.desc}</p>
-                    </div>
-                  </div>
+                  <Item key={idx} size="sm">
+                    <ItemMedia variant="icon">{step.number}</ItemMedia>
+                    <ItemContent>
+                      <ItemTitle>{step.title}</ItemTitle>
+                      <ItemDescription>{step.desc}</ItemDescription>
+                    </ItemContent>
+                  </Item>
                 ))}
-              </div>
+              </ItemGroup>
             </div>
           </div>
         </div>
@@ -97,7 +93,7 @@ export default function SignUpPage() {
 
       {/* Footer */}
       <div className="mt-6 text-center">
-        <p className="text-caption text-gray-300">© {new Date().getFullYear()} Szum-Tech. All rights reserved.</p>
+        <p className="typography-muted">© {new Date().getFullYear()} Szum-Tech. All rights reserved.</p>
       </div>
     </main>
   );

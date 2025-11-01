@@ -1,9 +1,9 @@
 import * as React from "react";
 
-import { ChevronRightIcon, WalletIcon } from "lucide-react";
+import { CheckIcon, TrendingUpIcon, WalletIcon } from "lucide-react";
 
+import { auth } from "@clerk/nextjs/server";
 import {
-  Button,
   Item,
   ItemContent,
   ItemDescription,
@@ -12,49 +12,67 @@ import {
   ItemTitle,
   StepperContent
 } from "@szum-tech/design-system";
-import { startOnboarding } from "~/features/onboarding/server/actions/onboarding";
+import { unauthorized } from "next/navigation";
+import { ProductsForm } from "~/features/onboarding/components/forms/products-form";
+import { startOnboarding } from "~/features/onboarding/server/actions/start-onboarding";
+import { getOnboardingById } from "~/features/onboarding/server/db/onboarding";
 import { OnboardingSteps } from "~/features/onboarding/types/onboarding";
 import logger from "~/lib/logger";
 
-export default function OnboardingWelcomePage() {
+async function loadData() {
+  const { userId, isAuthenticated } = await auth();
+
+  if (!isAuthenticated) {
+    logger.warn("User is not authenticated");
+    return unauthorized();
+  }
+
+  const [, onboarding] = await getOnboardingById(userId);
   logger.info("Onboarding welcome step loaded");
+
+  return { onboarding };
+}
+
+export default async function OnboardingWelcomePage() {
+  const { onboarding } = await loadData();
 
   return (
     <StepperContent value={OnboardingSteps.WELCOME}>
-      <div className="mx-auto max-w-xl">
-        <h4 className="text-heading-5 mt-8 mb-4 text-center">Welcome to Greedy Szumrak</h4>
-        <p className="text-subtitle-1 mb-8 text-center text-gray-400">Your personal finance management platform</p>
+      <div className="container-xl">
+        <h4 className="text-heading-h1 mt-2 mb-3 text-center">Welcome to Greedy Szumrak</h4>
+        <p className="text-lead text-center">Your personal finance management platform</p>
 
-        <ItemGroup className="gap-y-8">
-          <Item variant="outlined">
+        <ItemGroup className="py-6">
+          <Item>
             <ItemMedia variant="icon">
               <WalletIcon />
             </ItemMedia>
             <ItemContent>
-              <ItemTitle>Track Expenses</ItemTitle>
-              <ItemDescription>
-                Monitor your monthly spending across different categories with detailed insights.
-              </ItemDescription>
+              <ItemTitle>Control expenses</ItemTitle>
+              <ItemDescription>Create budgets and track how much you can still spend in each category</ItemDescription>
             </ItemContent>
           </Item>
-
-          <Item variant="outlined">
+          <Item>
             <ItemMedia variant="icon">
-              <WalletIcon />
+              <TrendingUpIcon />
             </ItemMedia>
             <ItemContent>
-              <ItemTitle>Manage Investments</ItemTitle>
-              <ItemDescription>
-                Keep track of your investment portfolio and monitor returns in real-time.
-              </ItemDescription>
+              <ItemTitle>Monitor investments</ItemTitle>
+              <ItemDescription>Aggregate portfolio from different brokers and track profits/losses</ItemDescription>
+            </ItemContent>
+          </Item>
+          <Item>
+            <ItemMedia variant="icon">
+              <CheckIcon />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>Simple setup</ItemTitle>
+              <ItemDescription>Ready templates - working budgets in less than 2 minutes</ItemDescription>
             </ItemContent>
           </Item>
         </ItemGroup>
-      </div>
-      <div className="mt-10 flex justify-end">
-        <Button variant="contained" endIcon={<ChevronRightIcon />} onClick={startOnboarding}>
-          Continue
-        </Button>
+
+        <ProductsForm onContinueAction={startOnboarding} defaultValues={onboarding?.products} />
       </div>
     </StepperContent>
   );
