@@ -1,10 +1,10 @@
 import * as React from "react";
 
-import { CircleDollarSignIcon, PieChart, Shield, TrendingUp, Wallet } from "lucide-react";
+import { ChevronRightIcon, CircleDollarSignIcon, PieChart, Shield, TrendingUp, Wallet } from "lucide-react";
 
 import { SignIn } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
-import { Card } from "@szum-tech/design-system";
+import { Card, Item, ItemActions, ItemContent, ItemDescription, ItemMedia, ItemTitle } from "@szum-tech/design-system";
 
 const features = [
   { icon: Wallet, title: "Expense Control", desc: "Track where your money goes" },
@@ -23,16 +23,14 @@ export default function SignInPage() {
           <div className="space-y-4">
             <div className="mb-10 flex items-center gap-3">
               <div>
-                <CircleDollarSignIcon className="size-10 text-gray-100 sm:size-16" />
+                <CircleDollarSignIcon className="size-10 sm:size-16" />
               </div>
-              <h1 className="sm:text-heading-2 text-heading-4 text-nowrap text-gray-100">Greedy Szumrak</h1>
+              <h1 className="typography-heading-1 text-nowrap">Greedy Szumrak</h1>
             </div>
 
-            <h2 className="lg:text-heading-4 text-heading-5 text-gray-200">
-              Your finances under control in the dark of night
-            </h2>
+            <h2 className="typography-heading-2">Your finances under control in the dark of night</h2>
 
-            <p className="text-primary-300 text-subtitle-1 lg:text-heading-6">
+            <p className="typography-lead">
               Don&#39;t let your money disappear into the darkness. Start tracking expenses and building wealth with an
               app that never sleeps.
             </p>
@@ -41,15 +39,15 @@ export default function SignInPage() {
           {/* Features Grid */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:gap-6">
             {features.map((feature, index) => (
-              <Card key={index}>
-                <div className="flex flex-row gap-x-4 p-4">
-                  <feature.icon className="text-primary-300 size-6 md:size-8" />
-                  <div>
-                    <h3 className="text-subtitle-1 md:text-heading-6 mb-1">{feature.title}</h3>
-                    <p className="text-primary-300 text-body-2 md:text-body-1">{feature.desc}</p>
-                  </div>
-                </div>
-              </Card>
+              <Item variant="outline" key={index}>
+                <ItemMedia>
+                  <feature.icon className="size-6" />
+                </ItemMedia>
+                <ItemContent>
+                  <ItemTitle>{feature.title}</ItemTitle>
+                  <ItemDescription>{feature.desc}</ItemDescription>
+                </ItemContent>
+              </Item>
             ))}
           </div>
 
@@ -57,23 +55,23 @@ export default function SignInPage() {
           <Card>
             <div className="grid grid-cols-3 gap-4 p-4 text-center">
               <div>
-                <div className="text-heading-5 text-primary-500">1+</div>
-                <div className="text-subtitle-1 text-primary-100 mt-1">Users</div>
+                <div className="text-heading-5 text-primary">1+</div>
+                <div className="typography-large text-primary-foreground mt-1">Users</div>
               </div>
               <div>
-                <div className="text-heading-5 text-success-500">$10M+</div>
-                <div className="text-subtitle-1 text-success-100 mt-1">Saved</div>
+                <div className="text-heading-5 text-success">$10M+</div>
+                <div className="typography-large text-success-foreground mt-1">Saved</div>
               </div>
               <div>
-                <div className="text-heading-5 text-warning-500">24/7</div>
-                <div className="text-subtitle-1 text-warning-100 mt-1">Monitoring</div>
+                <div className="text-heading-5 text-warning">24/7</div>
+                <div className="typography-large text-warning-foreground mt-1">Monitoring</div>
               </div>
             </div>
           </Card>
 
           {/* CTA Text */}
           <div className="hidden lg:block">
-            <p className="text-body-1 text-gray-300 italic">
+            <p className="typography-blockquote">
               &#34;Since using Greedy Szumrak, I finally know exactly how much I spend and earn on investments. It&#39;s
               a game changer!&#34; - <span className="font-semibold text-gray-100">Jan R. S.</span>
             </p>

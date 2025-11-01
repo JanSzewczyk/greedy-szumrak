@@ -1,20 +1,48 @@
-import { Button, StepperContent } from "@szum-tech/design-system";
-import Link from "next/link";
-import { getOnboardingCookie } from "~/features/onboarding/server/services/onboarding-cookie";
+import { auth } from "@clerk/nextjs/server";
+import { StepperContent } from "@szum-tech/design-system";
+import { notFound, redirect } from "next/navigation";
+import { PreferencesForm } from "~/features/onboarding/components/forms/preferences-form";
+import { type PreferencesFormData } from "~/features/onboarding/schema";
+import { submitPreferencesStep } from "~/features/onboarding/server/actions/onboarding";
+import { getOnboardingById } from "~/features/onboarding/server/db/onboarding";
 import { OnboardingSteps } from "~/features/onboarding/types/onboarding";
 import logger from "~/lib/logger";
 
-export default async function PreferencesPage() {
+async function loadData() {
+  const { userId } = await auth();
+
   logger.info("Onboarding preferences step loaded");
 
-  const { onboardingId } = await getOnboardingCookie();
+  const [error, onboarding] = await getOnboardingById(userId ?? "");
+  if (error) {
+    notFound();
+  }
+
+  return { onboarding };
+}
+
+export default async function PreferencesPage() {
+  const { onboarding } = await loadData();
+
+  async function handleBack() {
+    "use server";
+
+    redirect("/onboarding/welcome");
+  }
+
+  async function handleSubmitPreferencesStep(data: PreferencesFormData) {
+    "use server";
+
+    await submitPreferencesStep(data, onboarding);
+  }
 
   return (
     <StepperContent value={OnboardingSteps.PREFERENCES}>
-      Preferences Page
-      <Button asChild>
-        <Link href="/onboarding/goals">Next</Link>
-      </Button>
+      <PreferencesForm
+        onBackAction={handleBack}
+        onContinueAction={handleSubmitPreferencesStep}
+        defaultValues={onboarding?.preferences}
+      />
     </StepperContent>
   );
 }

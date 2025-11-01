@@ -1,32 +1,29 @@
-import { type NextApiRequest, type NextApiResponse } from "next";
-
 import { getAuth } from "@clerk/nextjs/server";
 import { redirect, RedirectType } from "next/navigation";
-import { getOnboardingByUserId } from "~/features/onboarding/server/db/onboarding";
-import { setOnboardingCookie } from "~/features/onboarding/server/services/onboarding-cookie";
+import { type NextRequest } from "next/server";
+import { getOnboardingById } from "~/features/onboarding/server/db/onboarding";
 import { createLogger } from "~/lib/logger";
 
 const logger = createLogger({ module: "onboarding-route" });
 
-export async function GET(req: NextApiRequest, res: NextApiResponse) {
+export async function GET(request: NextRequest) {
   logger.info("Onboarding route GET request received");
 
-  const { userId, isAuthenticated } = getAuth(req);
+  const { userId, isAuthenticated } = getAuth(request);
 
   if (!isAuthenticated) {
     logger.warn("Unauthorized access attempt to onboarding route");
-    return res.status(401).json({ error: "Unauthorized" });
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   logger.info({ userId }, "Fetching onboarding data for user");
-  const [, onboardingData] = await getOnboardingByUserId(userId ?? "");
+  const [, onboardingData] = await getOnboardingById(userId ?? "");
 
-  if (onboardingData && onboardingData.id) {
+  if (onboardingData) {
     logger.info(
       { userId, onboardingId: onboardingData.id, currentStep: onboardingData.currentStep },
       "Onboarding data found, redirecting to current step"
     );
-    await setOnboardingCookie(onboardingData?.id ?? "");
     return redirect(onboardingData.currentStep, RedirectType.replace);
   }
 

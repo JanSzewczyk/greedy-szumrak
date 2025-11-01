@@ -1,3 +1,6 @@
+import { type FieldValue } from "firebase-admin/firestore";
+import { type ProductsFormData } from "~/features/onboarding/schema";
+
 export const OnboardingSteps = {
   WELCOME: "/onboarding/welcome",
   PREFERENCES: "/onboarding/preferences",
@@ -7,20 +10,33 @@ export const OnboardingSteps = {
 export type OnboardingStep = (typeof OnboardingSteps)[keyof typeof OnboardingSteps];
 
 export type Onboarding = {
-  id?: string;
-  userId: string;
+  id: string;
   completed: boolean;
   currentStep: OnboardingStep;
-  preferences: {
-    currency: string | null;
-    language: string | null;
+  products: OnboardingProducts;
+  preferences?: {
+    currency: string;
+    dateFormat: string;
   };
-  goals: {
-    budget: number | null;
-    savings: number | null;
-    investmentTarget: number | null;
+  goals?: {
+    budget: number;
+    savings: number;
+    investmentTarget: number;
   };
-  expenses: {
+  expenses?: {
     categories: Array<string>;
   };
+  updatedAt: Date;
+  createdAt: Date;
 };
+
+export type OnboardingProducts = ProductsFormData;
+
+export type CreateOnboardingDto = Omit<
+  Onboarding,
+  "id" | "preferences" | "goals" | "expenses" | "createdAt" | "updatedAt"
+> & {
+  updatedAt: FieldValue;
+  createdAt: FieldValue;
+};
+export type UpdateOnboardingDto = Omit<Onboarding, "id" | "updatedAt"> & { updatedAt?: FieldValue };
