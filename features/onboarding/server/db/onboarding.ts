@@ -11,6 +11,19 @@ import { createLogger } from "~/lib/logger";
 
 const logger = createLogger({ module: "onboarding-db" });
 
+/**
+ * Transforms Firestore document data to application Onboarding type
+ * Converts Firestore Timestamp objects to JavaScript Date objects
+ */
+function transformFirestoreToOnboarding(docId: string, data: FirebaseFirestore.DocumentData): Onboarding {
+  return {
+    id: docId,
+    ...data,
+    updatedAt: data.updatedAt?.toDate(),
+    createdAt: data.createdAt?.toDate()
+  } as Onboarding;
+}
+
 export async function getOnboardingById(userId: string): Promise<[null, Onboarding] | [Error, null]> {
   try {
     logger.info({ userId }, "Fetching onboarding by userId");
@@ -22,16 +35,13 @@ export async function getOnboardingById(userId: string): Promise<[null, Onboardi
       throw new Error("Onboarding not found.");
     }
 
+    const data = onboardingDoc.data();
+    if (!data) {
+      throw new Error("Onboarding data is undefined.");
+    }
+
     logger.info({ userId }, "Onboarding document found successfully");
-    return [
-      null,
-      {
-        id: onboardingDoc.id,
-        ...onboardingDoc.data(),
-        updatedAt: onboardingDoc.data()?.createdAt?.toDate(),
-        createdAt: onboardingDoc.data()?.createdAt?.toDate()
-      } as unknown as Onboarding
-    ];
+    return [null, transformFirestoreToOnboarding(onboardingDoc.id, data)];
   } catch (error) {
     logger.error({ userId, error }, "Error fetching onboarding by userId");
     return [error as Error, null];
@@ -63,15 +73,12 @@ export async function createOnboardingByUserId(
       throw new Error("Onboarding not found.");
     }
 
-    return [
-      null,
-      {
-        id: createdDoc.id,
-        ...createdDoc.data(),
-        updatedAt: createdDoc.data()?.createdAt?.toDate(),
-        createdAt: createdDoc.data()?.createdAt?.toDate()
-      } as unknown as Onboarding
-    ];
+    const data = createdDoc.data();
+    if (!data) {
+      throw new Error("Onboarding data is undefined.");
+    }
+
+    return [null, transformFirestoreToOnboarding(createdDoc.id, data)];
   } catch (error) {
     logger.error({ userId, error }, "Error starting onboarding");
     return [error as Error, null];
@@ -80,25 +87,29 @@ export async function createOnboardingByUserId(
 
 export async function updateOnboarding(
   onboardingId: string,
-  onboardingData: Onboarding
+  updateData: UpdateOnboardingDto
 ): Promise<[null, Onboarding] | [Error, null]> {
   try {
-    logger.info({ onboardingId, onboardingData }, "Updating onboarding by onboardingId");
+    logger.info({ onboardingId, updateData }, "Updating onboarding by onboardingId");
 
     const onboardingDocRef = db.collection("onboarding").doc(onboardingId);
-    await onboardingDocRef.update(onboardingData);
+    await onboardingDocRef.update({
+      ...updateData,
+      updatedAt: FieldValue.serverTimestamp()
+    });
+
     const updatedDoc = await onboardingDocRef.get();
+    if (!updatedDoc.exists) {
+      throw new Error("Onboarding not found after update.");
+    }
+
+    const data = updatedDoc.data();
+    if (!data) {
+      throw new Error("Onboarding data is undefined.");
+    }
 
     logger.info({ onboardingId }, "Onboarding document updated successfully");
-    return [
-      null,
-      {
-        id: updatedDoc.id,
-        ...updatedDoc.data(),
-        updatedAt: updatedDoc.data()?.createdAt?.toDate(),
-        createdAt: updatedDoc.data()?.createdAt?.toDate()
-      } as unknown as Onboarding
-    ];
+    return [null, transformFirestoreToOnboarding(updatedDoc.id, data)];
   } catch (error) {
     logger.error({ onboardingId, error }, "Error updating onboarding");
     return [error as Error, null];

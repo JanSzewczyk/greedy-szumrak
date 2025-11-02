@@ -66,7 +66,7 @@ export default function SignUpPage() {
               <h3 className="typography-large mb-4">What do you get?</h3>
               {benefits.map((benefit, idx) => (
                 <div key={idx} className="flex items-center gap-3">
-                  <CheckCircle2 className="text-success mt-0.5 size-6 flex-shrink-0" />
+                  <CheckCircle2 className="text-success mt-0.5 size-6 shrink-0" />
                   <span className="text-success-foreground typography-small">{benefit}</span>
                 </div>
               ))}

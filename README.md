@@ -4,9 +4,11 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Greedy Szumrak is a Next.js application that uses Clerk for authentication and Firebase (Firestore) for data storage. It includes an onboarding flow and leverages a shared design system.
+Greedy Szumrak is a Next.js application that uses Clerk for authentication and Firebase (Firestore) for data storage. It
+includes an onboarding flow and leverages a shared design system.
 
-Quick links: [Overview](#overview) • [Requirements](#requirements) • [Setup](#setup) • [Scripts](#-scripts-overview) • [Env vars](#environment-variables) • [Tests](#-testing) • [Structure](#-project-structure) • [License](#-license)
+Quick links: [Overview](#overview) • [Requirements](#requirements) • [Setup](#setup) • [Scripts](#-scripts-overview) •
+[Env vars](#environment-variables) • [Tests](#-testing) • [Structure](#-project-structure) • [License](#-license)
 
 TODO: Add deployment badge/links once hosting is confirmed.
 
@@ -135,10 +137,13 @@ reviews.
 Deployment target: TODO — document hosting provider and deployment steps for this project.
 
 Notes:
-- Health endpoint is available at `/api/health` (also `/health`, `/healthz`, `/ping`) and can be used for liveness/readiness probes.
+
+- Health endpoint is available at `/api/health` (also `/health`, `/healthz`, `/ping`) and can be used for
+  liveness/readiness probes.
 - Ensure all required environment variables are configured in the hosting platform.
 
 Local production run:
+
 ```bash
 npm run build
 npm run start
@@ -346,6 +351,7 @@ Create a `.env.local` by copying `.env.example` and set the following variables:
 - CI (optional: 'true' | 'false' | '0' | '1')
 
 Notes:
+
 - Server-side validation of env vars is defined in `data/env/server.ts` using T3 Env and Zod.
 - Client-side variables must be prefixed with `NEXT_PUBLIC_`.
 
