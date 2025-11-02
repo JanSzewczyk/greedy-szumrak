@@ -1,5 +1,5 @@
-import { type FieldValue } from "firebase-admin/firestore";
-import { type ProductsFormData } from "~/features/onboarding/schema";
+import { type PreferencesFormData, type ProductsFormData } from "~/features/onboarding/schema";
+import { type CreateDto, type UpdateDto, type WithDates, type WithFirestoreTimestamps } from "~/lib/firebase/types";
 
 export const OnboardingSteps = {
   WELCOME: "/onboarding/welcome",
@@ -9,15 +9,17 @@ export const OnboardingSteps = {
 } as const;
 export type OnboardingStep = (typeof OnboardingSteps)[keyof typeof OnboardingSteps];
 
-export type Onboarding = {
-  id: string;
+export type OnboardingProducts = ProductsFormData;
+export type OnboardingPreferences = PreferencesFormData;
+
+/**
+ * Base type representing onboarding fields without timestamps
+ */
+export type OnboardingBase = {
   completed: boolean;
   currentStep: OnboardingStep;
   products: OnboardingProducts;
-  preferences?: {
-    currency: string;
-    dateFormat: string;
-  };
+  preferences?: OnboardingPreferences;
   goals?: {
     budget: number;
     savings: number;
@@ -26,17 +28,28 @@ export type Onboarding = {
   expenses?: {
     categories: Array<string>;
   };
-  updatedAt: Date;
-  createdAt: Date;
 };
 
-export type OnboardingProducts = ProductsFormData;
+/**
+ * Onboarding data as stored in Firestore (with Timestamp objects)
+ * Used when reading raw data from Firestore before transformation
+ */
+export type OnboardingFirestore = WithFirestoreTimestamps<OnboardingBase>;
 
-export type CreateOnboardingDto = Omit<
-  Onboarding,
-  "id" | "preferences" | "goals" | "expenses" | "createdAt" | "updatedAt"
-> & {
-  updatedAt: FieldValue;
-  createdAt: FieldValue;
-};
-export type UpdateOnboardingDto = Omit<Onboarding, "id" | "updatedAt"> & { updatedAt?: FieldValue };
+/**
+ * Onboarding data with Date objects (application layer)
+ * Used after transforming Firestore data for application use
+ */
+export type Onboarding = WithDates<OnboardingBase>;
+
+/**
+ * Data structure for creating new onboarding records
+ * Uses FieldValue.serverTimestamp() for automatic timestamp generation
+ */
+export type CreateOnboardingDto = CreateDto<OnboardingBase>;
+
+/**
+ * Data structure for updating existing onboarding records
+ * Note: updatedAt is automatically added by the update function with serverTimestamp()
+ */
+export type UpdateOnboardingDto = UpdateDto<OnboardingBase>;

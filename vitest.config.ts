@@ -4,6 +4,9 @@ import tsConfigPaths from "vite-tsconfig-paths";
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
 import react from "@vitejs/plugin-react";
 
+// Skip environment validation in tests
+process.env.SKIP_ENV_VALIDATION = "true";
+
 const reporters = process.env.CI ? ["dot", "github-actions"] : ["default"];
 
 export default defineConfig({
