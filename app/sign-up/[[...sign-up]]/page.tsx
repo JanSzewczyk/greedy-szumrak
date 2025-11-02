@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import { CheckCircle2, CircleDollarSignIcon, Sparkles, SparklesIcon } from "lucide-react";
+import { CheckCircle2, CircleDollarSignIcon, SparklesIcon } from "lucide-react";
 
 import { SignUp } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";

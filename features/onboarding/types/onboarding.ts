@@ -17,9 +17,22 @@ export type OnboardingPreferences = PreferencesFormData;
  */
 export type OnboardingBase = {
   completed: boolean;
+  completedAt: Date | null;
   currentStep: OnboardingStep;
   products: OnboardingProducts;
   preferences?: OnboardingPreferences;
+  budget?: {
+    monthlyIncome: number;
+    budgetProfile:
+      | "balanced"
+      | "frugal"
+      | "generous"
+      | "young_professional"
+      | "family"
+      | "aggressive_saver"
+      | "student"
+      | "custom";
+  };
   goals?: {
     budget: number;
     savings: number;
