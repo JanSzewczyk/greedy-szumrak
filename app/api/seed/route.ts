@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { seedBudgetTemplates } from "~/features/budget/server/db/seed-budget-profiles";
+import { seedBudgetTemplates } from "~/features/budget/server/db/seed-budget-templates";
 import { createLogger } from "~/lib/logger";
 
 const logger = createLogger({ module: "seed-api" });

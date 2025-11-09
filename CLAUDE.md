@@ -405,6 +405,7 @@ The project uses **@szum-tech/design-system** for UI components:
 The application uses an automatic seeding mechanism to populate Firestore with predefined data on startup.
 
 **Seeding Architecture**:
+
 - `lib/firebase/seeder.ts` - Generic utilities (`seedCollection`, `seedDatabase`, `shouldSeedCollection`)
 - `lib/firebase/auto-seed.ts` - Auto-seeding orchestrator (runs once per app lifecycle)
 - `features/*/data/predefined-*.ts` - Predefined data definitions
@@ -412,6 +413,7 @@ The application uses an automatic seeding mechanism to populate Firestore with p
 - `app/api/seed/route.ts` - Manual seeding API endpoint
 
 **Auto-seeding workflow**:
+
 1. Application starts → `app/layout.tsx` calls `autoSeedDatabase()`
 2. Auto-seed checks if seeding is needed via `shouldSeedCollection()`
 3. If needed, calls feature-specific seed functions (e.g., `seedBudgetProfiles()`)
@@ -419,11 +421,10 @@ The application uses an automatic seeding mechanism to populate Firestore with p
 5. Logs all operations with structured logging
 
 **Adding new seedable data**:
+
 ```typescript
 // 1. Define data in features/my-feature/data/predefined-items.ts
-export const PREDEFINED_ITEMS = [
-  { id: "item-1", name: "Item 1", /* ... */ }
-];
+export const PREDEFINED_ITEMS = [{ id: "item-1", name: "Item 1" /* ... */ }];
 
 // 2. Create seeder in features/my-feature/server/db/seed-items.ts
 export async function seedItems(options: { force?: boolean } = {}) {
@@ -443,19 +444,23 @@ await seedItems(); // Add this line
 **Example: Budget Templates**
 
 The application seeds 5 predefined budget templates on startup:
+
 - `young_professional` - 50/30/20 split for early career (Recommended)
 - `family` - 60/20/20 split with children-focused categories
 - `aggressive_saver` - 40/10/50 split for FIRE goal
 - `student` - 60/25/15 split for low income
 - `custom` - Empty template for full customization
 
-Each template includes detailed allocations (needs/wants/savings) with specific categories, percentages, icons, colors, and examples. See `features/budget/data/predefined-budget-templates.ts` for full definitions.
+Each template includes detailed allocations (needs/wants/savings) with specific categories, percentages, icons, colors,
+and examples. See `features/budget/data/predefined-budget-templates.ts` for full definitions.
 
 **Manual seeding via API**:
+
 - `GET /api/seed` - Seed missing data only
 - `GET /api/seed?force=true` - Force re-seed (updates existing)
 
 **Seeding best practices**:
+
 - Always use unique, stable IDs for predefined items (slugs, not UUIDs)
 - Set `isPredefined: true` for system-generated items
 - Use `forceUpdate: false` by default to preserve user modifications
