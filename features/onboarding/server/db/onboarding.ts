@@ -19,6 +19,7 @@ function transformFirestoreToOnboarding(docId: string, data: FirebaseFirestore.D
   return {
     id: docId,
     ...data,
+    completedAt: data.completedAt?.toDate() ?? null,
     updatedAt: data.updatedAt?.toDate(),
     createdAt: data.createdAt?.toDate()
   } as Onboarding;
@@ -54,6 +55,7 @@ export async function createOnboardingByUserId(
 ): Promise<[null, Onboarding] | [Error, null]> {
   const onboardingData: CreateOnboardingDto = {
     completed: false,
+    completedAt: null,
     currentStep: OnboardingSteps.PREFERENCES,
     products,
     updatedAt: FieldValue.serverTimestamp(),
