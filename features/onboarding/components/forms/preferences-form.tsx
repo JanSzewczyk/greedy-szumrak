@@ -94,7 +94,7 @@ export function PreferencesForm({ onBackAction, defaultValues, onContinueAction 
           Back
         </Button>
 
-        <Button type="submit" disabled={isSubmitting} endIcon={<ChevronRightIcon />}>
+        <Button type="submit" loading={isSubmitting} endIcon={<ChevronRightIcon />}>
           Continue
         </Button>
       </div>
