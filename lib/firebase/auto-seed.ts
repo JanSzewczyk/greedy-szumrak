@@ -21,23 +21,22 @@ export async function autoSeedDatabase() {
 
   seedingInProgress = true;
 
-  try {
-    logger.info("Starting automatic database seeding");
+  logger.info("Starting automatic database seeding");
 
-    // Seed budget templates
-    await seedBudgetTemplates({ force: false });
+  // Seed budget templates
+  const [error] = await seedBudgetTemplates({ force: false });
 
-    // Add more seed functions here for other collections
-    // await seedOtherCollection();
-
+  if (error) {
+    logger.error({ error }, "Automatic database seeding failed");
+  } else {
     seedingInitialized = true;
     logger.info("Automatic database seeding completed successfully");
-  } catch (error) {
-    logger.error({ error }, "Automatic database seeding failed");
-    // Don't throw - we don't want to crash the app if seeding fails
-  } finally {
-    seedingInProgress = false;
   }
+
+  // Add more seed functions here for other collections
+  // await seedOtherCollection();
+
+  seedingInProgress = false;
 }
 
 /**
