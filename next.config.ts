@@ -8,6 +8,7 @@ import { env } from "./data/env/server";
 const config: NextConfig = {
   reactStrictMode: true,
   serverExternalPackages: ["pino", "pino-pretty"],
+  reactCompiler: true,
   async rewrites() {
     return [
       { source: "/healthz", destination: "/api/health" },
