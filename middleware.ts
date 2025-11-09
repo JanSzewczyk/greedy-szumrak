@@ -3,9 +3,15 @@ import { NextResponse } from "next/server";
 
 const isPublicRoute = createRouteMatcher(["/sign-in(.*)", "/sign-up(.*)"]);
 const isOnboardingRoute = createRouteMatcher(["/onboarding(.*)"]);
+const isPublicApiRoute = createRouteMatcher(["/api/seed(.*)", "/api/health(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
   const { isAuthenticated, sessionClaims, redirectToSignIn } = await auth();
+
+  // Allow public API routes without authentication
+  if (isPublicApiRoute(req)) {
+    return NextResponse.next();
+  }
 
   // For users visiting /onboarding, don't try to redirect
   if (isAuthenticated && isOnboardingRoute(req)) {
