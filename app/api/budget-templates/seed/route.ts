@@ -9,8 +9,8 @@ const logger = createLogger({ module: "seed-api" });
  * This can be called manually or automatically on application startup
  *
  * Usage:
- * - GET /api/seed - Seeds all collections (only missing data)
- * - GET /api/seed?force=true - Forces re-seeding (updates existing data)
+ * - GET /api/budget-templates/seed - Seeds all collections (only missing data)
+ * - GET /api/budget-templates/seed?force=true - Forces re-seeding (updates existing data)
  *
  * Security: This endpoint should be protected in production
  */
