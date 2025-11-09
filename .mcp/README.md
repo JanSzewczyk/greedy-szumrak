@@ -5,11 +5,13 @@ This directory contains MCP server configuration for Claude Code integration.
 ## Available MCP Servers
 
 ### 1. **filesystem**
+
 - **Purpose**: Direct file system access for project exploration
 - **Usage**: Browse project structure, read files, search codebase
 - **No setup required**
 
 ### 2. **github**
+
 - **Purpose**: GitHub integration (PRs, issues, commits)
 - **Setup**: Set `GITHUB_TOKEN` environment variable
   ```bash
@@ -18,11 +20,13 @@ This directory contains MCP server configuration for Claude Code integration.
 - **Get token**: https://github.com/settings/tokens
 
 ### 3. **playwright**
+
 - **Purpose**: Run and debug Playwright E2E tests
 - **Usage**: Execute tests, get test results, debug failures
 - **No setup required** (uses existing playwright.config.ts)
 
 ### 4. **firebase**
+
 - **Purpose**: Firestore database queries and management
 - **Setup**: Uses same Firebase credentials as the app
   - Automatically reads from `.env.local` if available
@@ -34,11 +38,13 @@ This directory contains MCP server configuration for Claude Code integration.
     ```
 
 ### 5. **memory**
+
 - **Purpose**: Persistent memory across Claude sessions
 - **Usage**: Store context, preferences, project-specific knowledge
 - **No setup required**
 
 ### 6. **nextjs**
+
 - **Purpose**: Next.js integration for routing, build analysis, and config management
 - **Usage**: Analyze routes, check build output, validate Next.js config
 - **Features**:
@@ -74,11 +80,7 @@ Copy the MCP configuration to Claude Desktop config:
   "mcpServers": {
     "greedy-szumrak-filesystem": {
       "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
-        "/Users/janszewczyk/Projects/greedy-szumrak"
-      ]
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/janszewczyk/Projects/greedy-szumrak"]
     },
     "github": {
       "command": "npx",
@@ -95,15 +97,18 @@ Copy the MCP configuration to Claude Desktop config:
 ## Additional MCP Servers to Consider
 
 ### Development Tools
+
 - **@modelcontextprotocol/server-postgres** - If you add PostgreSQL later
 - **@modelcontextprotocol/server-redis** - For caching layer
 - **@modelcontextprotocol/server-docker** - Docker container management
 
 ### Testing & Quality
+
 - **@modelcontextprotocol/server-sentry** - Error monitoring integration
 - **@modelcontextprotocol/server-lighthouse** - Performance audits
 
 ### Productivity
+
 - **@modelcontextprotocol/server-slack** - Team notifications
 - **@modelcontextprotocol/server-linear** - Project management
 
@@ -124,21 +129,25 @@ FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY----
 ## Troubleshooting
 
 ### MCP server not starting
+
 - Check that Node.js is installed: `node --version`
 - Verify npx is available: `npx --version`
 - Check environment variables are set correctly
 
 ### Firebase connection issues
+
 - Verify credentials in `.env.local` are correct
 - Ensure service account has Firestore access
 - Check project ID matches your Firebase project
 
 ### Playwright tests not running
+
 - Install Playwright browsers: `npx playwright install`
 - Verify `playwright.config.ts` exists
 - Check tests are in `tests/e2e/` directory
 
 ### Next.js MCP issues
+
 - Verify Next.js 16.0.1 is installed: `npm list next`
 - Check `next.config.ts` exists and is valid
 - Ensure Turbopack is configured properly

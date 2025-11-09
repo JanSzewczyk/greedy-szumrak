@@ -8,7 +8,8 @@ Greedy Szumrak is a Next.js application that uses Clerk for authentication and F
 includes an onboarding flow and leverages a shared design system.
 
 Quick links: [Overview](#overview) • [Requirements](#requirements) • [Setup](#setup) • [Scripts](#-scripts-overview) •
-[Env vars](#environment-variables) • [Tests](#-testing) • [Structure](#-project-structure) • [MCP](#-mcp-claude-code-integration) • [License](#-license)
+[Env vars](#environment-variables) • [Tests](#-testing) • [Structure](#-project-structure) •
+[MCP](#-mcp-claude-code-integration) • [License](#-license)
 
 TODO: Add deployment badge/links once hosting is confirmed.
 
@@ -496,7 +497,8 @@ greedy-szumrak/
 
 ## 🤖 MCP (Claude Code Integration)
 
-This project is configured with [Model Context Protocol (MCP)](https://modelcontextprotocol.io) servers for enhanced Claude Code integration.
+This project is configured with [Model Context Protocol (MCP)](https://modelcontextprotocol.io) servers for enhanced
+Claude Code integration.
 
 ### Available MCP Servers
 
