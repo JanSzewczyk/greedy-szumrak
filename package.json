@@ -32,14 +32,7 @@
     "@storybook-community/storybook-dark-mode": {
       "storybook": "^10.0.6",
       "@storybook/addon-docs": "^10.0.6"
-    },
-    "@storybook/addon-docs": "^10.0.6",
-    "@storybook/addon-vitest": {
-      "vitest": "^4.0.8",
-      "storybook": "^10.0.6"
-    },
-    "storybook": "^10.0.6",
-    "vitest": "^4.0.8"
+    }
   },
   "dependencies": {
     "@clerk/nextjs": "^6.33.7",
@@ -89,7 +82,7 @@
     "eslint": "^9.37.0",
     "playwright": "^1.56.1",
     "prettier": "^3.6.2",
-    "semantic-release": "^25.0.2",
+    "semantic-release": "^24.2.9",
     "serve": "^14.2.5",
     "storybook": "^10.0.6",
     "storybook-addon-tag-badges": "^3.0.2",
