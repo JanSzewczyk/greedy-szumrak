@@ -1,5 +1,3 @@
-import { defaultConfig, type TagBadgeParameters } from "storybook-addon-tag-badges";
-
 import { addons } from "storybook/manager-api";
 
 addons.setConfig({
@@ -17,8 +15,6 @@ addons.setConfig({
       display: {
         toolbar: true
       }
-    },
-    // Place the default config after your custom matchers.
-    ...defaultConfig
-  ] satisfies TagBadgeParameters
+    }
+  ]
 });

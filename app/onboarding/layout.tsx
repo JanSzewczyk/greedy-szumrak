@@ -25,7 +25,7 @@ async function loadData() {
   return { onboarding };
 }
 
-export default async function OnboardingLayout({ children }: LayoutProps<"/onboarding">) {
+export default async function OnboardingLayout({ children }: { children: React.ReactNode }) {
   const { onboarding } = await loadData();
 
   return (

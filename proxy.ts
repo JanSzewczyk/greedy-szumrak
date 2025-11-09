@@ -1,3 +1,8 @@
+/**
+ * Next.js 16 Proxy (formerly middleware.ts)
+ * This file runs on the Node.js runtime and defines the app's network boundary.
+ * @see https://nextjs.org/docs/app/guides/upgrading/version-16#middleware-to-proxy
+ */
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 

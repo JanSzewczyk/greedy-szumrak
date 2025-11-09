@@ -121,3 +121,8 @@ src/styles
 .next
 # clerk configuration (can include secrets)
 /.clerk/
+
+# MCP (Model Context Protocol) secrets
+/.mcp/.env
+/.mcp/data/
+/.mcp/cache/
