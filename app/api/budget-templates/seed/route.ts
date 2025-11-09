@@ -22,7 +22,11 @@ export async function GET(request: Request) {
     logger.info({ force }, "Seed API endpoint called");
 
     // Seed budget templates
-    const budgetTemplatesResult = await seedBudgetTemplates({ force });
+    const [error, budgetTemplatesResult] = await seedBudgetTemplates({ force });
+
+    if (error) {
+      throw error;
+    }
 
     const response = {
       success: true,

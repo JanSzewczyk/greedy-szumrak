@@ -6,6 +6,13 @@ import { createLogger } from "~/lib/logger";
 
 const logger = createLogger({ module: "firebase-seeder" });
 
+export type SeedCollectionResult = {
+  created: number;
+  updated: number;
+  skipped: number;
+  errors: Array<{ id: string; error: string }>;
+};
+
 /**
  * Seed item that can be inserted into Firestore
  */
@@ -26,12 +33,7 @@ export type SeedCollectionConfig<T = never> = {
  * Seeds a collection with predefined data
  * Only creates documents that don't exist (unless forceUpdate is true)
  */
-export async function seedCollection<T>(config: SeedCollectionConfig<T>): Promise<{
-  created: number;
-  updated: number;
-  skipped: number;
-  errors: Array<{ id: string; error: string }>;
-}> {
+export async function seedCollection<T>(config: SeedCollectionConfig<T>): Promise<SeedCollectionResult> {
   const { collectionName, data, forceUpdate = false } = config;
   const stats = { created: 0, updated: 0, skipped: 0, errors: [] as Array<{ id: string; error: string }> };
 

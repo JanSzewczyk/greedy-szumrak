@@ -1,18 +1,30 @@
 import "server-only";
 
 import { DEFAULT_BUDGET_TEMPLATES } from "~/features/budget/data/predefined-budget-templates";
-import { seedCollection, shouldSeedCollection } from "~/lib/firebase/seeder";
+import { seedCollection, type SeedCollectionResult, shouldSeedCollection } from "~/lib/firebase/seeder";
 import { createLogger } from "~/lib/logger";
 
 const logger = createLogger({ module: "budget-templates-seeder" });
 
 const BUDGET_TEMPLATES_COLLECTION = "budget-templates";
 
+export type SeedBudgetTemplatesResult =
+  | {
+      skipped: true;
+      stats: null;
+    }
+  | {
+      skipped: false;
+      stats: SeedCollectionResult;
+    };
+
 /**
  * Seeds predefined budget templates into Firestore
  * Only creates templates that don't exist
  */
-export async function seedBudgetTemplates(options: { force?: boolean } = {}) {
+export async function seedBudgetTemplates(
+  options: { force?: boolean } = {}
+): Promise<[null, SeedBudgetTemplatesResult] | [Error, null]> {
   const { force = false } = options;
 
   try {
@@ -24,7 +36,7 @@ export async function seedBudgetTemplates(options: { force?: boolean } = {}) {
 
       if (!needsSeeding) {
         logger.info("Budget templates collection already populated, skipping seed");
-        return { skipped: true, stats: null };
+        return [null, { skipped: true, stats: null }];
       }
     }
 
@@ -37,9 +49,9 @@ export async function seedBudgetTemplates(options: { force?: boolean } = {}) {
 
     logger.info({ stats }, "Budget templates seed completed");
 
-    return { skipped: false, stats };
+    return [null, { skipped: false, stats }];
   } catch (error) {
     logger.error({ error }, "Failed to seed budget templates");
-    throw error;
+    return [error as Error, null];
   }
 }
