@@ -60,20 +60,20 @@ Real-world examples of how to use MCP servers in this Next.js + Firebase + Clerk
 
 ```typescript
 // Ask Claude:
-"Using the Firebase MCP, show me all documents in the 'onboarding' collection"
+"Using the Firebase MCP, show me all documents in the 'onboarding' collection";
 
 // Or more specific:
-"Query the 'budget-templates' collection where isPredefined = true"
+"Query the 'budget-templates' collection where isPredefined = true";
 ```
 
 ### Check Database State
 
 ```typescript
 // Ask Claude:
-"What's the current onboarding status for user ID: user_xyz123?"
+"What's the current onboarding status for user ID: user_xyz123?";
 
 // Or during debugging:
-"Show me all budget templates in Firestore and verify the seeding worked correctly"
+"Show me all budget templates in Firestore and verify the seeding worked correctly";
 ```
 
 ## 🎭 Playwright Testing
