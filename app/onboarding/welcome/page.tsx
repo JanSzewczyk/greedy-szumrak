@@ -39,7 +39,7 @@ export default async function OnboardingWelcomePage() {
   return (
     <StepperContent value={OnboardingSteps.WELCOME}>
       <div className="container-xl">
-        <h4 className="text-heading-h1 mb-3 mt-2 text-center">Welcome to Greedy Szumrak</h4>
+        <h4 className="text-heading-h1 mt-2 mb-3 text-center">Welcome to Greedy Szumrak</h4>
         <p className="text-lead text-center">Your personal finance management platform</p>
 
         <ItemGroup className="py-6">
