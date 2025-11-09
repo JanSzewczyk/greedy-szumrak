@@ -1,0 +1,7 @@
+# MCP environment variables (contains secrets)
+.env
+
+# MCP server data and cache
+data/
+cache/
+*.log

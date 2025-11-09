@@ -1,0 +1,41 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem"],
+      "description": "File system access for project exploration"
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "description": "GitHub integration for PRs, issues, and commits"
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"],
+      "description": "Run and debug Playwright E2E tests"
+    },
+    "firebase": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-firebase"],
+      "env": {
+        "FIREBASE_PROJECT_ID": "${FIREBASE_PROJECT_ID}",
+        "FIREBASE_CLIENT_EMAIL": "${FIREBASE_CLIENT_EMAIL}",
+        "FIREBASE_PRIVATE_KEY": "${FIREBASE_PRIVATE_KEY}"
+      },
+      "description": "Firebase Firestore integration"
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "description": "Persistent memory across sessions"
+    },
+    "nextjs-devtools": {
+      "command": "npx",
+      "args": ["-y", "@next/devtools-mcp"]
+    }
+  }
+}

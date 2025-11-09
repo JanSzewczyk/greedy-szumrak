@@ -8,7 +8,7 @@ Greedy Szumrak is a Next.js application that uses Clerk for authentication and F
 includes an onboarding flow and leverages a shared design system.
 
 Quick links: [Overview](#overview) • [Requirements](#requirements) • [Setup](#setup) • [Scripts](#-scripts-overview) •
-[Env vars](#environment-variables) • [Tests](#-testing) • [Structure](#-project-structure) • [License](#-license)
+[Env vars](#environment-variables) • [Tests](#-testing) • [Structure](#-project-structure) • [MCP](#-mcp-claude-code-integration) • [License](#-license)
 
 TODO: Add deployment badge/links once hosting is confirmed.
 
@@ -55,6 +55,7 @@ Greedy Szumrak is a Next.js application with a focus on authenticated user flows
 - [🚀 GitHub Actions](#-github-actions)
 - [🔒 Keeping Server-only Code out of the Client Environment](#-keeping-server-only-code-out-of-the-client-environment)
 - [📁 Project Structure](#-project-structure)
+- [🤖 MCP (Claude Code Integration)](#-mcp-claude-code-integration)
 - [🤝 Contributing](#-contributing)
 - [📜 License](#-license)
 - [🙏 Acknowledgments](#-acknowledgments)
@@ -490,6 +491,52 @@ greedy-szumrak/
 - **`release.config.js`** - Semantic Release automation configuration
 - **`tsconfig.json`** - TypeScript compiler options and path aliases
 - **`vitest.config.ts`** - Vitest unit test configuration and setup
+
+---
+
+## 🤖 MCP (Claude Code Integration)
+
+This project is configured with [Model Context Protocol (MCP)](https://modelcontextprotocol.io) servers for enhanced Claude Code integration.
+
+### Available MCP Servers
+
+- **filesystem** - Direct file system access for project exploration
+- **github** - GitHub integration (PRs, issues, commits)
+- **playwright** - Run and debug Playwright E2E tests
+- **firebase** - Firestore database queries and management
+- **memory** - Persistent memory across Claude sessions
+- **nextjs** - Next.js routing, build analysis, and config management
+
+### Quick Setup
+
+```bash
+# Run the setup script
+./.mcp/setup.sh
+```
+
+Or manually:
+
+```bash
+# Create .env file from template
+cp .mcp/.env.example .mcp/.env
+
+# Add your GitHub token (optional)
+echo "GITHUB_TOKEN=your_token_here" >> .mcp/.env
+
+# Install Playwright browsers
+npx playwright install chromium --with-deps
+```
+
+### Configuration
+
+MCP configuration is in `.mcp/config.json`. For Claude Desktop app, copy the configuration to:
+
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%/Claude/claude_desktop_config.json`
+
+### Documentation
+
+See [.mcp/README.md](.mcp/README.md) for detailed setup instructions and usage examples.
 
 ---
 
