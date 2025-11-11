@@ -33,7 +33,7 @@ export default async function PreferencesPage() {
   async function handleSubmitPreferencesStep(data: PreferencesFormData) {
     "use server";
 
-    await submitPreferencesStep(data, onboarding);
+    return await submitPreferencesStep(data, onboarding);
   }
 
   return (

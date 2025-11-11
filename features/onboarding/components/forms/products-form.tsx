@@ -16,10 +16,11 @@ import {
   FieldTitle
 } from "@szum-tech/design-system";
 import { type ProductsFormData, productsSchema } from "~/features/onboarding/schema";
+import { type RedirectAction } from "~/lib/action-types";
 
 export type ProductsFormProps = {
   defaultValues?: ProductsFormData;
-  onContinueAction(data: ProductsFormData): Promise<any>;
+  onContinueAction(data: ProductsFormData): RedirectAction;
 };
 
 export function ProductsForm({ defaultValues, onContinueAction }: ProductsFormProps) {

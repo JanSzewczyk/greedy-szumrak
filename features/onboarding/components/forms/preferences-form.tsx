@@ -15,15 +15,17 @@ import {
   FieldSet,
   Select,
   SelectContent,
-  SelectItem
+  SelectItem,
+  toast
 } from "@szum-tech/design-system";
 import { currencyOptions, dateFormat } from "~/features/onboarding/constants/preferences";
 import { type PreferencesFormData, preferencesSchema } from "~/features/onboarding/schema";
+import { type RedirectAction } from "~/lib/action-types";
 
 export type PreferencesFormProps = {
   defaultValues?: PreferencesFormData;
   onBackAction(): Promise<void> | void;
-  onContinueAction(data: PreferencesFormData): Promise<void>;
+  onContinueAction(data: PreferencesFormData): RedirectAction;
 };
 
 export function PreferencesForm({ onBackAction, defaultValues, onContinueAction }: PreferencesFormProps) {
@@ -37,7 +39,10 @@ export function PreferencesForm({ onBackAction, defaultValues, onContinueAction 
   });
 
   async function onSubmit(data: PreferencesFormData) {
-    await onContinueAction(data);
+    const result = await onContinueAction(data);
+    if (!result.success) {
+      toast.error(result.error);
+    }
   }
 
   return (
