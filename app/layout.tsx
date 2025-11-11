@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { type Metadata } from "next";
 
-import { ClerkProvider } from "@clerk/nextjs";
+import { Providers } from "~/components/providers";
 import { autoSeedDatabase } from "~/lib/firebase/auto-seed";
 import { createLogger } from "~/lib/logger";
 
@@ -23,10 +23,10 @@ autoSeedDatabase().catch((error) => {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ClerkProvider>
-      <html lang="en" className="dark">
-        <body>{children}</body>
-      </html>
-    </ClerkProvider>
+    <html lang="en" className="dark">
+      <body>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
   );
 }
