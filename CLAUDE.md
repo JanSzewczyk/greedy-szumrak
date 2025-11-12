@@ -42,8 +42,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Tech Stack
 
-- **Framework**: Next.js 15 with App Router and Turbopack
-- **Auth**: Clerk (middleware-based, enforces protected routes)
+- **Framework**: Next.js 16 with App Router and Turbopack
+- **React**: React 19.2 with React Compiler enabled
+- **Auth**: Clerk (proxy-based, enforces protected routes)
 - **Database**: Firebase Firestore (via firebase-admin)
 - **Logging**: Pino with pretty-printing in development
 - **Styling**: Tailwind CSS 4 + @szum-tech/design-system
@@ -65,19 +66,31 @@ The codebase follows a feature-based architecture with clear separation between 
 - **`types/`** - Global TypeScript types
 - **`tests/`** - Test files organized by type (`e2e/`, `unit/`)
 
-### Authentication & Middleware
+### Authentication & Proxy
 
-**Clerk middleware** (`middleware.ts`) enforces authentication on all routes except:
+**Clerk proxy** (`proxy.ts`) enforces authentication on all routes except:
 
 - Sign-in/sign-up routes
 - Static assets and Next.js internals
 - API routes (explicitly matched)
 
-The middleware implements an **onboarding gate**:
+**Important**: Next.js 16 uses `proxy.ts` instead of the traditional `middleware.ts` file for Clerk authentication.
+
+The proxy implements an **onboarding gate**:
 
 - All authenticated users without `sessionClaims.metadata.onboardingComplete === true` are redirected to `/onboarding`
 - Onboarding layout checks completion status and redirects to home if already complete
 - To mark onboarding complete, update Clerk user metadata via Clerk API
+
+**Custom Session Claims** (`types/clerk.d.ts`):
+
+```typescript
+interface CustomJwtSessionClaims {
+  metadata: {
+    onboardingComplete?: boolean;
+  };
+}
+```
 
 ### Firebase & Database
 
@@ -378,21 +391,122 @@ The project uses **@szum-tech/design-system** for UI components:
 - Includes design tokens, color palette, and utility functions
 - [Documentation](https://szum-tech-design-system.vercel.app/?path=/docs/components--docs)
 
+### React Compiler
+
+The project has **React Compiler** enabled (`next.config.ts`):
+
+- Automatically optimizes React components for better performance
+- Reduces unnecessary re-renders without manual memoization
+- Configured via `reactCompiler: true` in Next.js config
+- Requires `babel-plugin-react-compiler` dependency
+
 ### Key Patterns
 
 **Onboarding Flow**:
 
-- Multi-step process: Welcome → Preferences → Goals → Categories
+- Multi-step process: Welcome → Preferences → Set Up Budgets → Categories
 - Steps defined in `features/onboarding/types/onboarding.ts` as `OnboardingSteps` constant
 - Current step stored in Firestore `onboarding` collection
-- Onboarding state persisted across steps via cookie (`onboarding-cookie.ts`)
 - Layout wraps all onboarding pages with `OnboardingStepper` component
+- Forms use React Hook Form with Zod validation
+- Data stored per step: `products`, `preferences`, `budget`, and `expenses`
+
+**Server Actions Pattern** (`lib/action-types.ts`):
+
+Server Actions use standardized return types for consistency:
+
+```typescript
+// Action that returns data
+export type ActionResponse<T = unknown> = Promise<ActionStateSuccess<T> | ActionStateFailed>;
+
+// Action that redirects (never returns on success)
+export type RedirectAction = Promise<never | ActionStateFailed>;
+
+// Success state
+type ActionStateSuccess<T> = {
+  success: true;
+  data: T;
+  message?: string;
+};
+
+// Failure state
+type ActionStateFailed = {
+  success: false;
+  error: string;
+  fieldErrors?: Record<string, string[]>;
+};
+```
+
+**Usage example**:
+
+```typescript
+// features/*/server/actions/*.ts
+export async function submitForm(formData: FormData): ActionResponse<User> {
+  // Validation
+  const parsed = formSchema.safeParse(formData);
+  if (!parsed.success) {
+    return {
+      success: false,
+      error: "Validation failed",
+      fieldErrors: parsed.error.flatten().fieldErrors
+    };
+  }
+
+  // Business logic
+  const [error, user] = await createUser(parsed.data);
+  if (error) {
+    return { success: false, error: error.message };
+  }
+
+  return { success: true, data: user, message: "User created successfully" };
+}
+
+// Action that redirects
+export async function submitAndRedirect(formData: FormData): RedirectAction {
+  const [error] = await updateData(formData);
+  if (error) return { success: false, error: error.message };
+
+  return redirect("/success");
+}
+```
+
+**Toast Notification System** (`lib/toast/`):
+
+Cookie-based toast notifications for server-to-client messaging:
+
+**Architecture**:
+- `lib/toast/server/toast.cookie.ts` - Server-side cookie management
+- `lib/toast/components/toast-handler.tsx` - Client-side toast display
+- `components/providers.tsx` - Includes ToastHandler
+- Uses `@szum-tech/design-system` Toaster component
+
+**Server-side usage**:
+
+```typescript
+import { setToastCookie } from "~/lib/toast/server/toast.cookie";
+
+export async function submitAction() {
+  const [error] = await doSomething();
+
+  if (error) {
+    await setToastCookie("Operation failed", "error");
+    return { success: false, error: error.message };
+  }
+
+  await setToastCookie("Operation successful!", "success");
+  return redirect("/dashboard");
+}
+```
+
+**Toast types**: `success`, `error`, `warning`, `info`
 
 **Error Handling**:
 
-- Use tuple return pattern: `[Error | null, Data | null]`
-- Log errors with structured context before returning
+- Database queries use tuple pattern: `[Error | null, Data | null]`
+- Server Actions use `ActionResponse` or `RedirectAction` return types
+- Always log errors with structured context before returning
 - Validate data with Zod schemas where applicable
+- Use toast notifications for user-facing feedback
 
 **Conventional Commits**:
 
