@@ -10,7 +10,3 @@ export const preferencesSchema = z.object({
 });
 
 export type PreferencesFormData = z.infer<typeof preferencesSchema>;
-
-export const productsSchema = z.object({ budget: z.boolean(), investment: z.boolean() });
-
-export type ProductsFormData = z.infer<typeof productsSchema>;

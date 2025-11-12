@@ -1,6 +1,6 @@
 import "server-only";
 
-import { seedBudgetTemplates } from "~/features/budget/server/db/seed-budget-templates";
+import { budgetTemplates } from "~/features/budget/server/db/budget-templates";
 import { createLogger } from "~/lib/logger";
 
 const logger = createLogger({ module: "auto-seed" });
@@ -24,7 +24,7 @@ export async function autoSeedDatabase() {
   logger.info("Starting automatic database seeding");
 
   // Seed budget templates
-  const [error] = await seedBudgetTemplates({ force: false });
+  const [error] = await budgetTemplates({ force: false });
 
   if (error) {
     logger.error({ error }, "Automatic database seeding failed");
