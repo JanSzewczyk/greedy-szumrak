@@ -1,9 +1,9 @@
-import { type BudgetTemplateBase } from "~/features/budget/types/budget-template";
+import { BudgetProfile, type BudgetTemplateBase } from "~/features/budget/types/budget-template";
 
 export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
   // ===== YOUNG PROFESSIONAL ===== //
   {
-    id: "young_professional",
+    id: BudgetProfile.YOUNG_PROFESSIONAL,
     name: "Young Professional",
     description:
       "For people starting their professional career who want to balance work life with enjoyment and building their future.",
@@ -159,7 +159,7 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
 
   // ===== FAMILY =====
   {
-    id: "family",
+    id: BudgetProfile.FAMILY,
     name: "Family",
     description:
       "For families with children who prioritize financial security and expenses related to raising children.",
@@ -325,7 +325,7 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
 
   // ===== AGGRESSIVE SAVER =====
   {
-    id: "aggressive_saver",
+    id: BudgetProfile.AGGRESSIVE_SAVER,
     name: "Aggressive Saver",
     description:
       "For those who want to achieve financial independence quickly and are ready to significantly limit current expenses.",
@@ -461,7 +461,7 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
 
   // ===== STUDENT =====
   {
-    id: "student",
+    id: BudgetProfile.STUDENT,
     name: "Student",
     description:
       "For students with limited income who want to learn financial management and save despite tight budget.",
@@ -603,46 +603,46 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
         ]
       }
     ]
-  },
+  }
 
   // ===== CUSTOM (Empty template) =====
-  {
-    id: "custom",
-    name: "Custom",
-    description: "Create your own budget from scratch, fully tailored to your needs.",
-    icon: "settings",
-    targetIncome: {
-      min: 0,
-      max: Infinity
-    },
-    characteristics: [
-      "Full flexibility",
-      "Personalized categories",
-      "Your own allocations",
-      "Unique financial situation"
-    ],
-    totalPercentage: 100,
-    isActive: true,
-    isRecommended: false,
-    allocations: [
-      {
-        type: "needs",
-        percentage: 50,
-        label: "Needs",
-        categories: []
-      },
-      {
-        type: "wants",
-        percentage: 30,
-        label: "Wants",
-        categories: []
-      },
-      {
-        type: "savings",
-        percentage: 20,
-        label: "Savings",
-        categories: []
-      }
-    ]
-  }
+  // {
+  //   id: "custom",
+  //   name: "Custom",
+  //   description: "Create your own budget from scratch, fully tailored to your needs.",
+  //   icon: "settings",
+  //   targetIncome: {
+  //     min: 0,
+  //     max: Infinity
+  //   },
+  //   characteristics: [
+  //     "Full flexibility",
+  //     "Personalized categories",
+  //     "Your own allocations",
+  //     "Unique financial situation"
+  //   ],
+  //   totalPercentage: 100,
+  //   isActive: true,
+  //   isRecommended: false,
+  //   allocations: [
+  //     {
+  //       type: "needs",
+  //       percentage: 50,
+  //       label: "Needs",
+  //       categories: []
+  //     },
+  //     {
+  //       type: "wants",
+  //       percentage: 30,
+  //       label: "Wants",
+  //       categories: []
+  //     },
+  //     {
+  //       type: "savings",
+  //       percentage: 20,
+  //       label: "Savings",
+  //       categories: []
+  //     }
+  //   ]
+  // }
 ];
