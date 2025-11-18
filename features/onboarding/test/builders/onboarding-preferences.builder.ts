@@ -1,21 +1,21 @@
-import { build, perBuild } from "@jackfranklin/test-data-bot";
 import { faker } from "@faker-js/faker/locale/pl";
-import type { PreferencesFormData } from "~/features/onboarding/schema";
+import { build, perBuild } from "@jackfranklin/test-data-bot";
+import { type OnboardingPreferences } from "~/features/onboarding/types/onboarding";
 
 /**
- * Builder for generating PreferencesFormData test data.
+ * Builder for generating OnboardingPreferences test data.
  *
  * @example
  * // Basic usage (using .one())
- * const preferences = preferencesBuilder.one();
+ * const preferences = onboardingPreferencesBuilder.one();
  *
  * @example
  * // Alternative usage (direct call)
- * const preferences = preferencesBuilder();
+ * const preferences = onboardingPreferencesBuilder();
  *
  * @example
  * // Override specific fields
- * const usdPreferences = preferencesBuilder.one({
+ * const usdPreferences = onboardingPreferencesBuilder.one({
  *   overrides: {
  *     currency: "USD"
  *   }
@@ -23,11 +23,11 @@ import type { PreferencesFormData } from "~/features/onboarding/schema";
  *
  * @example
  * // Using traits
- * const plnPreferences = preferencesBuilder.one({ traits: ["pln"] });
- * const eurPreferences = preferencesBuilder.one({ traits: ["eur"] });
- * const usdPreferences = preferencesBuilder.one({ traits: ["usd"] });
+ * const plnPreferences = onboardingPreferencesBuilder.one({ traits: ["pln"] });
+ * const eurPreferences = onboardingPreferencesBuilder.one({ traits: ["eur"] });
+ * const usdPreferences = onboardingPreferencesBuilder.one({ traits: ["usd"] });
  */
-export const preferencesBuilder = build<PreferencesFormData>({
+export const onboardingPreferencesBuilder = build<OnboardingPreferences>({
   fields: {
     currency: perBuild(() => faker.helpers.arrayElement(["PLN", "USD", "EUR", "GBP"])),
     dateFormat: perBuild(() => faker.helpers.arrayElement(["dd/MM/yyyy", "MM/dd/yyyy", "yyyy-MM-dd"]))

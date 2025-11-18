@@ -1,16 +1,19 @@
-import { type PreferencesFormData, type ProductsFormData } from "~/features/onboarding/schema";
+import { type PreferencesFormData } from "~/features/onboarding/schema";
+import { type ProductsFormData } from "~/features/onboarding/shemas/product";
+import { type BudgetChooseTemplateFormData } from "~/features/onboarding/shemas/set-up-budget";
 import { type CreateDto, type UpdateDto, type WithDates, type WithFirestoreTimestamps } from "~/lib/firebase/types";
 
 export const OnboardingSteps = {
   WELCOME: "/onboarding/welcome",
   PREFERENCES: "/onboarding/preferences",
-  GOALS: "/onboarding/goals",
+  SET_UP_BUDGETS: "/onboarding/set-up-budgets",
   CATEGORIES: "/onboarding/categories"
 } as const;
 export type OnboardingStep = (typeof OnboardingSteps)[keyof typeof OnboardingSteps];
 
 export type OnboardingProducts = ProductsFormData;
 export type OnboardingPreferences = PreferencesFormData;
+export type OnboardingBudget = BudgetChooseTemplateFormData;
 
 /**
  * Base type representing onboarding fields without timestamps
@@ -21,18 +24,7 @@ export type OnboardingBase = {
   currentStep: OnboardingStep;
   products: OnboardingProducts;
   preferences?: OnboardingPreferences;
-  budget?: {
-    monthlyIncome: number;
-    budgetProfile:
-      | "balanced"
-      | "frugal"
-      | "generous"
-      | "young_professional"
-      | "family"
-      | "aggressive_saver"
-      | "student"
-      | "custom";
-  };
+  budget?: OnboardingBudget;
   goals?: {
     budget: number;
     savings: number;

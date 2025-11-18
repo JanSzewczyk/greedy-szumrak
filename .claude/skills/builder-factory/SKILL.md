@@ -40,7 +40,59 @@ When the user provides a TypeScript type/interface or asks to create a factory f
    - For shared types: `tests/builders/`
    - Create directory if it doesn't exist
 
-3. **Generate Builder Code**
+3. **Builder Naming Convention**
+
+   **CRITICAL: Builder names MUST exactly match the type name they build.**
+
+   Follow these naming rules:
+
+   - **Rule 1**: Builder name = camelCase(TypeName) + "Builder"
+   - **Rule 2**: Use the EXACT type name, not the base type or intermediate type
+   - **Rule 3**: File name = kebab-case of the type name + ".builder.ts"
+
+   Examples:
+
+   ```typescript
+   // ✅ CORRECT - matches exact type name
+   export type OnboardingProducts = ProductsFormData;
+   export const onboardingProductsBuilder = build<OnboardingProducts>({ ... });
+   // File: onboarding-products.builder.ts
+
+   export type OnboardingPreferences = PreferencesFormData;
+   export const onboardingPreferencesBuilder = build<OnboardingPreferences>({ ... });
+   // File: onboarding-preferences.builder.ts
+
+   export type BudgetTemplate = WithDates<BudgetTemplateBase>;
+   export const budgetTemplateBuilder = build<BudgetTemplate>({ ... });
+   // File: budget-template.builder.ts
+
+   export type UserProfile = WithDates<UserProfileBase>;
+   export const userProfileBuilder = build<UserProfile>({ ... });
+   // File: user-profile.builder.ts
+
+   // ❌ INCORRECT - uses base type name
+   export type OnboardingProducts = ProductsFormData;
+   export const productsBuilder = build<OnboardingProducts>({ ... }); // WRONG!
+
+   export type OnboardingPreferences = PreferencesFormData;
+   export const preferencesBuilder = build<OnboardingPreferences>({ ... }); // WRONG!
+   ```
+
+   **Special cases:**
+
+   - For Firebase Base types (without timestamps), use the base type name:
+     ```typescript
+     export const onboardingBaseBuilder = build<OnboardingBase>({ ... });
+     export const budgetTemplateBaseBuilder = build<BudgetTemplateBase>({ ... });
+     ```
+
+   - For main application types (with timestamps), use the exact type name:
+     ```typescript
+     export const onboardingBuilder = build<Onboarding>({ ... });
+     export const budgetTemplateBuilder = build<BudgetTemplate>({ ... });
+     ```
+
+4. **Generate Builder Code**
 
    Follow this template structure:
 
@@ -94,7 +146,7 @@ When the user provides a TypeScript type/interface or asks to create a factory f
    });
    ```
 
-4. **Field Mapping Guidelines**
+5. **Field Mapping Guidelines**
 
    Use appropriate methods for each field type:
 
@@ -157,7 +209,7 @@ When the user provides a TypeScript type/interface or asks to create a factory f
    - `address: perBuild(() => addressBuilder.one())`
    - For optional relations, use traits or overrides
 
-5. **Handle Complex Patterns**
+6. **Handle Complex Patterns**
 
    **Traits** (for variants):
 
@@ -260,7 +312,7 @@ When the user provides a TypeScript type/interface or asks to create a factory f
    });
    ```
 
-6. **Create Test Examples**
+7. **Create Test Examples**
 
    Always include usage examples in comments or a separate test file:
 
@@ -298,7 +350,7 @@ When the user provides a TypeScript type/interface or asks to create a factory f
     */
    ```
 
-7. **Export Pattern**
+8. **Export Pattern**
 
    ```typescript
    // Individual export (preferred)
@@ -321,7 +373,7 @@ When the user provides a TypeScript type/interface or asks to create a factory f
    };
    ```
 
-8. **Integration with Project Patterns**
+9. **Integration with Project Patterns**
 
    For types that match Firebase patterns (see CLAUDE.md):
    - Use `*Base` type for builder (without `id`, `createdAt`, `updatedAt`)
