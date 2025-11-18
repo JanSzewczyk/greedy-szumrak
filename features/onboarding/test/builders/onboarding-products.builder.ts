@@ -1,20 +1,20 @@
 import { build } from "@jackfranklin/test-data-bot";
-import { type ProductsFormData } from "~/features/onboarding/shemas/product";
+import { type OnboardingProducts } from "~/features/onboarding/types/onboarding";
 
 /**
- * Builder for generating ProductsFormData test data.
+ * Builder for generating OnboardingProducts test data.
  *
  * @example
  * // Basic usage (using .one())
- * const products = productsBuilder.one();
+ * const products = onboardingProductsBuilder.one();
  *
  * @example
  * // Alternative usage (direct call)
- * const products = productsBuilder();
+ * const products = onboardingProductsBuilder();
  *
  * @example
  * // Override specific fields
- * const budgetOnly = productsBuilder.one({
+ * const budgetOnly = onboardingProductsBuilder.one({
  *   overrides: {
  *     budget: true,
  *     investment: false
@@ -23,11 +23,11 @@ import { type ProductsFormData } from "~/features/onboarding/shemas/product";
  *
  * @example
  * // Using traits
- * const allProducts = productsBuilder.one({ traits: ["all"] });
- * const budgetOnly = productsBuilder.one({ traits: ["budgetOnly"] });
- * const investmentOnly = productsBuilder.one({ traits: ["investmentOnly"] });
+ * const allProducts = onboardingProductsBuilder.one({ traits: ["all"] });
+ * const budgetOnly = onboardingProductsBuilder.one({ traits: ["budgetOnly"] });
+ * const investmentOnly = onboardingProductsBuilder.one({ traits: ["investmentOnly"] });
  */
-export const productsBuilder = build<ProductsFormData>({
+export const onboardingProductsBuilder = build<OnboardingProducts>({
   fields: {
     budget: true,
     investment: true

@@ -2,9 +2,9 @@ import { build, perBuild } from "@jackfranklin/test-data-bot";
 import { faker } from "@faker-js/faker/locale/pl";
 import type { Onboarding, OnboardingBase } from "~/features/onboarding/types/onboarding";
 import { OnboardingSteps } from "~/features/onboarding/types/onboarding";
-import { productsBuilder } from "./products.builder";
-import { preferencesBuilder } from "./preferences.builder";
-import { budgetBuilder } from "./budget.builder";
+import { onboardingProductsBuilder } from "./onboarding-products.builder";
+import { onboardingPreferencesBuilder } from "./onboarding-preferences.builder";
+import { onboardingBudgetBuilder } from "./onboarding-budget.builder";
 
 /**
  * Builder for generating OnboardingBase test data (without id and timestamps).
@@ -37,7 +37,7 @@ export const onboardingBaseBuilder = build<OnboardingBase>({
     completed: false,
     completedAt: null,
     currentStep: OnboardingSteps.PREFERENCES,
-    products: perBuild(() => productsBuilder.one())
+    products: perBuild(() => onboardingProductsBuilder.one())
   },
   traits: {
     initial: {
@@ -45,7 +45,7 @@ export const onboardingBaseBuilder = build<OnboardingBase>({
         completed: false,
         completedAt: null,
         currentStep: OnboardingSteps.WELCOME,
-        products: perBuild(() => productsBuilder.one({ traits: ["all"] }))
+        products: perBuild(() => onboardingProductsBuilder.one({ traits: ["all"] }))
       }
     },
     inProgress: {
@@ -53,9 +53,9 @@ export const onboardingBaseBuilder = build<OnboardingBase>({
         completed: false,
         completedAt: null,
         currentStep: OnboardingSteps.SET_UP_BUDGETS,
-        products: perBuild(() => productsBuilder.one({ traits: ["all"] })),
-        preferences: perBuild(() => preferencesBuilder.one({ traits: ["pln"] })),
-        budget: perBuild(() => budgetBuilder.one({ traits: ["youngProfessional"] }))
+        products: perBuild(() => onboardingProductsBuilder.one({ traits: ["all"] })),
+        preferences: perBuild(() => onboardingPreferencesBuilder.one({ traits: ["pln"] })),
+        budget: perBuild(() => onboardingBudgetBuilder.one({ traits: ["youngProfessional"] }))
       }
     },
     completed: {
@@ -63,9 +63,9 @@ export const onboardingBaseBuilder = build<OnboardingBase>({
         completed: true,
         completedAt: perBuild(() => faker.date.recent()),
         currentStep: OnboardingSteps.CATEGORIES,
-        products: perBuild(() => productsBuilder.one({ traits: ["all"] })),
-        preferences: perBuild(() => preferencesBuilder.one({ traits: ["pln"] })),
-        budget: perBuild(() => budgetBuilder.one({ traits: ["youngProfessional"] })),
+        products: perBuild(() => onboardingProductsBuilder.one({ traits: ["all"] })),
+        preferences: perBuild(() => onboardingPreferencesBuilder.one({ traits: ["pln"] })),
+        budget: perBuild(() => onboardingBudgetBuilder.one({ traits: ["youngProfessional"] })),
         goals: {
           budget: perBuild(() => faker.number.float({ min: 5000, max: 20000, fractionDigits: 2 })),
           savings: perBuild(() => faker.number.float({ min: 1000, max: 10000, fractionDigits: 2 })),
@@ -86,9 +86,9 @@ export const onboardingBaseBuilder = build<OnboardingBase>({
         completed: false,
         completedAt: null,
         currentStep: OnboardingSteps.CATEGORIES,
-        products: perBuild(() => productsBuilder.one({ traits: ["all"] })),
-        preferences: perBuild(() => preferencesBuilder.one()),
-        budget: perBuild(() => budgetBuilder.one()),
+        products: perBuild(() => onboardingProductsBuilder.one({ traits: ["all"] })),
+        preferences: perBuild(() => onboardingPreferencesBuilder.one()),
+        budget: perBuild(() => onboardingBudgetBuilder.one()),
         goals: {
           budget: perBuild(() => faker.number.float({ min: 5000, max: 20000, fractionDigits: 2 })),
           savings: perBuild(() => faker.number.float({ min: 1000, max: 10000, fractionDigits: 2 })),
@@ -154,7 +154,7 @@ export const onboardingBuilder = build<Onboarding>({
     completed: false,
     completedAt: null,
     currentStep: OnboardingSteps.PREFERENCES,
-    products: perBuild(() => productsBuilder.one()),
+    products: perBuild(() => onboardingProductsBuilder.one()),
     createdAt: perBuild(() => faker.date.past()),
     updatedAt: perBuild(() => faker.date.recent())
   },
@@ -164,7 +164,7 @@ export const onboardingBuilder = build<Onboarding>({
         completed: false,
         completedAt: null,
         currentStep: OnboardingSteps.WELCOME,
-        products: perBuild(() => productsBuilder.one({ traits: ["all"] }))
+        products: perBuild(() => onboardingProductsBuilder.one({ traits: ["all"] }))
       }
     },
     inProgress: {
@@ -172,9 +172,9 @@ export const onboardingBuilder = build<Onboarding>({
         completed: false,
         completedAt: null,
         currentStep: OnboardingSteps.SET_UP_BUDGETS,
-        products: perBuild(() => productsBuilder.one({ traits: ["all"] })),
-        preferences: perBuild(() => preferencesBuilder.one({ traits: ["pln"] })),
-        budget: perBuild(() => budgetBuilder.one({ traits: ["youngProfessional"] }))
+        products: perBuild(() => onboardingProductsBuilder.one({ traits: ["all"] })),
+        preferences: perBuild(() => onboardingPreferencesBuilder.one({ traits: ["pln"] })),
+        budget: perBuild(() => onboardingBudgetBuilder.one({ traits: ["youngProfessional"] }))
       }
     },
     completed: {
@@ -182,9 +182,9 @@ export const onboardingBuilder = build<Onboarding>({
         completed: true,
         completedAt: perBuild(() => faker.date.recent()),
         currentStep: OnboardingSteps.CATEGORIES,
-        products: perBuild(() => productsBuilder.one({ traits: ["all"] })),
-        preferences: perBuild(() => preferencesBuilder.one({ traits: ["pln"] })),
-        budget: perBuild(() => budgetBuilder.one({ traits: ["youngProfessional"] })),
+        products: perBuild(() => onboardingProductsBuilder.one({ traits: ["all"] })),
+        preferences: perBuild(() => onboardingPreferencesBuilder.one({ traits: ["pln"] })),
+        budget: perBuild(() => onboardingBudgetBuilder.one({ traits: ["youngProfessional"] })),
         goals: {
           budget: perBuild(() => faker.number.float({ min: 5000, max: 20000, fractionDigits: 2 })),
           savings: perBuild(() => faker.number.float({ min: 1000, max: 10000, fractionDigits: 2 })),
@@ -205,9 +205,9 @@ export const onboardingBuilder = build<Onboarding>({
         completed: false,
         completedAt: null,
         currentStep: OnboardingSteps.CATEGORIES,
-        products: perBuild(() => productsBuilder.one({ traits: ["all"] })),
-        preferences: perBuild(() => preferencesBuilder.one()),
-        budget: perBuild(() => budgetBuilder.one()),
+        products: perBuild(() => onboardingProductsBuilder.one({ traits: ["all"] })),
+        preferences: perBuild(() => onboardingPreferencesBuilder.one()),
+        budget: perBuild(() => onboardingBudgetBuilder.one()),
         goals: {
           budget: perBuild(() => faker.number.float({ min: 5000, max: 20000, fractionDigits: 2 })),
           savings: perBuild(() => faker.number.float({ min: 1000, max: 10000, fractionDigits: 2 })),

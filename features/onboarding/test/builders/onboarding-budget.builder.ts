@@ -1,21 +1,21 @@
 import { faker } from "@faker-js/faker/locale/pl";
 import { build, perBuild } from "@jackfranklin/test-data-bot";
-import { type BudgetChooseTemplateFormData } from "~/features/onboarding/shemas/set-up-budget";
+import { type OnboardingBudget } from "~/features/onboarding/types/onboarding";
 
 /**
- * Builder for generating BudgetChooseTemplateFormData test data.
+ * Builder for generating OnboardingBudget test data.
  *
  * @example
  * // Basic usage (using .one())
- * const budget = budgetBuilder.one();
+ * const budget = onboardingBudgetBuilder.one();
  *
  * @example
  * // Alternative usage (direct call)
- * const budget = budgetBuilder();
+ * const budget = onboardingBudgetBuilder();
  *
  * @example
  * // Override specific fields
- * const highIncome = budgetBuilder.one({
+ * const highIncome = onboardingBudgetBuilder.one({
  *   overrides: {
  *     monthlyIncome: 15000
  *   }
@@ -23,12 +23,12 @@ import { type BudgetChooseTemplateFormData } from "~/features/onboarding/shemas/
  *
  * @example
  * // Using traits
- * const youngProfessional = budgetBuilder.one({ traits: ["youngProfessional"] });
- * const family = budgetBuilder.one({ traits: ["family"] });
- * const student = budgetBuilder.one({ traits: ["student"] });
- * const aggressiveSaver = budgetBuilder.one({ traits: ["aggressiveSaver"] });
+ * const youngProfessional = onboardingBudgetBuilder.one({ traits: ["youngProfessional"] });
+ * const family = onboardingBudgetBuilder.one({ traits: ["family"] });
+ * const student = onboardingBudgetBuilder.one({ traits: ["student"] });
+ * const aggressiveSaver = onboardingBudgetBuilder.one({ traits: ["aggressiveSaver"] });
  */
-export const budgetBuilder = build<BudgetChooseTemplateFormData>({
+export const onboardingBudgetBuilder = build<OnboardingBudget>({
   fields: {
     monthlyIncome: perBuild(() => faker.number.float({ min: 3000, max: 20000, fractionDigits: 2 })),
     budgetProfile: perBuild(() =>
