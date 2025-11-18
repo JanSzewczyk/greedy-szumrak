@@ -1,12 +1,24 @@
 import "server-only";
 
 import { DEFAULT_BUDGET_TEMPLATES } from "~/features/budget/data/predefined-budget-templates";
+import { type BudgetTemplate } from "~/features/budget/types/budget-template";
 import { seedCollection, type SeedCollectionResult, shouldSeedCollection } from "~/lib/firebase/seeder";
 import { createLogger } from "~/lib/logger";
+import { db } from "~/lib/firebase";
+import type { Onboarding } from "~/features/onboarding/types/onboarding";
 
 const logger = createLogger({ module: "budget-templates-seeder" });
 
 const BUDGET_TEMPLATES_COLLECTION = "budget-templates";
+
+function transformFirestoreToBudgetTemplate(docId: string, data: FirebaseFirestore.DocumentData): BudgetTemplate {
+  return {
+    id: docId,
+    ...data,
+    updatedAt: data.updatedAt?.toDate(),
+    createdAt: data.createdAt?.toDate()
+  } as BudgetTemplate;
+}
 
 export type SeedBudgetTemplatesResult =
   | {
@@ -22,7 +34,7 @@ export type SeedBudgetTemplatesResult =
  * Seeds predefined budget templates into Firestore
  * Only creates templates that don't exist
  */
-export async function seedBudgetTemplates(
+export async function budgetTemplates(
   options: { force?: boolean } = {}
 ): Promise<[null, SeedBudgetTemplatesResult] | [Error, null]> {
   const { force = false } = options;
@@ -52,6 +64,27 @@ export async function seedBudgetTemplates(
     return [null, { skipped: false, stats }];
   } catch (error) {
     logger.error({ error }, "Failed to seed budget templates");
+    return [error as Error, null];
+  }
+}
+
+export async function getBudgetTemplates(): Promise<[null, Array<BudgetTemplate>] | [Error, null]> {
+  try {
+    logger.info("Fetching budget templates");
+
+    const budgetTemplatesDocs = await db.collection(BUDGET_TEMPLATES_COLLECTION).get();
+
+    if (budgetTemplatesDocs.empty) {
+      logger.warn("Budget templates collection is empty");
+      throw new Error("Budget templates not found.");
+    }
+
+    const data = budgetTemplatesDocs.docs.map((doc) => transformFirestoreToBudgetTemplate(doc.id, doc.data()));
+
+    logger.info({ count: data.length }, "Budget templates fetched successfully");
+    return [null, data];
+  } catch (error) {
+    logger.error({ error }, "Error fetching budget templates");
     return [error as Error, null];
   }
 }
