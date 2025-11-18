@@ -1,10 +1,17 @@
 import { type IconName } from "lucide-react/dynamic";
 import { type WithDates } from "~/lib/firebase/types";
 
-export type BudgetProfileType = "young_professional" | "family" | "aggressive_saver" | "student" | "custom";
+export const BudgetProfile = {
+  YOUNG_PROFESSIONAL: "young_professional",
+  FAMILY: "family",
+  AGGRESSIVE_SAVER: "aggressive_saver",
+  STUDENT: "student",
+  CUSTOM: "custom"
+};
+export type BudgetProfile = (typeof BudgetProfile)[keyof typeof BudgetProfile];
 
 export type BudgetTemplateBase = {
-  id: BudgetProfileType;
+  id: BudgetProfile;
   name: string;
   description: string;
   icon: IconName;
