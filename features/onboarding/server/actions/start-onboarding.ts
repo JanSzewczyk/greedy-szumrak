@@ -2,19 +2,22 @@
 
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { type ProductsFormData } from "~/features/onboarding/schema";
 import {
   createOnboardingByUserId,
   getOnboardingById,
   updateOnboarding
 } from "~/features/onboarding/server/db/onboarding";
-import { OnboardingSteps, type UpdateOnboardingDto } from "~/features/onboarding/types/onboarding";
+import {
+  type OnboardingProducts,
+  OnboardingSteps,
+  type UpdateOnboardingDto
+} from "~/features/onboarding/types/onboarding";
 import { type RedirectAction } from "~/lib/action-types";
 import { createLogger } from "~/lib/logger";
 
 const logger = createLogger({ module: "onboarding-actions" });
 
-export async function startOnboarding(products: ProductsFormData): RedirectAction {
+export async function startOnboarding(products: OnboardingProducts): RedirectAction {
   const { userId } = await auth();
   logger.info({ userId }, "Starting onboarding flow");
 
