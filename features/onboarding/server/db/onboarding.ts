@@ -1,8 +1,8 @@
 import { FieldValue } from "firebase-admin/firestore";
-import { type ProductsFormData } from "~/features/onboarding/schema";
 import {
   type CreateOnboardingDto,
   type Onboarding,
+  type OnboardingProducts,
   OnboardingSteps,
   type UpdateOnboardingDto
 } from "~/features/onboarding/types/onboarding";
@@ -51,7 +51,7 @@ export async function getOnboardingById(userId: string): Promise<[null, Onboardi
 
 export async function createOnboardingByUserId(
   userId: string,
-  products: ProductsFormData
+  products: OnboardingProducts
 ): Promise<[null, Onboarding] | [Error, null]> {
   const onboardingData: CreateOnboardingDto = {
     completed: false,

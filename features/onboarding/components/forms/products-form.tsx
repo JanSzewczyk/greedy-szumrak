@@ -15,7 +15,7 @@ import {
   FieldSet,
   FieldTitle
 } from "@szum-tech/design-system";
-import { type ProductsFormData, productsSchema } from "~/features/onboarding/schema";
+import { type ProductsFormData, productsSchema } from "~/features/onboarding/shemas/product";
 import { type RedirectAction } from "~/lib/action-types";
 
 export type ProductsFormProps = {
