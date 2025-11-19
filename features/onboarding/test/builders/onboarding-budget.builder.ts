@@ -30,34 +30,34 @@ import { type OnboardingBudget } from "~/features/onboarding/types/onboarding";
  */
 export const onboardingBudgetBuilder = build<OnboardingBudget>({
   fields: {
-    monthlyIncome: perBuild(() => faker.number.float({ min: 3000, max: 20000, fractionDigits: 2 })),
+    monthlyIncome: perBuild(() => faker.number.int({ min: 3000, max: 20000, multipleOf: 100 })),
     budgetProfile: perBuild(() =>
-      faker.helpers.arrayElement(["young_professional", "family", "aggressive_saver", "student", "custom"])
+      faker.helpers.arrayElement(["young_professional", "family", "aggressive_saver", "student"])
     )
   },
   traits: {
     youngProfessional: {
       overrides: {
         budgetProfile: "young_professional",
-        monthlyIncome: perBuild(() => faker.number.float({ min: 5000, max: 10000, fractionDigits: 2 }))
+        monthlyIncome: perBuild(() => faker.number.int({ min: 5000, max: 10000, multipleOf: 100 }))
       }
     },
     family: {
       overrides: {
         budgetProfile: "family",
-        monthlyIncome: perBuild(() => faker.number.float({ min: 8000, max: 15000, fractionDigits: 2 }))
+        monthlyIncome: perBuild(() => faker.number.int({ min: 8000, max: 15000, multipleOf: 100 }))
       }
     },
     aggressiveSaver: {
       overrides: {
         budgetProfile: "aggressive_saver",
-        monthlyIncome: perBuild(() => faker.number.float({ min: 6000, max: 12000, fractionDigits: 2 }))
+        monthlyIncome: perBuild(() => faker.number.int({ min: 6000, max: 12000, multipleOf: 100 }))
       }
     },
     student: {
       overrides: {
         budgetProfile: "student",
-        monthlyIncome: perBuild(() => faker.number.float({ min: 2000, max: 5000, fractionDigits: 2 }))
+        monthlyIncome: perBuild(() => faker.number.int({ min: 2000, max: 5000, multipleOf: 100 }))
       }
     },
     custom: {
