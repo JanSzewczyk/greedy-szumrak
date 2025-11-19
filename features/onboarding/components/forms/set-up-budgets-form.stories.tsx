@@ -31,6 +31,12 @@ type Story = StoryObj<typeof meta>;
  */
 export const InitialForm: Story = {
   play: async ({ canvas, step }) => {
+    await step("Verify text content", async () => {
+      await expect(canvas.getByRole("group", { name: /set up budgets/i })).toBeVisible();
+      await expect(canvas.getByText(/set up budgets/i)).toBeVisible();
+      await expect(canvas.getByText(/choose a template or start from scratch/i)).toBeVisible();
+    });
+
     await step("Verify monthly income input is visible", async () => {
       const monthlyIncomeInput = canvas.getByLabelText(/what is your monthly net income/i);
       await expect(monthlyIncomeInput).toBeVisible();
@@ -102,11 +108,13 @@ export const ErrorValidation: Story = {
       await userEvent.click(continueButton);
     });
 
+    const monthlyIncomeTextField = canvas.getByLabelText("What is your monthly net income?");
+
     await step("Verify validation error appears for monthly income", async () => {
-      await waitFor(async () => {
-        const errorMessage = canvas.getByText(/required/i);
-        await expect(errorMessage).toBeInTheDocument();
-      });
+      await expect(monthlyIncomeTextField).toBeInvalid();
+      const errorMessage = canvas.getByRole("alert");
+      await expect(errorMessage).toBeVisible();
+      await expect(errorMessage).toHaveTextContent(/please enter a valid monthly income greater than 0/i);
     });
 
     await step("Verify onContinueAction was NOT called due to validation error", async () => {
@@ -114,10 +122,13 @@ export const ErrorValidation: Story = {
     });
 
     await step("Fill in income with invalid value (0)", async () => {
-      const monthlyIncomeInput = canvas.getByLabelText(/what is your monthly net income/i);
-      await userEvent.clear(monthlyIncomeInput);
-      await userEvent.type(monthlyIncomeInput, "0");
+      await userEvent.clear(monthlyIncomeTextField);
+      await userEvent.type(monthlyIncomeTextField, "0");
       await userEvent.tab();
+
+      const errorMessage = canvas.getByRole("alert");
+      await expect(errorMessage).toBeVisible();
+      await expect(errorMessage).toHaveTextContent(/please enter a valid monthly income greater than 0/i);
     });
 
     await step("Try to submit again with invalid value", async () => {
@@ -128,6 +139,35 @@ export const ErrorValidation: Story = {
     await step("Verify budget templates are still not visible with invalid income", async () => {
       const budgetTemplateLabel = canvas.queryByText(/choose a budget template/i);
       await expect(budgetTemplateLabel).not.toBeInTheDocument();
+    });
+
+    await step("Enter monthly income (8000)", async () => {
+      await userEvent.clear(monthlyIncomeTextField);
+      await userEvent.type(monthlyIncomeTextField, "8000");
+      await userEvent.tab();
+    });
+
+    await step("Verify budget templates appear after blur", async () => {
+      await waitFor(async () => {
+        const budgetTemplateLabel = canvas.getByText(/choose a budget template/i);
+        await expect(budgetTemplateLabel).toBeVisible();
+      });
+    });
+
+    await step("Try to submit without selecting a budget template", async () => {
+      const continueButton = canvas.getByRole("button", { name: /continue/i });
+      await userEvent.click(continueButton);
+      await expect(args.onContinueAction).not.toHaveBeenCalled();
+    });
+
+    await step("Verify validation error appears for budget template selection", async () => {
+      const errorMessage = canvas.getByRole("alert");
+      await expect(errorMessage).toBeVisible();
+      await expect(errorMessage).toHaveTextContent(/please select a budget profile/i);
+    });
+
+    await step("Verify onContinueAction was NOT called due to missing budget template", async () => {
+      await expect(args.onContinueAction).not.toHaveBeenCalled();
     });
   }
 };
@@ -141,12 +181,10 @@ export const ErrorValidation: Story = {
  */
 export const Interaction: Story = {
   play: async ({ canvas, args, step }) => {
-    const user = userEvent.setup();
-
     await step("Enter monthly income (10000)", async () => {
       const monthlyIncomeInput = canvas.getByLabelText(/what is your monthly net income/i);
-      await user.clear(monthlyIncomeInput);
-      await user.type(monthlyIncomeInput, "10000");
+      await userEvent.clear(monthlyIncomeInput);
+      await userEvent.type(monthlyIncomeInput, "10000");
     });
 
     await step("Verify templates are NOT visible yet (before blur)", async () => {
@@ -155,7 +193,7 @@ export const Interaction: Story = {
     });
 
     await step("Trigger blur event to show radio buttons", async () => {
-      await user.tab();
+      await userEvent.tab();
     });
 
     await step("Verify budget templates appear after blur", async () => {
@@ -167,44 +205,50 @@ export const Interaction: Story = {
 
     await step("Verify allocation values for 10000 PLN (50/30/20)", async () => {
       await waitFor(async () => {
-        const needsAllocation = canvas.getByText(/5\s*000/);
-        const wantsAllocation = canvas.getByText(/3\s*000/);
-        const savingsAllocation = canvas.getByText(/2\s*000/);
+        // Match numbers with comma or space thousand separator: "5,000" or "5 000"
+        // Use getAllByText since these values appear for each budget template
+        const needsAllocations = canvas.getAllByText(/5[,\s]000/);
+        const wantsAllocations = canvas.getAllByText(/3[,\s]000/);
+        const savingsAllocations = canvas.getAllByText(/2[,\s]000/);
 
-        await expect(needsAllocation).toBeVisible();
-        await expect(wantsAllocation).toBeVisible();
-        await expect(savingsAllocation).toBeVisible();
+        // Verify at least one of each allocation type is visible
+        await expect(needsAllocations.length).toBeGreaterThan(0);
+        await expect(wantsAllocations.length).toBeGreaterThan(0);
+        await expect(savingsAllocations.length).toBeGreaterThan(0);
       });
     });
 
     await step("Change income to 8000 and trigger blur", async () => {
       const monthlyIncomeInput = canvas.getByLabelText(/what is your monthly net income/i);
-      await user.clear(monthlyIncomeInput);
-      await user.type(monthlyIncomeInput, "8000");
-      await user.tab();
+      await userEvent.clear(monthlyIncomeInput);
+      await userEvent.type(monthlyIncomeInput, "8000");
+      await userEvent.tab();
     });
 
     await step("Verify updated allocations for 8000 PLN (50/30/20)", async () => {
       await waitFor(async () => {
-        const needsAllocation = canvas.getByText(/4\s*000/);
-        const wantsAllocation = canvas.getByText(/2\s*400/);
-        const savingsAllocation = canvas.getByText(/1\s*600/);
+        // Match numbers with comma or space thousand separator
+        // Use getAllByText since these values appear for each budget template
+        const needsAllocations = canvas.getAllByText(/4[,\s]000/);
+        const wantsAllocations = canvas.getAllByText(/2[,\s]400/);
+        const savingsAllocations = canvas.getAllByText(/1[,\s]600/);
 
-        await expect(needsAllocation).toBeVisible();
-        await expect(wantsAllocation).toBeVisible();
-        await expect(savingsAllocation).toBeVisible();
+        // Verify at least one of each allocation type is visible
+        await expect(needsAllocations.length).toBeGreaterThan(0);
+        await expect(wantsAllocations.length).toBeGreaterThan(0);
+        await expect(savingsAllocations.length).toBeGreaterThan(0);
       });
     });
 
     await step("Select Young Professional template", async () => {
       const youngProfessionalRadio = canvas.getByRole("radio", { name: /young professional/i });
-      await user.click(youngProfessionalRadio);
+      await userEvent.click(youngProfessionalRadio);
       await expect(youngProfessionalRadio).toBeChecked();
     });
 
     await step("Submit the form", async () => {
       const continueButton = canvas.getByRole("button", { name: /continue/i });
-      await user.click(continueButton);
+      await userEvent.click(continueButton);
     });
 
     await step("Verify onContinueAction was called with correct data", async () => {
@@ -223,11 +267,9 @@ export const Interaction: Story = {
  */
 export const BackNavigation: Story = {
   play: async ({ canvas, args, step }) => {
-    const user = userEvent.setup();
-
     await step("Click back button", async () => {
       const backButton = canvas.getByRole("button", { name: /back/i });
-      await user.click(backButton);
+      await userEvent.click(backButton);
     });
 
     await step("Verify onBackAction was called", async () => {
@@ -241,12 +283,10 @@ export const BackNavigation: Story = {
  */
 export const SelectCustomTemplate: Story = {
   play: async ({ canvas, args, step }) => {
-    const user = userEvent.setup();
-
     await step("Enter income (6000)", async () => {
       const monthlyIncomeInput = canvas.getByLabelText(/what is your monthly net income/i);
-      await user.type(monthlyIncomeInput, "6000");
-      await user.tab();
+      await userEvent.type(monthlyIncomeInput, "6000");
+      await userEvent.tab();
     });
 
     await step("Wait for templates to appear", async () => {
@@ -258,13 +298,13 @@ export const SelectCustomTemplate: Story = {
 
     await step("Select custom template", async () => {
       const customRadio = canvas.getByRole("radio", { name: /custom template/i });
-      await user.click(customRadio);
+      await userEvent.click(customRadio);
       await expect(customRadio).toBeChecked();
     });
 
     await step("Submit form", async () => {
       const continueButton = canvas.getByRole("button", { name: /continue/i });
-      await user.click(continueButton);
+      await userEvent.click(continueButton);
     });
 
     await step("Verify submission with custom profile", async () => {

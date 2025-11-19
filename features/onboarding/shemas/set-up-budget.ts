@@ -1,8 +1,10 @@
 import { z } from "zod";
 
 export const budgetChooseTemplateSchema = z.object({
-  monthlyIncome: z.number().min(0),
-  budgetProfile: z.string()
+  monthlyIncome: z
+    .number("Please enter a valid monthly income greater than 0")
+    .min(1, 'Please enter a valid monthly income greater than 0"'),
+  budgetProfile: z.string("Please select a budget profile")
 });
 
 export type BudgetChooseTemplateFormData = z.infer<typeof budgetChooseTemplateSchema>;
