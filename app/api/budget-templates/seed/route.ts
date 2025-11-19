@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { seedBudgetTemplates } from "~/features/budget/server/db/seed-budget-templates";
+import { budgetTemplates } from "~/features/budget/server/db/budget-templates";
 import { createLogger } from "~/lib/logger";
 
 const logger = createLogger({ module: "seed-api" });
@@ -22,7 +22,7 @@ export async function GET(request: Request) {
     logger.info({ force }, "Seed API endpoint called");
 
     // Seed budget templates
-    const [error, budgetTemplatesResult] = await seedBudgetTemplates({ force });
+    const [error, budgetTemplatesResult] = await budgetTemplates({ force });
 
     if (error) {
       throw error;
