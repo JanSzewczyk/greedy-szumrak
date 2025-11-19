@@ -46,24 +46,27 @@ export function SetUpBudgetsForm({
   budgetTemplates = [],
   onContinueAction,
   onBackAction,
-  defaultValues
+  defaultValues,
+  preferences: { currency }
 }: SetUpBudgetsFormProps) {
   const form = useForm({
     defaultValues,
     resolver: zodResolver(budgetChooseTemplateSchema)
   });
 
-  const [showTemplates, setShowTemplates] = React.useState<number | null>(null);
+  const [displayedMonthlyIncome, setDisplayedMonthlyIncome] = React.useState<number | null>(
+    defaultValues ? defaultValues.monthlyIncome : null
+  );
 
   async function handleIncomeBlur() {
     const monthlyIncome = form.watch("monthlyIncome");
 
-    // Trigger validation for monthlyIncome field only
+    // Trigger validation for the monthlyIncome field only
     const isValid = form.formState.isValid || !form.formState.errors.monthlyIncome;
     const hasValue = !!monthlyIncome && monthlyIncome > 0;
 
     if (isValid && hasValue) {
-      setShowTemplates(monthlyIncome);
+      setDisplayedMonthlyIncome(monthlyIncome);
     }
   }
 
@@ -84,10 +87,12 @@ export function SetUpBudgetsForm({
           <Card>
             <CardContent>
               <Field data-invalid={!!form.formState.errors.monthlyIncome}>
-                <FieldLabel>What is your monthly net income?</FieldLabel>
+                <FieldLabel htmlFor="monthly-income">What is your monthly net income?</FieldLabel>
                 <Input
+                  id="monthly-income"
+                  invalid={!!form.formState.errors.monthlyIncome}
                   placeholder={formatMoney(8000, {
-                    currency: "PLN",
+                    currency,
                     decimals: 0
                   })}
                   type="number"
@@ -102,14 +107,14 @@ export function SetUpBudgetsForm({
             </CardContent>
           </Card>
 
-          {!!showTemplates ? (
+          {!!displayedMonthlyIncome ? (
             <Controller
               control={form.control}
               name="budgetProfile"
               render={({ field: { onChange, ...fieldProps }, fieldState }) => (
                 <Field data-invalid={!!fieldState.error}>
-                  <FieldLabel htmlFor="budget-profile">Choose a budget template:</FieldLabel>
-                  <RadioGroup id="budget-profile" onValueChange={onChange} {...fieldProps}>
+                  <FieldLabel>Choose a budget template:</FieldLabel>
+                  <RadioGroup onValueChange={onChange} {...fieldProps}>
                     {budgetTemplates.map((template) => (
                       <FieldLabel key={template.id}>
                         <Field orientation="horizontal">
@@ -131,7 +136,7 @@ export function SetUpBudgetsForm({
                                     {allocation.label} - {allocation.percentage}%
                                   </div>
                                   <div className="text-body-lg text-card-foreground truncate">
-                                    {formatMoney(showTemplates * (allocation.percentage / 100), {
+                                    {formatMoney(displayedMonthlyIncome * (allocation.percentage / 100), {
                                       currency: "PLN",
                                       decimals: 0
                                     })}
@@ -154,7 +159,6 @@ export function SetUpBudgetsForm({
                     </FieldLabel>
                   </RadioGroup>
                   <FieldError />
-
                   <FieldError errors={[fieldState.error]} />
                 </Field>
               )}
