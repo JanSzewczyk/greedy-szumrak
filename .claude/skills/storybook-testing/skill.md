@@ -196,12 +196,63 @@ await userEvent.unhover(element);
 
 // Select (for native select elements)
 await userEvent.selectOptions(select, "optionValue");
-
-// Setup (for multiple interactions in sequence)
-const user = userEvent.setup();
-await user.type(input, "text");
-await user.click(button);
 ```
+
+**IMPORTANT: Direct userEvent vs userEvent.setup()**
+
+**Prefer direct `userEvent` calls** for most interactions:
+
+```typescript
+// ✅ PREFERRED - Direct userEvent usage (simpler, cleaner)
+export const DirectInteraction: Story = {
+  play: async ({ canvas, step }) => {
+    await step("Fill form", async () => {
+      const input = canvas.getByLabelText(/name/i);
+      await userEvent.type(input, "John");
+      await userEvent.tab();
+
+      const button = canvas.getByRole("button", { name: /submit/i });
+      await userEvent.click(button);
+    });
+  }
+};
+```
+
+Only use `userEvent.setup()` when you need **advanced configuration** or **multiple complex interactions**:
+
+```typescript
+// ⚠️ Use setup() ONLY when needed for complex scenarios
+export const ComplexInteraction: Story = {
+  play: async ({ canvas, step }) => {
+    // Use setup() when you need multiple related interactions in sequence
+    const user = userEvent.setup();
+
+    await step("Complex multi-step interaction", async () => {
+      const input = canvas.getByLabelText(/name/i);
+      await user.clear(input);
+      await user.type(input, "John Doe");
+      await user.tab();
+
+      const checkbox = canvas.getByRole("checkbox");
+      await user.click(checkbox);
+    });
+  }
+};
+```
+
+**When to use which approach:**
+
+- **Direct `userEvent`** (recommended):
+  - Simple, isolated interactions
+  - Single-step actions (click, type, tab)
+  - Most common use cases
+  - Cleaner, more readable code
+
+- **`userEvent.setup()`** (use sparingly):
+  - Complex multi-step interactions
+  - When you need advanced configuration options
+  - Sequential interactions that build on each other
+  - Performance-critical scenarios with many interactions
 
 **Waiting for Changes:**
 
