@@ -1,4 +1,4 @@
-type Currency = "PLN" | "EUR" | "USD";
+type Currency = "PLN" | "EUR" | "USD" | string;
 
 export type FormatMoneyOptions = {
   /**
