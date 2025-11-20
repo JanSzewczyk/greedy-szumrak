@@ -4,21 +4,9 @@ import { fn, userEvent, within, expect } from "storybook/test";
 import { ProductsForm } from "./products-form";
 
 const meta = {
-  title: "Features/Onboarding/ProductsForm",
+  title: "Features/Onboarding/Products Form",
   component: ProductsForm,
-  argTypes: {
-    defaultValues: {
-      description: "Default values for preferences",
-      control: "object"
-    },
-    onContinueAction: {
-      description: "Action to perform when continuing",
-      action: "continue"
-    }
-  },
-
-  decorators: [(story) => <div className="w-full max-w-xl">{story()}</div>],
-  tags: ["autodocs"]
+  decorators: [(story) => <div className="w-full max-w-xl">{story()}</div>]
 } satisfies Meta<typeof ProductsForm>;
 
 export default meta;

@@ -6,7 +6,8 @@ import { type CreateDto, type UpdateDto, type WithDates, type WithFirestoreTimes
 export const OnboardingSteps = {
   WELCOME: "/onboarding/welcome",
   PREFERENCES: "/onboarding/preferences",
-  SET_UP_BUDGETS: "/onboarding/set-up-budgets",
+  SET_UP_BUDGET: "/onboarding/set-up-budget",
+  BUDGET: "/onboarding/budget",
   CATEGORIES: "/onboarding/categories"
 } as const;
 export type OnboardingStep = (typeof OnboardingSteps)[keyof typeof OnboardingSteps];

@@ -6,21 +6,6 @@ import { PreferencesForm } from "./preferences-form";
 const meta = {
   title: "Features/Onboarding/PreferencesForm",
   component: PreferencesForm,
-  tags: ["autodocs"],
-  argTypes: {
-    defaultValues: {
-      description: "Default values for currency and date format",
-      control: "object"
-    },
-    onBackAction: {
-      description: "Action to perform when clicking back button",
-      action: "back"
-    },
-    onContinueAction: {
-      description: "Action to perform when continuing",
-      action: "continue"
-    }
-  },
   decorators: [(story) => <div className="w-full max-w-xl">{story()}</div>]
 } satisfies Meta<typeof PreferencesForm>;
 
