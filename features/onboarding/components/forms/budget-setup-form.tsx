@@ -26,32 +26,29 @@ import {
   toast
 } from "@szum-tech/design-system";
 import { type BudgetTemplate } from "~/features/budget/types/budget-template";
-import {
-  type BudgetChooseTemplateFormData,
-  budgetChooseTemplateSchema
-} from "~/features/onboarding/shemas/set-up-budget";
+import { type BudgetSetupFormData, budgetSetupSchema } from "~/features/onboarding/shemas/budget-setup";
 import { type OnboardingPreferences } from "~/features/onboarding/types/onboarding";
 import { type RedirectAction } from "~/lib/action-types";
 import { formatMoney } from "~/utils/format-money";
 
-export type SetUpBudgetsFormProps = {
+export type BudgetSetupFormProps = {
   budgetTemplates?: Array<BudgetTemplate>;
   onBackAction(): void;
-  onContinueAction(data: BudgetChooseTemplateFormData): RedirectAction;
-  defaultValues?: BudgetChooseTemplateFormData;
+  onContinueAction(data: BudgetSetupFormData): RedirectAction;
+  defaultValues?: BudgetSetupFormData;
   preferences: OnboardingPreferences;
 };
 
-export function SetUpBudgetsForm({
+export function BudgetSetupForm({
   budgetTemplates = [],
   onContinueAction,
   onBackAction,
   defaultValues,
   preferences: { currency }
-}: SetUpBudgetsFormProps) {
+}: BudgetSetupFormProps) {
   const form = useForm({
     defaultValues,
-    resolver: zodResolver(budgetChooseTemplateSchema)
+    resolver: zodResolver(budgetSetupSchema)
   });
 
   const [displayedMonthlyIncome, setDisplayedMonthlyIncome] = React.useState<number | null>(
@@ -70,7 +67,7 @@ export function SetUpBudgetsForm({
     }
   }
 
-  async function handleSubmit(data: BudgetChooseTemplateFormData) {
+  async function handleSubmit(data: BudgetSetupFormData) {
     const result = await onContinueAction(data);
     if (!result.success) {
       toast.error(result.error);

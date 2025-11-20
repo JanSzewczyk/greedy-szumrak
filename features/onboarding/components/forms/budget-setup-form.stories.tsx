@@ -1,13 +1,13 @@
 import { type Meta, type StoryObj } from "@storybook/react";
 import { expect, fn, userEvent, waitFor } from "storybook/test";
 import { createTestBudgetTemplate } from "~/features/budget/test/builders";
-import { SetUpBudgetsForm } from "~/features/onboarding/components/forms/set-up-budgets-form";
+import { BudgetSetupForm } from "~/features/onboarding/components/forms/budget-setup-form";
 import { onboardingBudgetBuilder, onboardingPreferencesBuilder } from "~/features/onboarding/test/builders";
 import { type RedirectAction } from "~/lib/action-types";
 
 const meta = {
-  title: "Features/Onboarding/Set Up Budgets Form",
-  component: SetUpBudgetsForm,
+  title: "Features/Onboarding/Budget Setup Form",
+  component: BudgetSetupForm,
   decorators: [(story) => <div className="w-full max-w-xl">{story()}</div>],
   args: {
     onContinueAction: fn(
@@ -20,7 +20,7 @@ const meta = {
     budgetTemplates: createTestBudgetTemplate.allPredefined(),
     preferences: onboardingPreferencesBuilder.one()
   }
-} satisfies Meta<typeof SetUpBudgetsForm>;
+} satisfies Meta<typeof BudgetSetupForm>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

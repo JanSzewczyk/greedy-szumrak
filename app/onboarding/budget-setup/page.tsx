@@ -2,19 +2,19 @@ import { auth } from "@clerk/nextjs/server";
 import { StepperContent } from "@szum-tech/design-system";
 import { notFound, redirect } from "next/navigation";
 import { getBudgetTemplates } from "~/features/budget/server/db/budget-templates";
-import { SetUpBudgetsForm } from "~/features/onboarding/components/forms/set-up-budgets-form";
+import { BudgetSetupForm } from "~/features/onboarding/components/forms/budget-setup-form";
 import { submitBudgetConfiguration } from "~/features/onboarding/server/actions/submit-budget-configuration";
 import { getOnboardingById } from "~/features/onboarding/server/db/onboarding";
-import { type BudgetChooseTemplateFormData } from "~/features/onboarding/shemas/set-up-budget";
+import { type BudgetSetupFormData } from "~/features/onboarding/shemas/budget-setup";
 import { OnboardingSteps } from "~/features/onboarding/types/onboarding";
 import { createLogger } from "~/lib/logger";
 
-const logger = createLogger({ module: "onboarding-set-up-budgets-page" });
+const logger = createLogger({ module: "onboarding-budget-setup-page" });
 
 async function loadData() {
   const { userId } = await auth();
 
-  logger.info({ userId }, "Loading onboarding set-up-budgets page data");
+  logger.info({ userId }, "Loading onboarding budget-setup page data");
 
   // Handle unauthenticated users
   if (!userId) {
@@ -61,7 +61,7 @@ async function loadData() {
   };
 }
 
-export default async function SetUpBudgetsPage() {
+export default async function BudgetSetupPage() {
   const { onboarding, budgetTemplates, preferences } = await loadData();
 
   async function handleBack() {
@@ -70,15 +70,15 @@ export default async function SetUpBudgetsPage() {
     redirect("/onboarding/preferences");
   }
 
-  async function handleSubmitBudgetConfiguration(data: BudgetChooseTemplateFormData) {
+  async function handleSubmitBudgetConfiguration(data: BudgetSetupFormData) {
     "use server";
 
     return await submitBudgetConfiguration(data, onboarding);
   }
 
   return (
-    <StepperContent value={OnboardingSteps.SET_UP_BUDGET}>
-      <SetUpBudgetsForm
+    <StepperContent value={OnboardingSteps.BUDGET_SETUP}>
+      <BudgetSetupForm
         budgetTemplates={budgetTemplates}
         onBackAction={handleBack}
         onContinueAction={handleSubmitBudgetConfiguration}

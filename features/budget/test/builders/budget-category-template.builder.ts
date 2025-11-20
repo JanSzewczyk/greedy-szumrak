@@ -55,7 +55,9 @@ export const budgetCategoryTemplateBuilder = build<BudgetCategoryTemplate>({
         "wallet"
       ] as IconName[])
     ),
-    color: perBuild(() => faker.helpers.arrayElement(["#EF4444", "#F59E0B", "#3B82F6", "#EC4899", "#8B5CF6", "#10B981"])),
+    color: perBuild(() =>
+      faker.helpers.arrayElement(["#EF4444", "#F59E0B", "#3B82F6", "#EC4899", "#8B5CF6", "#10B981"])
+    ),
     percentage: perBuild(() => faker.number.int({ min: 5, max: 30 })),
     order: sequence(),
     examples: perBuild(() =>

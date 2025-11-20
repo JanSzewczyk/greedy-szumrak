@@ -13,7 +13,8 @@ examples:
 
 # Storybook Testing Skill
 
-Generate comprehensive Storybook stories with interactive tests using `play` functions for React components. This skill helps create browser-based integration tests that verify component behavior, user interactions, and accessibility.
+Generate comprehensive Storybook stories with interactive tests using `play` functions for React components. This skill
+helps create browser-based integration tests that verify component behavior, user interactions, and accessibility.
 
 ## Context
 
@@ -29,12 +30,14 @@ This skill helps you write Storybook stories that include interactive tests. Sto
 ## Key Concepts
 
 **Storybook Stories Structure:**
+
 - Each story represents a specific component state or scenario
 - Stories use TypeScript for type safety
 - Meta configuration sets up component defaults and decorators
 - Play functions contain test assertions and interactions
 
 **Testing Philosophy:**
+
 - Test user-visible behavior, not implementation details
 - Use semantic queries (getByRole, getByLabelText) over test IDs
 - Test complete user flows, not just isolated actions
@@ -47,6 +50,7 @@ When the user asks to create Storybook tests for a component:
 ### 1. **Analyze the Component**
 
 Examine the component to identify:
+
 - Props and their types
 - User interactions (clicks, form inputs, selections)
 - Form validation rules and error states
@@ -683,6 +687,7 @@ For each component, consider creating stories for:
 ## Common Pitfalls to Avoid
 
 1. **Not awaiting async operations**
+
    ```typescript
    // ❌ Wrong
    userEvent.click(button);
@@ -694,6 +699,7 @@ For each component, consider creating stories for:
    ```
 
 2. **Not using waitFor for dynamic content**
+
    ```typescript
    // ❌ Wrong
    const message = canvas.getByText(/success/i);
@@ -706,7 +712,8 @@ For each component, consider creating stories for:
    });
    ```
 
-3. **Using getBy* for elements that might not exist**
+3. **Using getBy\* for elements that might not exist**
+
    ```typescript
    // ❌ Wrong (throws error if not found)
    const error = canvas.getByText(/error/i);
@@ -718,6 +725,7 @@ For each component, consider creating stories for:
    ```
 
 4. **Not handling portals correctly**
+
    ```typescript
    // ❌ Wrong (portal content not in canvas)
    await userEvent.click(dropdownTrigger);
@@ -730,21 +738,23 @@ For each component, consider creating stories for:
    ```
 
 5. **Not mocking functions properly**
+
    ```typescript
    // ❌ Wrong (no mock)
    args: {
-     onSubmit: async () => {} // Not trackable
+     onSubmit: async () => {}; // Not trackable
    }
 
    // ✅ Correct (with fn())
    args: {
-     onSubmit: fn(async () => ({ success: true }))
+     onSubmit: fn(async () => ({ success: true }));
    }
    ```
 
 ## Integration with Project
 
 **File Structure:**
+
 ```
 features/
   feature-name/
@@ -758,12 +768,14 @@ features/
 ```
 
 **Running Tests:**
+
 ```bash
 npm run test:storybook  # Run Storybook component tests
 npm run storybook:dev   # View stories in Storybook UI
 ```
 
 **Test Environment:**
+
 - Tests run in Chromium browser via Playwright
 - Setup: `tests/integration/vitest.setup.ts`
 - Uses @storybook/test for testing utilities

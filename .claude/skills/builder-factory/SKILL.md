@@ -17,8 +17,8 @@ Generate test-data-bot factory builders for TypeScript types to create mock data
 
 ## Context
 
-This skill helps you create builders using @jackfranklin/test-data-bot and @faker-js/faker/locale/pl for generating realistic
-Polish-localized mock data. Builders are used for:
+This skill helps you create builders using @jackfranklin/test-data-bot and @faker-js/faker/locale/pl for generating
+realistic Polish-localized mock data. Builders are used for:
 
 - Unit tests (Vitest)
 - Storybook stories
@@ -45,7 +45,6 @@ When the user provides a TypeScript type/interface or asks to create a factory f
    **CRITICAL: Builder names MUST exactly match the type name they build.**
 
    Follow these naming rules:
-
    - **Rule 1**: Builder name = camelCase(TypeName) + "Builder"
    - **Rule 2**: Use the EXACT type name, not the base type or intermediate type
    - **Rule 3**: File name = kebab-case of the type name + ".builder.ts"
@@ -79,8 +78,8 @@ When the user provides a TypeScript type/interface or asks to create a factory f
    ```
 
    **Special cases:**
-
    - For Firebase Base types (without timestamps), use the base type name:
+
      ```typescript
      export const onboardingBaseBuilder = build<OnboardingBase>({ ... });
      export const budgetTemplateBaseBuilder = build<BudgetTemplateBase>({ ... });

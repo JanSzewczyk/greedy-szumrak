@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker/locale/pl";
 import { build, perBuild } from "@jackfranklin/test-data-bot";
 import { type IconName } from "lucide-react/dynamic";
 import { BudgetProfile, type BudgetTemplate, type BudgetTemplateBase } from "~/features/budget/types/budget-template";
+
 import { templateAllocationBuilder } from "./template-allocation.builder";
 
 /**
@@ -72,13 +73,20 @@ export const budgetTemplateBaseBuilder = build<BudgetTemplateBase>({
       overrides: {
         id: BudgetProfile.YOUNG_PROFESSIONAL,
         name: "Young Professional",
-        description: "For people starting their professional career who want to balance work life with enjoyment and building their future.",
+        description:
+          "For people starting their professional career who want to balance work life with enjoyment and building their future.",
         icon: "briefcase",
         targetIncome: {
           min: 4000,
           max: 8000
         },
-        characteristics: ["Stable employment", "No dependents", "City living", "Active lifestyle", "Investing in career development"],
+        characteristics: [
+          "Stable employment",
+          "No dependents",
+          "City living",
+          "Active lifestyle",
+          "Investing in career development"
+        ],
         allocations: perBuild(() => [
           templateAllocationBuilder.one({ traits: ["needs"] }),
           templateAllocationBuilder.one({ traits: ["wants"] }),
@@ -97,7 +105,13 @@ export const budgetTemplateBaseBuilder = build<BudgetTemplateBase>({
           min: 6000,
           max: 12000
         },
-        characteristics: ["Children", "Homeowners or renting larger space", "Education costs", "Healthcare priority", "Family activities"],
+        characteristics: [
+          "Children",
+          "Homeowners or renting larger space",
+          "Education costs",
+          "Healthcare priority",
+          "Family activities"
+        ],
         allocations: perBuild(() => [
           templateAllocationBuilder.one({ traits: ["familyNeeds"] }),
           templateAllocationBuilder.one({
@@ -116,13 +130,20 @@ export const budgetTemplateBaseBuilder = build<BudgetTemplateBase>({
       overrides: {
         id: BudgetProfile.AGGRESSIVE_SAVER,
         name: "Aggressive Saver",
-        description: "For people who want to maximize savings and achieve financial independence quickly (FIRE approach).",
+        description:
+          "For people who want to maximize savings and achieve financial independence quickly (FIRE approach).",
         icon: "trending-up",
         targetIncome: {
           min: 5000,
           max: 10000
         },
-        characteristics: ["Minimalist lifestyle", "Strong financial discipline", "Long-term goals", "Investment focused", "FIRE oriented"],
+        characteristics: [
+          "Minimalist lifestyle",
+          "Strong financial discipline",
+          "Long-term goals",
+          "Investment focused",
+          "FIRE oriented"
+        ],
         allocations: perBuild(() => [
           templateAllocationBuilder.one({
             traits: ["needs"],
@@ -147,7 +168,13 @@ export const budgetTemplateBaseBuilder = build<BudgetTemplateBase>({
           min: 2000,
           max: 4000
         },
-        characteristics: ["Limited income", "Shared living", "Public transportation", "Budget conscious", "Learning to manage money"],
+        characteristics: [
+          "Limited income",
+          "Shared living",
+          "Public transportation",
+          "Budget conscious",
+          "Learning to manage money"
+        ],
         allocations: perBuild(() => [
           templateAllocationBuilder.one({
             traits: ["needs"],
@@ -275,13 +302,20 @@ export const budgetTemplateBuilder = build<BudgetTemplate>({
       overrides: {
         id: BudgetProfile.YOUNG_PROFESSIONAL,
         name: "Young Professional",
-        description: "For people starting their professional career who want to balance work life with enjoyment and building their future.",
+        description:
+          "For people starting their professional career who want to balance work life with enjoyment and building their future.",
         icon: "briefcase",
         targetIncome: {
           min: 4000,
           max: 8000
         },
-        characteristics: ["Stable employment", "No dependents", "City living", "Active lifestyle", "Investing in career development"],
+        characteristics: [
+          "Stable employment",
+          "No dependents",
+          "City living",
+          "Active lifestyle",
+          "Investing in career development"
+        ],
         allocations: perBuild(() => [
           templateAllocationBuilder.one({ traits: ["needs"] }),
           templateAllocationBuilder.one({ traits: ["wants"] }),
@@ -300,7 +334,13 @@ export const budgetTemplateBuilder = build<BudgetTemplate>({
           min: 6000,
           max: 12000
         },
-        characteristics: ["Children", "Homeowners or renting larger space", "Education costs", "Healthcare priority", "Family activities"],
+        characteristics: [
+          "Children",
+          "Homeowners or renting larger space",
+          "Education costs",
+          "Healthcare priority",
+          "Family activities"
+        ],
         allocations: perBuild(() => [
           templateAllocationBuilder.one({ traits: ["familyNeeds"] }),
           templateAllocationBuilder.one({
@@ -319,13 +359,20 @@ export const budgetTemplateBuilder = build<BudgetTemplate>({
       overrides: {
         id: BudgetProfile.AGGRESSIVE_SAVER,
         name: "Aggressive Saver",
-        description: "For people who want to maximize savings and achieve financial independence quickly (FIRE approach).",
+        description:
+          "For people who want to maximize savings and achieve financial independence quickly (FIRE approach).",
         icon: "trending-up",
         targetIncome: {
           min: 5000,
           max: 10000
         },
-        characteristics: ["Minimalist lifestyle", "Strong financial discipline", "Long-term goals", "Investment focused", "FIRE oriented"],
+        characteristics: [
+          "Minimalist lifestyle",
+          "Strong financial discipline",
+          "Long-term goals",
+          "Investment focused",
+          "FIRE oriented"
+        ],
         allocations: perBuild(() => [
           templateAllocationBuilder.one({
             traits: ["needs"],
@@ -350,7 +397,13 @@ export const budgetTemplateBuilder = build<BudgetTemplate>({
           min: 2000,
           max: 4000
         },
-        characteristics: ["Limited income", "Shared living", "Public transportation", "Budget conscious", "Learning to manage money"],
+        characteristics: [
+          "Limited income",
+          "Shared living",
+          "Public transportation",
+          "Budget conscious",
+          "Learning to manage money"
+        ],
         allocations: perBuild(() => [
           templateAllocationBuilder.one({
             traits: ["needs"],
