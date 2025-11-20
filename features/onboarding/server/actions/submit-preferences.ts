@@ -13,7 +13,7 @@ export async function submitPreferences(formData: PreferencesFormData, onboardin
   logger.info({ onboardingId: onboarding.id, formData }, "Submitting preferences step");
 
   const updateData: UpdateOnboardingDto = {
-    currentStep: OnboardingSteps.SET_UP_BUDGET,
+    currentStep: OnboardingSteps.BUDGET_SETUP,
     preferences: formData
   };
 
@@ -23,7 +23,7 @@ export async function submitPreferences(formData: PreferencesFormData, onboardin
     return { success: false, error: error.message };
   }
 
-  logger.info({ onboardingId: onboarding.id }, "Preferences saved successfully, redirecting to goals step");
+  logger.info({ onboardingId: onboarding.id }, "Preferences saved successfully, redirecting to budget setup step");
 
-  return redirect(OnboardingSteps.SET_UP_BUDGET);
+  return redirect(OnboardingSteps.BUDGET_SETUP);
 }

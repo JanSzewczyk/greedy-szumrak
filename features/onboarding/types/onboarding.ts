@@ -1,12 +1,12 @@
 import { type PreferencesFormData } from "~/features/onboarding/schema";
+import { type BudgetSetupFormData } from "~/features/onboarding/shemas/budget-setup";
 import { type ProductsFormData } from "~/features/onboarding/shemas/product";
-import { type BudgetChooseTemplateFormData } from "~/features/onboarding/shemas/set-up-budget";
 import { type CreateDto, type UpdateDto, type WithDates, type WithFirestoreTimestamps } from "~/lib/firebase/types";
 
 export const OnboardingSteps = {
   WELCOME: "/onboarding/welcome",
   PREFERENCES: "/onboarding/preferences",
-  SET_UP_BUDGET: "/onboarding/set-up-budget",
+  BUDGET_SETUP: "/onboarding/budget-setup",
   BUDGET: "/onboarding/budget",
   CATEGORIES: "/onboarding/categories"
 } as const;
@@ -14,7 +14,7 @@ export type OnboardingStep = (typeof OnboardingSteps)[keyof typeof OnboardingSte
 
 export type OnboardingProducts = ProductsFormData;
 export type OnboardingPreferences = PreferencesFormData;
-export type OnboardingBudget = BudgetChooseTemplateFormData;
+export type OnboardingBudget = BudgetSetupFormData;
 
 /**
  * Base type representing onboarding fields without timestamps

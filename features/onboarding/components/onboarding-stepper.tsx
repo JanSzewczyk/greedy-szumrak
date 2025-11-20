@@ -43,12 +43,12 @@ export function OnboardingStepper({ children, hideNav }: { children: React.React
             </div>
           </StepperTrigger>
         </StepperItem>
-        <StepperItem value={OnboardingSteps.SET_UP_BUDGET}>
+        <StepperItem value={OnboardingSteps.BUDGET_SETUP}>
           <StepperTrigger>
             <StepperIndicator>
               <SettingsIcon className="size-4" />
             </StepperIndicator>
-            <StepperTitle>Set up budgets</StepperTitle>
+            <StepperTitle>Budget Setup</StepperTitle>
           </StepperTrigger>
         </StepperItem>
         <StepperItem value={OnboardingSteps.CATEGORIES}>

@@ -2,10 +2,9 @@ import "server-only";
 
 import { DEFAULT_BUDGET_TEMPLATES } from "~/features/budget/data/predefined-budget-templates";
 import { type BudgetTemplate } from "~/features/budget/types/budget-template";
+import { db } from "~/lib/firebase";
 import { seedCollection, type SeedCollectionResult, shouldSeedCollection } from "~/lib/firebase/seeder";
 import { createLogger } from "~/lib/logger";
-import { db } from "~/lib/firebase";
-import type { Onboarding } from "~/features/onboarding/types/onboarding";
 
 const logger = createLogger({ module: "budget-templates-seeder" });
 

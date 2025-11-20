@@ -1,10 +1,10 @@
-import { build, perBuild } from "@jackfranklin/test-data-bot";
 import { faker } from "@faker-js/faker/locale/pl";
-import type { Onboarding, OnboardingBase } from "~/features/onboarding/types/onboarding";
-import { OnboardingSteps } from "~/features/onboarding/types/onboarding";
-import { onboardingProductsBuilder } from "./onboarding-products.builder";
-import { onboardingPreferencesBuilder } from "./onboarding-preferences.builder";
+import { build, perBuild } from "@jackfranklin/test-data-bot";
+import { type Onboarding, type OnboardingBase, OnboardingSteps } from "~/features/onboarding/types/onboarding";
+
 import { onboardingBudgetBuilder } from "./onboarding-budget.builder";
+import { onboardingPreferencesBuilder } from "./onboarding-preferences.builder";
+import { onboardingProductsBuilder } from "./onboarding-products.builder";
 
 /**
  * Builder for generating OnboardingBase test data (without id and timestamps).
@@ -52,7 +52,7 @@ export const onboardingBaseBuilder = build<OnboardingBase>({
       overrides: {
         completed: false,
         completedAt: null,
-        currentStep: OnboardingSteps.SET_UP_BUDGETS,
+        currentStep: OnboardingSteps.BUDGET_SETUP,
         products: perBuild(() => onboardingProductsBuilder.one({ traits: ["all"] })),
         preferences: perBuild(() => onboardingPreferencesBuilder.one({ traits: ["pln"] })),
         budget: perBuild(() => onboardingBudgetBuilder.one({ traits: ["youngProfessional"] }))
@@ -171,7 +171,7 @@ export const onboardingBuilder = build<Onboarding>({
       overrides: {
         completed: false,
         completedAt: null,
-        currentStep: OnboardingSteps.SET_UP_BUDGETS,
+        currentStep: OnboardingSteps.BUDGET_SETUP,
         products: perBuild(() => onboardingProductsBuilder.one({ traits: ["all"] })),
         preferences: perBuild(() => onboardingPreferencesBuilder.one({ traits: ["pln"] })),
         budget: perBuild(() => onboardingBudgetBuilder.one({ traits: ["youngProfessional"] }))

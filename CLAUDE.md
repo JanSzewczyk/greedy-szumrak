@@ -475,6 +475,7 @@ export async function submitAndRedirect(formData: FormData): RedirectAction {
 Cookie-based toast notifications for server-to-client messaging:
 
 **Architecture**:
+
 - `lib/toast/server/toast.cookie.ts` - Server-side cookie management
 - `lib/toast/components/toast-handler.tsx` - Client-side toast display
 - `components/providers.tsx` - Includes ToastHandler
