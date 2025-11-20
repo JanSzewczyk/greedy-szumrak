@@ -87,3 +87,24 @@ export async function getBudgetTemplates(): Promise<[null, Array<BudgetTemplate>
     return [error as Error, null];
   }
 }
+
+export async function getBudgetTemplateById(templateId: string): Promise<[null, BudgetTemplate] | [Error, null]> {
+  try {
+    logger.info({ templateId }, "Fetching budget template by ID");
+
+    const doc = await db.collection(BUDGET_TEMPLATES_COLLECTION).doc(templateId).get();
+
+    if (!doc.exists) {
+      logger.warn({ templateId }, "Budget template not found");
+      throw new Error(`Budget template with ID ${templateId} not found.`);
+    }
+
+    const data = transformFirestoreToBudgetTemplate(doc.id, doc.data()!);
+
+    logger.info({ templateId }, "Budget template fetched successfully");
+    return [null, data];
+  } catch (error) {
+    logger.error({ templateId, error }, "Error fetching budget template");
+    return [error as Error, null];
+  }
+}

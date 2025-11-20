@@ -23,7 +23,7 @@ export async function submitBudgetConfiguration(formData: BudgetSetupFormData, o
     return { success: false, error: error.message };
   }
 
-  logger.info({ onboardingId: onboarding.id }, "Budget configuration saved successfully, redirecting to budget step");
+  logger.info({ onboardingId: onboarding.id }, "Budget configuration saved successfully, redirecting to budget details step");
 
-  return redirect(OnboardingSteps.BUDGET);
+  return redirect(OnboardingSteps.BUDGET_DETAILS);
 }

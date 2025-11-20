@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { DocsContainer, type DocsContainerProps } from "@storybook/addon-docs/blocks";
-import { type Preview } from "@storybook/react";
+import { type Preview } from "@storybook/nextjs-vite";
 import { DARK_MODE_EVENT_NAME } from "@storybook-community/storybook-dark-mode";
 
 import dark from "./theme/dark";

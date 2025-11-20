@@ -19,14 +19,14 @@ async function loadData() {
   // Handle unauthenticated users
   if (!userId) {
     logger.warn("Unauthorized access attempt - no userId");
-    redirect("/sign-in");
+    throw redirect("/sign-in");
   }
 
   // Fetch onboarding data
   const [onboardingError, onboarding] = await getOnboardingById(userId);
   if (onboardingError) {
     logger.error({ userId, error: onboardingError }, "Failed to fetch onboarding data");
-    notFound();
+    throw notFound();
   }
 
   const { preferences } = onboarding;
