@@ -1,4 +1,4 @@
-import { type Meta, type StoryObj } from "@storybook/react";
+import { type Meta, type StoryObj } from "@storybook/nextjs-vite";
 import { expect, fn, userEvent, waitFor } from "storybook/test";
 import { createTestBudgetTemplate } from "~/features/budget/test/builders";
 import { BudgetSetupForm } from "~/features/onboarding/components/forms/budget-setup-form";

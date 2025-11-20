@@ -1,4 +1,4 @@
-import { type Meta, type StoryObj } from "@storybook/react";
+import { type Meta, type StoryObj } from "@storybook/nextjs-vite";
 import { fn, userEvent, within, expect } from "storybook/test";
 
 import { ProductsForm } from "./products-form";
