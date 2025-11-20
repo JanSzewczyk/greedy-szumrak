@@ -24,7 +24,7 @@ import { type RedirectAction } from "~/lib/action-types";
 
 export type PreferencesFormProps = {
   defaultValues?: PreferencesFormData;
-  onBackAction(): Promise<void> | void;
+  onBackAction(): void;
   onContinueAction(data: PreferencesFormData): RedirectAction;
 };
 
@@ -58,7 +58,13 @@ export function PreferencesForm({ onBackAction, defaultValues, onContinueAction 
             render={({ field: { onChange, ...fieldProps }, fieldState: { error } }) => (
               <Field>
                 <FieldLabel htmlFor="currency">Currency</FieldLabel>
-                <Select id="currency" placeholder="Select Your Currency" onValueChange={onChange} {...fieldProps}>
+                <Select
+                  id="currency"
+                  placeholder="Select Your Currency"
+                  onValueChange={onChange}
+                  invalid={!!error}
+                  {...fieldProps}
+                >
                   <SelectContent>
                     {currencyOptions.map((option) => (
                       <SelectItem key={option.value} value={option.value}>
@@ -78,7 +84,13 @@ export function PreferencesForm({ onBackAction, defaultValues, onContinueAction 
             render={({ field: { onChange, ...fieldProps }, fieldState: { error } }) => (
               <Field>
                 <FieldLabel htmlFor="dateFormat">Date Format</FieldLabel>
-                <Select id="dateFormat" placeholder="Select Date Format" onValueChange={onChange} {...fieldProps}>
+                <Select
+                  id="dateFormat"
+                  placeholder="Select Date Format"
+                  onValueChange={onChange}
+                  invalid={!!error}
+                  {...fieldProps}
+                >
                   <SelectContent>
                     {dateFormat.map((option) => (
                       <SelectItem key={option} value={option}>

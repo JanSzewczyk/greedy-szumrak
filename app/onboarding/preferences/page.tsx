@@ -3,7 +3,7 @@ import { StepperContent } from "@szum-tech/design-system";
 import { notFound, redirect } from "next/navigation";
 import { PreferencesForm } from "~/features/onboarding/components/forms/preferences-form";
 import { type PreferencesFormData } from "~/features/onboarding/schema";
-import { submitPreferencesStep } from "~/features/onboarding/server/actions/onboarding";
+import { submitPreferences } from "~/features/onboarding/server/actions/submit-preferences";
 import { getOnboardingById } from "~/features/onboarding/server/db/onboarding";
 import { OnboardingSteps } from "~/features/onboarding/types/onboarding";
 import logger from "~/lib/logger";
@@ -33,7 +33,7 @@ export default async function PreferencesPage() {
   async function handleSubmitPreferencesStep(data: PreferencesFormData) {
     "use server";
 
-    return await submitPreferencesStep(data, onboarding);
+    return await submitPreferences(data, onboarding);
   }
 
   return (
