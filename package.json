@@ -28,31 +28,25 @@
     "test:watch": "vitest watch --passWithNoTests",
     "type-check": "tsc --noEmit"
   },
-  "overrides": {
-    "@storybook-community/storybook-dark-mode": {
-      "storybook": "^10.0.6",
-      "@storybook/addon-docs": "^10.0.6"
-    }
-  },
   "dependencies": {
     "@clerk/nextjs": "^6.33.7",
-    "@clerk/themes": "^2.4.28",
+    "@clerk/themes": "^2.4.39",
     "@hookform/resolvers": "^5.2.2",
-    "@next/bundle-analyzer": "^16.0.1",
+    "@next/bundle-analyzer": "^16.0.3",
     "@szum-tech/design-system": "^3.4.0",
     "@t3-oss/env-nextjs": "^0.13.8",
     "@tailwindcss/postcss": "^4.1.14",
     "babel-plugin-react-compiler": "^1.0.0",
     "firebase-admin": "^13.5.0",
     "js-cookie": "^3.0.5",
-    "lucide-react": "^0.553.0",
-    "next": "^16.0.1",
+    "lucide-react": "^0.554.0",
+    "next": "^16.0.3",
     "next-compose-plugins": "^2.2.1",
     "pino": "^10.1.0",
     "pino-pretty": "^13.1.2",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-hook-form": "^7.64.0",
+    "react-hook-form": "^7.66.1",
     "server-only": "^0.0.1",
     "zod": "^4.1.12"
   },
@@ -61,7 +55,7 @@
     "@faker-js/faker": "^10.1.0",
     "@jackfranklin/test-data-bot": "^2.1.0",
     "@playwright/test": "^1.56.0",
-    "@storybook-community/storybook-dark-mode": "^6.0.8",
+    "@storybook-community/storybook-dark-mode": "^7.0.3",
     "@storybook/addon-a11y": "^10.0.8",
     "@storybook/addon-docs": "^10.0.8",
     "@storybook/addon-vitest": "^10.0.8",
@@ -75,16 +69,13 @@
     "@testing-library/user-event": "^14.6.1",
     "@total-typescript/ts-reset": "^0.6.1",
     "@types/js-cookie": "^3.0.6",
-    "@types/node": "^24.8.1",
-    "@types/react": "^19.2.2",
-    "@types/react-dom": "^19.2.2",
-    "@vitejs/plugin-react": "^5.0.4",
-    "@vitest/browser": "^4.0.8",
-    "@vitest/browser-playwright": "^4.0.8",
-    "@vitest/coverage-v8": "^4.0.8",
-    "@vitest/ui": "^4.0.8",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.6",
+    "@types/react-dom": "^19.2.3",
+    "@vitest/browser-playwright": "^4.0.13",
+    "@vitest/coverage-v8": "^4.0.13",
     "eslint": "^9.37.0",
-    "playwright": "^1.56.1",
+    "eslint-plugin-storybook": "10.0.8",
     "prettier": "^3.6.2",
     "semantic-release": "^24.2.9",
     "serve": "^14.2.5",
@@ -93,7 +84,6 @@
     "tailwindcss": "^4.1.11",
     "typescript": "^5.9.3",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^4.0.8",
-    "eslint-plugin-storybook": "10.0.8"
+    "vitest": "^4.0.13"
   }
 }
