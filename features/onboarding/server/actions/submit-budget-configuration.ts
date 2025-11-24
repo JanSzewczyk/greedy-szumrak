@@ -1,8 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { type BudgetSetupFormData } from "~/features/onboarding/schemas/budget-setup";
 import { updateOnboarding } from "~/features/onboarding/server/db/onboarding";
-import { type BudgetSetupFormData } from "~/features/onboarding/shemas/budget-setup";
 import { type Onboarding, OnboardingSteps, type UpdateOnboardingDto } from "~/features/onboarding/types/onboarding";
 import { type RedirectAction } from "~/lib/action-types";
 import { createLogger } from "~/lib/logger";
@@ -23,7 +23,10 @@ export async function submitBudgetConfiguration(formData: BudgetSetupFormData, o
     return { success: false, error: error.message };
   }
 
-  logger.info({ onboardingId: onboarding.id }, "Budget configuration saved successfully, redirecting to budget details step");
+  logger.info(
+    { onboardingId: onboarding.id },
+    "Budget configuration saved successfully, redirecting to budget details step"
+  );
 
   return redirect(OnboardingSteps.BUDGET_DETAILS);
 }

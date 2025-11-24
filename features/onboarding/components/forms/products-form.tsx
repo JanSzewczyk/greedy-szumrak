@@ -15,7 +15,7 @@ import {
   FieldSet,
   FieldTitle
 } from "@szum-tech/design-system";
-import { type ProductsFormData, productsSchema } from "~/features/onboarding/shemas/product";
+import { type ProductsFormData, productsSchema } from "~/features/onboarding/schemas/product";
 import { type RedirectAction } from "~/lib/action-types";
 
 export type ProductsFormProps = {
@@ -41,10 +41,10 @@ export function ProductsForm({ defaultValues, onContinueAction }: ProductsFormPr
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <FieldGroup>
-        <FieldSet>
-          <FieldTitle>What do you want to configure?</FieldTitle>
+      <FieldSet>
+        <FieldTitle>What do you want to configure?</FieldTitle>
 
+        <FieldGroup data-slot="checkbox-group">
           <Controller
             control={control}
             name="budget"
@@ -76,8 +76,8 @@ export function ProductsForm({ defaultValues, onContinueAction }: ProductsFormPr
               </FieldLabel>
             )}
           />
-        </FieldSet>
-      </FieldGroup>
+        </FieldGroup>
+      </FieldSet>
 
       <div className="mt-8 flex justify-end">
         <Button type="submit" fullWidth={!hasDefaultValues} loading={isSubmitting} endIcon={<ChevronRightIcon />}>
