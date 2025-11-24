@@ -26,7 +26,7 @@ import {
   toast
 } from "@szum-tech/design-system";
 import { type BudgetTemplate } from "~/features/budget/types/budget-template";
-import { type BudgetSetupFormData, budgetSetupSchema } from "~/features/onboarding/shemas/budget-setup";
+import { type BudgetSetupFormData, budgetSetupSchema } from "~/features/onboarding/schemas/budget-setup";
 import { type OnboardingPreferences } from "~/features/onboarding/types/onboarding";
 import { type RedirectAction } from "~/lib/action-types";
 import { formatMoney } from "~/utils/format-money";
