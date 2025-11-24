@@ -1,3 +1,5 @@
+import tsconfigPaths from "vite-tsconfig-paths";
+
 import { storybookTest } from "@storybook/addon-vitest/vitest-plugin";
 import { playwright } from "@vitest/browser-playwright";
 import { defineConfig } from "vitest/config";
@@ -44,8 +46,10 @@ export default defineConfig({
     projects: [
       // Unit tests project - runs in Node environment
       {
+        plugins: [tsconfigPaths()],
         test: {
           name: "unit",
+          globals: true,
           include: ["**/*.{test,spec}.{ts,tsx}"],
           environment: "node",
           setupFiles: ["./tests/unit/vitest.setup.ts"]
