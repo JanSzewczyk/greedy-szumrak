@@ -586,7 +586,7 @@ import { userBuilder, productBuilder } from "~/features/*/test/builders";
 export const WithTestData: Story = {
   args: {
     user: userBuilder.one(),
-    products: Array.from({ length: 3 }, () => productBuilder.one()),
+    products: productBuilder.many(4),
     onSubmit: fn()
   }
 };
