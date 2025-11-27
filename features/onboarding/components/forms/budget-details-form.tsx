@@ -2,29 +2,34 @@
 
 import * as React from "react";
 
+import clsx from "clsx";
 import { ChevronRightIcon, PlusIcon, TrashIcon } from "lucide-react";
-import { Controller, useFieldArray, useForm } from "react-hook-form";
+import { useFieldArray, useForm, useWatch } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Button,
-  Card,
-  CardContent,
   Field,
+  FieldContent,
   FieldDescription,
   FieldError,
   FieldGroup,
-  FieldLabel,
   FieldLegend,
+  FieldSeparator,
   FieldSet,
+  FieldTitle,
   Input,
-  Select,
-  SelectContent,
-  SelectItem,
+  Item,
+  Progress,
   toast
 } from "@szum-tech/design-system";
+import { DynamicIcon } from "lucide-react/dynamic";
 import { type BudgetTemplate } from "~/features/budget/types/budget-template";
-import { type BudgetDetailsFormData, budgetDetailsSchema } from "~/features/onboarding/shemas/budget-details";
+import {
+  type BudgetDetailsFormData,
+  budgetDetailsSchema,
+  templateToFormDefaults
+} from "~/features/onboarding/schemas/budget-details";
 import { type OnboardingPreferences } from "~/features/onboarding/types/onboarding";
 import { type RedirectAction } from "~/lib/action-types";
 import { formatMoney } from "~/utils/format-money";
@@ -46,32 +51,50 @@ export function BudgetDetailsForm({
   defaultValues,
   preferences: { currency }
 }: BudgetDetailsFormProps) {
+  const computedDefaultValues = React.useMemo(() => {
+    if (defaultValues) {
+      return defaultValues;
+    }
+    if (budgetTemplate) {
+      return templateToFormDefaults(budgetTemplate, monthlyIncome);
+    }
+    return {
+      budgetProfileId: "",
+      monthlyIncome,
+      allocations: [],
+      totalAllocated: 0,
+      totalPercentage: 0,
+      remainingAmount: monthlyIncome
+    };
+  }, [defaultValues, budgetTemplate, monthlyIncome]);
+
   const form = useForm<BudgetDetailsFormData>({
-    defaultValues: defaultValues ?? {
-      categories: budgetTemplate?.allocations.flatMap((allocation) =>
-        allocation.categories.map((category) => ({
-          categoryId: category.id,
-          amount: Math.round((monthlyIncome * category.percentage) / 100),
-          percentage: category.percentage
-        }))
-      ) ?? [],
-      totalAllocated: monthlyIncome,
-      remainingAmount: 0
-    },
+    defaultValues: computedDefaultValues,
     resolver: zodResolver(budgetDetailsSchema)
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields: allocationFields } = useFieldArray({
     control: form.control,
-    name: "categories"
+    name: "allocations"
   });
 
-  const watchedCategories = form.watch("categories");
-  const totalAllocated = React.useMemo(() => {
-    return watchedCategories.reduce((sum, cat) => sum + (cat.amount || 0), 0);
-  }, [watchedCategories]);
+  const watchedAllocations = useWatch({
+    control: form.control,
+    name: "allocations"
+  });
 
-  const remainingAmount = monthlyIncome - totalAllocated;
+  const { totalAllocated, remainingAmount, percentage } = React.useMemo(() => {
+    const total = (watchedAllocations ?? []).reduce(
+      (sum, allocation) => sum + allocation.categories.reduce((catSum, cat) => catSum + (cat.amount || 0), 0),
+      0
+    );
+
+    return {
+      totalAllocated: total,
+      remainingAmount: monthlyIncome - total,
+      percentage: Math.min(100, Math.round((total / monthlyIncome) * 100))
+    };
+  }, [watchedAllocations, monthlyIncome]);
 
   React.useEffect(() => {
     form.setValue("totalAllocated", totalAllocated);
@@ -85,147 +108,52 @@ export function BudgetDetailsForm({
     }
   }
 
-  const allCategories = budgetTemplate?.allocations.flatMap((allocation) => allocation.categories) ?? [];
-
   return (
     <form onSubmit={form.handleSubmit(handleSubmit)} className="container-xl mt-2">
       <FieldSet>
         <FieldLegend>Budget Details</FieldLegend>
         <FieldDescription>
-          Configure budget amounts for each category based on your monthly income of{" "}
-          {formatMoney(monthlyIncome, { currency, decimals: 0 })}
+          Configure budget amounts for each category based on <strong>{budgetTemplate?.name ?? "custom"}</strong>{" "}
+          template for {formatMoney(monthlyIncome, { currency, decimals: 0 })}
         </FieldDescription>
 
-        <FieldGroup>
-          <Card>
-            <CardContent>
-              <div className="mb-4 flex justify-between rounded bg-muted p-4">
-                <div>
-                  <div className="text-mute text-sm">Total Allocated</div>
-                  <div className="text-body-lg">{formatMoney(totalAllocated, { currency, decimals: 0 })}</div>
-                </div>
-                <div>
-                  <div className="text-mute text-sm">Remaining</div>
-                  <div
-                    className="text-body-lg"
-                    style={{
-                      color: remainingAmount < 0 ? "var(--color-error)" : "var(--color-success)"
-                    }}
-                  >
-                    {formatMoney(remainingAmount, { currency, decimals: 0 })}
-                  </div>
-                </div>
-              </div>
+        {/* Summary Section */}
+        <Item variant="muted">
+          <div className="w-full justify-between">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="">Total monthly budget</span>
+              <span className="text-heading-h4">{formatMoney(totalAllocated, { currency, decimals: 0 })}</span>
+            </div>
+            <Progress value={percentage} max={100} className="h-2" />
+            <div className="text-muted-foreground text-body-xs mt-1 flex justify-between">
+              <span>Allocated: {formatMoney(totalAllocated, { currency, decimals: 0 })}</span>
+              <span
+                className={clsx("transition-colors duration-500", remainingAmount < 0 ? "text-error" : "text-success")}
+              >
+                Remaining: {formatMoney(remainingAmount, { currency, decimals: 0 })}
+              </span>
+            </div>
+          </div>
+        </Item>
 
-              <div className="space-y-4">
-                {fields.map((field, index) => {
-                  const category = allCategories.find((cat) => cat.id === field.categoryId);
+        {/* Allocations grouped by type */}
+        {allocationFields.map((allocation, allocationIndex) => {
+          const watchedAllocation = watchedAllocations[allocationIndex];
+          if (!watchedAllocation) return null;
 
-                  return (
-                    <div key={field.id} className="flex gap-4 rounded border p-4">
-                      <div className="flex-1">
-                        <Controller
-                          control={form.control}
-                          name={`categories.${index}.categoryId`}
-                          render={({ field: fieldProps, fieldState }) => (
-                            <Field data-invalid={!!fieldState.error}>
-                              <FieldLabel>Category</FieldLabel>
-                              <Select
-                                value={fieldProps.value}
-                                onValueChange={fieldProps.onChange}
-                                placeholder="Select category"
-                                invalid={!!fieldState.error}
-                              >
-                                <SelectContent>
-                                  {allCategories.map((cat) => (
-                                    <SelectItem key={cat.id} value={cat.id}>
-                                      {cat.name}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                              <FieldError errors={[fieldState.error]} />
-                            </Field>
-                          )}
-                        />
-                        {category?.description && (
-                          <FieldDescription className="mt-1">{category.description}</FieldDescription>
-                        )}
-                      </div>
+          return (
+            <AllocationSection
+              key={allocation.id}
+              allocationIndex={allocationIndex}
+              allocation={watchedAllocation}
+              monthlyIncome={monthlyIncome}
+              currency={currency}
+              form={form}
+            />
+          );
+        })}
 
-                      <div className="w-32">
-                        <Field data-invalid={!!form.formState.errors.categories?.[index]?.amount}>
-                          <FieldLabel>Amount</FieldLabel>
-                          <Input
-                            type="number"
-                            invalid={!!form.formState.errors.categories?.[index]?.amount}
-                            placeholder="0"
-                            {...form.register(`categories.${index}.amount`, {
-                              valueAsNumber: true,
-                              onChange: (e) => {
-                                const amount = parseFloat(e.target.value) || 0;
-                                const percentage = (amount / monthlyIncome) * 100;
-                                form.setValue(`categories.${index}.percentage`, Math.round(percentage * 100) / 100);
-                              }
-                            })}
-                          />
-                          <FieldError errors={[form.formState.errors.categories?.[index]?.amount]} />
-                        </Field>
-                      </div>
-
-                      <div className="w-24">
-                        <Field data-invalid={!!form.formState.errors.categories?.[index]?.percentage}>
-                          <FieldLabel>%</FieldLabel>
-                          <Input
-                            type="number"
-                            invalid={!!form.formState.errors.categories?.[index]?.percentage}
-                            placeholder="0"
-                            {...form.register(`categories.${index}.percentage`, {
-                              valueAsNumber: true,
-                              onChange: (e) => {
-                                const percentage = parseFloat(e.target.value) || 0;
-                                const amount = Math.round((monthlyIncome * percentage) / 100);
-                                form.setValue(`categories.${index}.amount`, amount);
-                              }
-                            })}
-                          />
-                          <FieldError errors={[form.formState.errors.categories?.[index]?.percentage]} />
-                        </Field>
-                      </div>
-
-                      <div className="flex items-end">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => remove(index)}
-                          disabled={fields.length === 1}
-                        >
-                          <TrashIcon className="size-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  );
-                })}
-
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() =>
-                    append({
-                      categoryId: "",
-                      amount: 0,
-                      percentage: 0
-                    })
-                  }
-                  startIcon={<PlusIcon />}
-                >
-                  Add Category
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </FieldGroup>
+        {form.formState.errors.allocations ? <FieldError errors={[form.formState.errors.allocations]} /> : null}
       </FieldSet>
 
       <div className="mt-10 flex justify-between">
@@ -238,5 +166,120 @@ export function BudgetDetailsForm({
         </Button>
       </div>
     </form>
+  );
+}
+
+type AllocationSectionProps = {
+  allocationIndex: number;
+  allocation: BudgetDetailsFormData["allocations"][number];
+  monthlyIncome: number;
+  currency: string;
+  form: ReturnType<typeof useForm<BudgetDetailsFormData>>;
+};
+
+function AllocationSection({ allocationIndex, allocation, monthlyIncome, currency, form }: AllocationSectionProps) {
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: `allocations.${allocationIndex}.categories`
+  });
+
+  const allocationTarget = (monthlyIncome * allocation.percentage) / 100;
+  const allocationTotal = allocation.categories.reduce((sum, cat) => sum + (cat.amount || 0), 0);
+
+  // Update allocation amount when categories change
+  React.useEffect(() => {
+    form.setValue(`allocations.${allocationIndex}.amount`, allocationTotal);
+  }, [allocationTotal, allocationIndex, form]);
+
+  return (
+    <div className="mb-8">
+      <div className="mb-2 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <span className="text-heading-h4">
+            {allocation.label} ({allocation.percentage}%)
+          </span>
+        </div>
+        <div
+          className={clsx(
+            "text-body-sm transition-colors duration-500",
+            allocationTotal > allocationTarget
+              ? "text-error"
+              : allocationTotal === allocationTarget
+                ? "text-success"
+                : ""
+          )}
+        >
+          Allocated:{" "}
+          <strong>
+            {formatMoney(allocationTotal, { currency, decimals: 0 })}/
+            {formatMoney(allocationTarget, { currency, decimals: 0 })}
+          </strong>
+        </div>
+      </div>
+
+      <FieldGroup className="gap-3">
+        {fields.map((field, categoryIndex) => {
+          const category = allocation.categories[categoryIndex];
+
+          return (
+            <React.Fragment key={field.id}>
+              <FieldSeparator />
+              <Field orientation="responsive">
+                <FieldContent className="flex-row items-center gap-3">
+                  {category?.icon && (
+                    <div
+                      className="flex size-10 items-center justify-center rounded"
+                      style={{ backgroundColor: category.color + "20" }}
+                    >
+                      <DynamicIcon name={category.icon} className="size-5" style={{ color: category.color }} />
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <FieldTitle>{category?.name}</FieldTitle>
+                    {category?.description && <FieldDescription>{category.description}</FieldDescription>}
+                  </div>
+                </FieldContent>
+                <div className="flex items-center gap-2">
+                  <Input
+                    className="sm:w-28"
+                    type="number"
+                    aria-label={`Amount for ${category?.name}`}
+                    invalid={
+                      !!form.formState.errors.allocations?.[allocationIndex]?.categories?.[categoryIndex]?.amount
+                    }
+                    placeholder="0"
+                    {...form.register(`allocations.${allocationIndex}.categories.${categoryIndex}.amount`, {
+                      valueAsNumber: true,
+                      onChange: (e) => {
+                        const amount = parseFloat(e.target.value) || 0;
+                        const percentage = (amount / monthlyIncome) * 100;
+                        form.setValue(
+                          `allocations.${allocationIndex}.categories.${categoryIndex}.percentage`,
+                          Math.round(percentage * 100) / 100
+                        );
+                      }
+                    })}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => remove(categoryIndex)}
+                    disabled={fields.length === 1}
+                    aria-label={`Remove ${category?.name}`}
+                  >
+                    <TrashIcon className="size-4" />
+                  </Button>
+                </div>
+              </Field>
+            </React.Fragment>
+          );
+        })}
+
+        <Button variant="outline" size="sm" disabled startIcon={<PlusIcon />}>
+          Add Category
+        </Button>
+      </FieldGroup>
+    </div>
   );
 }
