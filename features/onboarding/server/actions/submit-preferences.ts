@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { type PreferencesFormData } from "~/features/onboarding/schema";
+import { type PreferencesFormData } from "~/features/onboarding/schemas/preferences";
 import { updateOnboarding } from "~/features/onboarding/server/db/onboarding";
 import { type Onboarding, OnboardingSteps, type UpdateOnboardingDto } from "~/features/onboarding/types/onboarding";
 import { type RedirectAction } from "~/lib/action-types";

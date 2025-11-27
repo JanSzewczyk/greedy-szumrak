@@ -24,6 +24,8 @@ const logger = createLogger({ module: "onboarding-welcome-page" });
 async function loadData() {
   const { userId, isAuthenticated } = await auth();
 
+  logger.info({ userId }, "Loading onboarding welcome page data");
+
   if (!isAuthenticated) {
     logger.warn("Unauthorized access attempt");
     throw unauthorized();
@@ -31,13 +33,17 @@ async function loadData() {
 
   const [, onboarding] = await getOnboardingById(userId);
 
-  logger.info(
-    {
-      userId,
-      onboardingId: onboarding?.id ?? "N/A"
-    },
-    "Successfully loaded page data"
-  );
+  if (onboarding) {
+    logger.info(
+      {
+        userId,
+        onboardingId: onboarding.id
+      },
+      "Returning user - loaded existing onboarding data"
+    );
+  } else {
+    logger.info({ userId }, "First-time visitor - onboarding will be created on continue");
+  }
 
   return { onboarding };
 }

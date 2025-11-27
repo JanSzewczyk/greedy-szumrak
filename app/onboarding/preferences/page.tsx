@@ -15,7 +15,6 @@ async function loadData() {
 
   logger.info({ userId }, "Loading onboarding preferences page data");
 
-  // Handle unauthenticated users
   if (!isAuthenticated) {
     logger.warn("Unauthorized access attempt");
     throw unauthorized();
@@ -44,7 +43,7 @@ export default async function PreferencesPage() {
   async function handleBack() {
     "use server";
 
-    redirect("/onboarding/welcome");
+    redirect(OnboardingSteps.WELCOME);
   }
 
   async function handleSubmitPreferencesStep(data: PreferencesFormData) {
