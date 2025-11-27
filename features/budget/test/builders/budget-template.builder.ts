@@ -421,22 +421,6 @@ export const budgetTemplateBuilder = build<BudgetTemplate>({
         isRecommended: false
       }
     },
-    custom: {
-      overrides: {
-        id: BudgetProfile.CUSTOM,
-        name: "Custom",
-        description: "Create your own budget allocation from scratch.",
-        icon: "settings",
-        targetIncome: {
-          min: 0,
-          max: 999999
-        },
-        characteristics: ["Fully customizable", "Your own rules", "Flexible approach"],
-        allocations: [],
-        totalPercentage: 0,
-        isRecommended: false
-      }
-    },
     inactive: {
       overrides: {
         isActive: false
@@ -473,38 +457,19 @@ export const createTestBudgetTemplate = {
    * Create a Student template (60/25/15 split)
    */
   student: () => budgetTemplateBuilder.one({ traits: ["student"] }),
-
   /**
-   * Create a Custom template (empty allocations)
-   */
-  custom: () => budgetTemplateBuilder.one({ traits: ["custom"] }),
-
-  /**
-   * Create all predefined templates (without custom)
-   */
-  allPredefined: () => [
-    budgetTemplateBuilder.one({ traits: ["youngProfessional"] }),
-    budgetTemplateBuilder.one({ traits: ["family"] }),
-    budgetTemplateBuilder.one({ traits: ["aggressiveSaver"] }),
-    budgetTemplateBuilder.one({ traits: ["student"] })
-  ],
-
-  /**
-   * Create all templates including custom
+   * Create all templates
    */
   all: () => [
     budgetTemplateBuilder.one({ traits: ["youngProfessional"] }),
     budgetTemplateBuilder.one({ traits: ["family"] }),
     budgetTemplateBuilder.one({ traits: ["aggressiveSaver"] }),
-    budgetTemplateBuilder.one({ traits: ["student"] }),
-    budgetTemplateBuilder.one({ traits: ["custom"] })
+    budgetTemplateBuilder.one({ traits: ["student"] })
   ],
-
   /**
    * Create multiple templates
    */
   list: (count: number) => Array.from({ length: count }, () => budgetTemplateBuilder.one()),
-
   /**
    * Create a recommended template
    */
@@ -512,7 +477,6 @@ export const createTestBudgetTemplate = {
     budgetTemplateBuilder.one({
       traits: ["youngProfessional", "recommended"]
     }),
-
   /**
    * Create an inactive template
    */

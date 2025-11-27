@@ -282,40 +282,41 @@ export const BackNavigation: Story = {
  * Tests selecting custom template option.
  */
 export const SelectCustomTemplate: Story = {
-  play: async ({ canvas, args, step }) => {
-    await step("Enter income (6000)", async () => {
-      const monthlyIncomeInput = canvas.getByLabelText(/what is your monthly net income/i);
-      await userEvent.type(monthlyIncomeInput, "6000");
-      await userEvent.tab();
-    });
-
-    await step("Wait for templates to appear", async () => {
-      await waitFor(async () => {
-        const budgetTemplateLabel = canvas.getByText(/choose a budget template/i);
-        await expect(budgetTemplateLabel).toBeInTheDocument();
-      });
-    });
-
-    await step("Select custom template", async () => {
-      const customRadio = canvas.getByRole("radio", { name: /custom template/i });
-      await userEvent.click(customRadio);
-      await expect(customRadio).toBeChecked();
-    });
-
-    await step("Submit form", async () => {
-      const continueButton = canvas.getByRole("button", { name: /continue/i });
-      await userEvent.click(continueButton);
-    });
-
-    await step("Verify submission with custom profile", async () => {
-      await waitFor(async () => {
-        await expect(args.onContinueAction).toHaveBeenCalledWith({
-          monthlyIncome: 6000,
-          budgetProfile: "custom"
-        });
-      });
-    });
-  }
+  // Enable in feature
+  // play: async ({ canvas, args, step }) => {
+  //   await step("Enter income (6000)", async () => {
+  //     const monthlyIncomeInput = canvas.getByLabelText(/what is your monthly net income/i);
+  //     await userEvent.type(monthlyIncomeInput, "6000");
+  //     await userEvent.tab();
+  //   });
+  //
+  //   await step("Wait for templates to appear", async () => {
+  //     await waitFor(async () => {
+  //       const budgetTemplateLabel = canvas.getByText(/choose a budget template/i);
+  //       await expect(budgetTemplateLabel).toBeInTheDocument();
+  //     });
+  //   });
+  //
+  //   await step("Select custom template", async () => {
+  //     const customRadio = canvas.getByRole("radio", { name: /custom template/i });
+  //     await userEvent.click(customRadio);
+  //     await expect(customRadio).toBeChecked();
+  //   });
+  //
+  //   await step("Submit form", async () => {
+  //     const continueButton = canvas.getByRole("button", { name: /continue/i });
+  //     await userEvent.click(continueButton);
+  //   });
+  //
+  //   await step("Verify submission with custom profile", async () => {
+  //     await waitFor(async () => {
+  //       await expect(args.onContinueAction).toHaveBeenCalledWith({
+  //         monthlyIncome: 6000,
+  //         budgetProfile: "custom"
+  //       });
+  //     });
+  //   });
+  // }
 };
 
 /**

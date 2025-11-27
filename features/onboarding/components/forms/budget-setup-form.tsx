@@ -119,11 +119,7 @@ export function BudgetSetupForm({
                           <FieldContent>
                             <FieldTitle>
                               {template.name}
-                              {template.isRecommended ? (
-                                <div>
-                                  <Badge>Recommended</Badge>
-                                </div>
-                              ) : null}
+                              {template.isRecommended ? <Badge>Recommended</Badge> : null}
                             </FieldTitle>
                             <FieldDescription>{template.description}</FieldDescription>
                             <ul className={`mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3`}>
@@ -147,9 +143,11 @@ export function BudgetSetupForm({
                     ))}
                     <FieldLabel>
                       <Field orientation="horizontal">
-                        <RadioGroupItem value="custom" />
+                        <RadioGroupItem value="custom" disabled />
                         <FieldContent>
-                          <FieldTitle>Custom Template</FieldTitle>
+                          <FieldTitle>
+                            Custom Template <Badge variant="secondary">WIP, Enable in feature</Badge>
+                          </FieldTitle>
                           <FieldDescription>Define categories and amounts according to your needs</FieldDescription>
                         </FieldContent>
                       </Field>

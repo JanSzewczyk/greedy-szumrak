@@ -3,9 +3,9 @@ import { StepperContent } from "@szum-tech/design-system";
 import { notFound, redirect } from "next/navigation";
 import { getBudgetTemplateById } from "~/features/budget/server/db/budget-templates";
 import { BudgetDetailsForm } from "~/features/onboarding/components/forms/budget-details-form";
+import { type BudgetDetailsFormData } from "~/features/onboarding/schemas/budget-details";
 import { submitBudgetDetails } from "~/features/onboarding/server/actions/submit-budget-details";
 import { getOnboardingById } from "~/features/onboarding/server/db/onboarding";
-import { type BudgetDetailsFormData } from "~/features/onboarding/shemas/budget-details";
 import { OnboardingSteps } from "~/features/onboarding/types/onboarding";
 import { createLogger } from "~/lib/logger";
 

@@ -1,7 +1,7 @@
 import { type PreferencesFormData } from "~/features/onboarding/schema";
-import { type BudgetDetailsFormData } from "~/features/onboarding/shemas/budget-details";
-import { type BudgetSetupFormData } from "~/features/onboarding/shemas/budget-setup";
-import { type ProductsFormData } from "~/features/onboarding/shemas/product";
+import { type BudgetDetailsFormData } from "~/features/onboarding/schemas/budget-details";
+import { type BudgetSetupFormData } from "~/features/onboarding/schemas/budget-setup";
+import { type ProductsFormData } from "~/features/onboarding/schemas/product";
 import { type CreateDto, type UpdateDto, type WithDates, type WithFirestoreTimestamps } from "~/lib/firebase/types";
 
 export const OnboardingSteps = {
