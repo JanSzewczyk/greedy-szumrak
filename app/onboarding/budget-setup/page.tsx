@@ -1,28 +1,27 @@
 import { auth } from "@clerk/nextjs/server";
 import { StepperContent } from "@szum-tech/design-system";
-import { notFound, redirect } from "next/navigation";
+import { notFound, redirect, unauthorized } from "next/navigation";
 import { getBudgetTemplates } from "~/features/budget/server/db/budget-templates";
 import { BudgetSetupForm } from "~/features/onboarding/components/forms/budget-setup-form";
+import { type BudgetSetupFormData } from "~/features/onboarding/schemas/budget-setup";
 import { submitBudgetConfiguration } from "~/features/onboarding/server/actions/submit-budget-configuration";
 import { getOnboardingById } from "~/features/onboarding/server/db/onboarding";
-import { type BudgetSetupFormData } from "~/features/onboarding/schemas/budget-setup";
 import { OnboardingSteps } from "~/features/onboarding/types/onboarding";
 import { createLogger } from "~/lib/logger";
 
 const logger = createLogger({ module: "onboarding-budget-setup-page" });
 
 async function loadData() {
-  const { userId } = await auth();
+  const { userId, isAuthenticated } = await auth();
 
   logger.info({ userId }, "Loading onboarding budget-setup page data");
 
   // Handle unauthenticated users
-  if (!userId) {
-    logger.warn("Unauthorized access attempt - no userId");
-    throw redirect("/sign-in");
+  if (!isAuthenticated) {
+    logger.warn("Unauthorized access attempt");
+    throw unauthorized();
   }
 
-  // Fetch onboarding data
   const [onboardingError, onboarding] = await getOnboardingById(userId);
   if (onboardingError) {
     logger.error({ userId, error: onboardingError }, "Failed to fetch onboarding data");

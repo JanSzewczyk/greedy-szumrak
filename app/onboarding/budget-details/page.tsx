@@ -19,7 +19,7 @@ async function loadData() {
   // Handle unauthenticated users
   if (!userId) {
     logger.warn("Unauthorized access attempt - no userId");
-    redirect("/sign-in");
+    throw redirect("/sign-in");
   }
 
   // Fetch onboarding data
@@ -71,13 +71,11 @@ export default async function BudgetDetailsPage() {
 
   async function handleBack() {
     "use server";
-
     redirect(OnboardingSteps.BUDGET_SETUP);
   }
 
   async function handleSubmitBudgetDetails(data: BudgetDetailsFormData) {
     "use server";
-
     return await submitBudgetDetails(data, onboarding);
   }
 

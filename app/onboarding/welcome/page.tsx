@@ -17,18 +17,27 @@ import { ProductsForm } from "~/features/onboarding/components/forms/products-fo
 import { startOnboarding } from "~/features/onboarding/server/actions/start-onboarding";
 import { getOnboardingById } from "~/features/onboarding/server/db/onboarding";
 import { OnboardingSteps } from "~/features/onboarding/types/onboarding";
-import logger from "~/lib/logger";
+import { createLogger } from "~/lib/logger";
+
+const logger = createLogger({ module: "onboarding-welcome-page" });
 
 async function loadData() {
   const { userId, isAuthenticated } = await auth();
 
   if (!isAuthenticated) {
-    logger.warn("User is not authenticated");
-    return unauthorized();
+    logger.warn("Unauthorized access attempt");
+    throw unauthorized();
   }
 
   const [, onboarding] = await getOnboardingById(userId);
-  logger.info("Onboarding welcome step loaded");
+
+  logger.info(
+    {
+      userId,
+      onboardingId: onboarding?.id ?? "N/A"
+    },
+    "Successfully loaded page data"
+  );
 
   return { onboarding };
 }
