@@ -16,7 +16,6 @@ async function loadData() {
 
   logger.info({ userId }, "Loading onboarding budget-setup page data");
 
-  // Handle unauthenticated users
   if (!isAuthenticated) {
     logger.warn("Unauthorized access attempt");
     throw unauthorized();
@@ -29,24 +28,21 @@ async function loadData() {
   }
 
   const { preferences } = onboarding;
-
   if (!preferences) {
-    logger.warn({ userId }, "Preferences data required, redirect to preferences step");
+    logger.warn({ userId, pageName: "budget-setup" }, "Preferences data required, redirect to preferences step");
     throw redirect(OnboardingSteps.PREFERENCES);
   }
 
-  // Fetch budget templates
   const [budgetTemplateError, budgetTemplates] = await getBudgetTemplates();
   if (budgetTemplateError) {
     logger.error({ userId, error: budgetTemplateError }, "Failed to fetch budget templates");
-    throw new Error("Failed to load budget templates. Please try again.");
+    throw notFound();
   }
 
   logger.info(
     {
       userId,
-      onboardingId: onboarding.id,
-      templateCount: budgetTemplates.length
+      onboardingId: onboarding.id
     },
     "Successfully loaded page data"
   );
@@ -54,7 +50,7 @@ async function loadData() {
   return {
     onboarding,
     budgetTemplates: budgetTemplates
-      ?.filter((budgetTemplate) => budgetTemplate.isActive)
+      .filter((budgetTemplate) => budgetTemplate.isActive)
       .sort((a, b) => (b.isRecommended === a.isRecommended ? 0 : b.isRecommended ? 1 : -1)),
     preferences
   };
@@ -66,7 +62,7 @@ export default async function BudgetSetupPage() {
   async function handleBack() {
     "use server";
 
-    redirect("/onboarding/preferences");
+    redirect(OnboardingSteps.PREFERENCES);
   }
 
   async function handleSubmitBudgetConfiguration(data: BudgetSetupFormData) {

@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { StepperContent } from "@szum-tech/design-system";
-import { notFound, redirect } from "next/navigation";
+import { notFound, redirect, unauthorized } from "next/navigation";
 import { getBudgetTemplateById } from "~/features/budget/server/db/budget-templates";
 import { BudgetDetailsForm } from "~/features/onboarding/components/forms/budget-details-form";
 import { type BudgetDetailsFormData } from "~/features/onboarding/schemas/budget-details";
@@ -12,48 +12,46 @@ import { createLogger } from "~/lib/logger";
 const logger = createLogger({ module: "onboarding-budget-details-page" });
 
 async function loadData() {
-  const { userId } = await auth();
+  const { userId, isAuthenticated } = await auth();
 
   logger.info({ userId }, "Loading onboarding budget-details page data");
 
-  // Handle unauthenticated users
-  if (!userId) {
-    logger.warn("Unauthorized access attempt - no userId");
-    throw redirect("/sign-in");
+  if (!isAuthenticated) {
+    logger.warn("Unauthorized access attempt");
+    unauthorized();
   }
 
-  // Fetch onboarding data
   const [onboardingError, onboarding] = await getOnboardingById(userId);
   if (onboardingError) {
     logger.error({ userId, error: onboardingError }, "Failed to fetch onboarding data");
-    throw notFound();
+    notFound();
   }
 
   const { preferences, budget } = onboarding;
 
   if (!preferences) {
     logger.warn({ userId }, "Preferences data required, redirect to preferences step");
-    throw redirect(OnboardingSteps.PREFERENCES);
+    redirect(OnboardingSteps.PREFERENCES);
   }
 
   if (!budget) {
     logger.warn({ userId }, "Budget configuration required, redirect to budget-setup step");
-    throw redirect(OnboardingSteps.BUDGET_SETUP);
+    redirect(OnboardingSteps.BUDGET_SETUP);
   }
 
-  // Fetch selected budget template
   const [budgetTemplateError, budgetTemplate] = await getBudgetTemplateById(budget.budgetProfile);
   if (budgetTemplateError) {
-    logger.error({ userId, error: budgetTemplateError }, "Failed to fetch budget template");
-    throw new Error("Failed to load budget template. Please try again.");
+    logger.error(
+      { userId, budgetProfile: budget.budgetProfile, error: budgetTemplateError },
+      "Budget template not found"
+    );
+    notFound();
   }
 
   logger.info(
     {
       userId,
-      onboardingId: onboarding.id,
-      budgetProfile: budget.budgetProfile,
-      monthlyIncome: budget.monthlyIncome
+      onboardingId: onboarding.id
     },
     "Successfully loaded page data"
   );
