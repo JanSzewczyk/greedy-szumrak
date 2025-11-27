@@ -19,7 +19,7 @@ import {
   toast
 } from "@szum-tech/design-system";
 import { currencyOptions, dateFormat } from "~/features/onboarding/constants/preferences";
-import { type PreferencesFormData, preferencesSchema } from "~/features/onboarding/schema";
+import { type PreferencesFormData, preferencesSchema } from "~/features/onboarding/schemas/preferences";
 import { type RedirectAction } from "~/lib/action-types";
 
 export type PreferencesFormProps = {
