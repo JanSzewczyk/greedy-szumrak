@@ -2,8 +2,8 @@ import { faker } from "@faker-js/faker/locale/pl";
 import { build, perBuild } from "@jackfranklin/test-data-bot";
 import { type Onboarding, type OnboardingBase, OnboardingSteps } from "~/features/onboarding/types/onboarding";
 
-import { onboardingBudgetBuilder } from "./onboarding-budget.builder";
 import { onboardingBudgetDetailsBuilder } from "./onboarding-budget-details.builder";
+import { onboardingBudgetBuilder } from "./onboarding-budget.builder";
 import { onboardingPreferencesBuilder } from "./onboarding-preferences.builder";
 import { onboardingProductsBuilder } from "./onboarding-products.builder";
 

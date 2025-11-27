@@ -23,7 +23,7 @@ export function OnboardingStepper({ children, hideNav }: { children: React.React
 
   return (
     <Stepper value={pathname} onValueChange={(value) => router.push(value)}>
-      <StepperNav className={hideNav ? "invisible" : ""}>
+      <StepperNav aria-label="Onboarding stepper" className={hideNav ? "invisible" : ""}>
         <StepperItem value={OnboardingSteps.WELCOME}>
           <StepperTrigger>
             <StepperIndicator>
@@ -49,6 +49,14 @@ export function OnboardingStepper({ children, hideNav }: { children: React.React
               <SettingsIcon className="size-4" />
             </StepperIndicator>
             <StepperTitle>Budget Setup</StepperTitle>
+          </StepperTrigger>
+        </StepperItem>
+        <StepperItem value={OnboardingSteps.BUDGET_DETAILS}>
+          <StepperTrigger>
+            <StepperIndicator>
+              <SettingsIcon className="size-4" />
+            </StepperIndicator>
+            <StepperTitle>Budget Details</StepperTitle>
           </StepperTrigger>
         </StepperItem>
         <StepperItem value={OnboardingSteps.CATEGORIES}>
