@@ -17,7 +17,7 @@ const meta = {
         }) as unknown as RedirectAction
     ),
     onBackAction: fn(),
-    budgetTemplates: createTestBudgetTemplate.allPredefined(),
+    budgetTemplates: createTestBudgetTemplate.all(),
     preferences: onboardingPreferencesBuilder.one()
   }
 } satisfies Meta<typeof BudgetSetupForm>;
