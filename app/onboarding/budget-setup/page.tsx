@@ -5,7 +5,7 @@ import { getBudgetTemplates } from "~/features/budget/server/db/budget-templates
 import { BudgetSetupForm } from "~/features/onboarding/components/forms/budget-setup-form";
 import { submitBudgetConfiguration } from "~/features/onboarding/server/actions/submit-budget-configuration";
 import { getOnboardingById } from "~/features/onboarding/server/db/onboarding";
-import { type BudgetSetupFormData } from "~/features/onboarding/shemas/budget-setup";
+import { type BudgetSetupFormData } from "~/features/onboarding/schemas/budget-setup";
 import { OnboardingSteps } from "~/features/onboarding/types/onboarding";
 import { createLogger } from "~/lib/logger";
 
