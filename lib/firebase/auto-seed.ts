@@ -1,9 +1,9 @@
 import "server-only";
 
-import { budgetTemplates } from "~/features/budget/server/db/budget-templates";
+import { seedBudgetTemplates } from "~/features/budget/server/db/budget-templates";
 import { createLogger } from "~/lib/logger";
 
-const logger = createLogger({ module: "auto-seed" });
+const logger = createLogger({ module: "firebase-auto-seed" });
 
 let seedingInitialized = false;
 let seedingInProgress = false;
@@ -24,10 +24,16 @@ export async function autoSeedDatabase() {
   logger.info("Starting automatic database seeding");
 
   // Seed budget templates
-  const [error] = await budgetTemplates({ force: false });
+  const [error] = await seedBudgetTemplates({ force: false });
 
   if (error) {
-    logger.error({ error }, "Automatic database seeding failed");
+    logger.error(
+      {
+        errorCode: error.code,
+        isRetryable: error.isRetryable
+      },
+      "Automatic database seeding failed"
+    );
   } else {
     seedingInitialized = true;
     logger.info("Automatic database seeding completed successfully");

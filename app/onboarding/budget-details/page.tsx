@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { StepperContent } from "@szum-tech/design-system";
-import { notFound, redirect, unauthorized } from "next/navigation";
+import { redirect } from "next/navigation";
 import { getBudgetTemplateById } from "~/features/budget/server/db/budget-templates";
 import { BudgetDetailsForm } from "~/features/onboarding/components/forms/budget-details-form";
 import { type BudgetDetailsFormData } from "~/features/onboarding/schemas/budget-details";
@@ -12,11 +12,12 @@ import { createLogger } from "~/lib/logger";
 const logger = createLogger({ module: "onboarding-budget-details-page" });
 
 async function loadData() {
-  const { userId, isAuthenticated } = await auth();
+  const { userId } = await auth();
 
-  if (!isAuthenticated) {
-    logger.warn("Unauthorized access attempt");
-    unauthorized();
+  // Proxy.ts enforces authentication, but defensive check for type safety
+  if (!userId) {
+    logger.error("No userId despite proxy authentication");
+    redirect("/sign-in");
   }
 
   logger.info({ userId }, "Loading onboarding budget-details page data");
@@ -26,11 +27,18 @@ async function loadData() {
     logger.error(
       {
         userId,
-        error: onboardingError
+        errorCode: onboardingError.code,
+        isRetryable: onboardingError.isRetryable
       },
-      onboardingError.message
+      "Failed to load onboarding data"
     );
-    notFound();
+    if (onboardingError.isNotFound) {
+      redirect(OnboardingSteps.WELCOME);
+    }
+    if (onboardingError.isRetryable) {
+      throw onboardingError;
+    }
+    throw new Error("Unable to access onboarding data");
   }
 
   const { preferences, budget } = onboarding;
@@ -45,16 +53,24 @@ async function loadData() {
 
   if (!budget) {
     logger.warn(
-      { userId, currentStep: onboarding.currentStep },
-      "Budget configuration required, redirecting to budget-setup step"
+      { userId, currentStep: onboarding.currentStep, hasBudget: !!budget },
+      "Budget configuration incomplete, redirecting to budget-setup step"
     );
     redirect(OnboardingSteps.BUDGET_SETUP);
   }
 
   const [budgetTemplateError, budgetTemplate] = await getBudgetTemplateById(budget.budgetProfile);
   if (budgetTemplateError) {
-    logger.error({ userId, error: budgetTemplateError }, "Budget template not found");
-    notFound();
+    logger.error(
+      {
+        userId,
+        budgetProfile: budget.budgetProfile,
+        errorCode: budgetTemplateError.code,
+        isRetryable: budgetTemplateError.isRetryable
+      },
+      "Failed to load budget template"
+    );
+    throw budgetTemplateError;
   }
 
   logger.info(

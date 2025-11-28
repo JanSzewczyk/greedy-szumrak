@@ -9,4 +9,4 @@ export const preferencesSchema = z.object({
     .min(1, "Please select your preferred date format")
 });
 
-export type PreferencesFormData = z.infer<typeof preferencesSchema>;
+export type PreferencesFormData = z.input<typeof preferencesSchema>;

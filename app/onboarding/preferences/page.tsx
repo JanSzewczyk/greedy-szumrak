@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { StepperContent } from "@szum-tech/design-system";
-import { notFound, redirect, unauthorized } from "next/navigation";
+import { redirect } from "next/navigation";
 import { PreferencesForm } from "~/features/onboarding/components/forms/preferences-form";
 import { type PreferencesFormData } from "~/features/onboarding/schemas/preferences";
 import { submitPreferences } from "~/features/onboarding/server/actions/submit-preferences";
@@ -11,11 +11,12 @@ import { createLogger } from "~/lib/logger";
 const logger = createLogger({ module: "onboarding-preferences-page" });
 
 async function loadData() {
-  const { userId, isAuthenticated } = await auth();
+  const { userId } = await auth();
 
-  if (!isAuthenticated) {
-    logger.warn("Unauthorized access attempt");
-    unauthorized();
+  // Proxy.ts enforces authentication, but defensive check for type safety
+  if (!userId) {
+    logger.error("No userId despite proxy authentication");
+    redirect("/sign-in");
   }
 
   logger.info({ userId }, "Loading onboarding preferences page data");
@@ -25,11 +26,22 @@ async function loadData() {
     logger.error(
       {
         userId,
-        error
+        errorCode: error.code,
+        isRetryable: error.isRetryable
       },
-      error.message
+      "Failed to load onboarding data"
     );
-    notFound();
+
+    if (error.isNotFound) {
+      redirect(OnboardingSteps.WELCOME);
+    }
+
+    if (error.isRetryable) {
+      // Transient error - let error.tsx handle with retry UI
+      throw error;
+    }
+
+    throw new Error("Unable to access onboarding data");
   }
 
   logger.info(

@@ -3,12 +3,14 @@ import "server-only";
 import { DEFAULT_BUDGET_TEMPLATES } from "~/features/budget/data/predefined-budget-templates";
 import { type BudgetTemplate } from "~/features/budget/types/budget-template";
 import { db } from "~/lib/firebase";
+import { categorizeDbError, DbError } from "~/lib/firebase/errors";
 import { seedCollection, type SeedCollectionResult, shouldSeedCollection } from "~/lib/firebase/seeder";
 import { createLogger } from "~/lib/logger";
 
-const logger = createLogger({ module: "budget-templates-seeder" });
+const logger = createLogger({ module: "budget-templates-db" });
 
-const BUDGET_TEMPLATES_COLLECTION = "budget-templates";
+const COLLECTION_NAME = "budget-templates";
+const RESOURCE_NAME = "BudgetTemplate";
 
 function transformFirestoreToBudgetTemplate(docId: string, data: FirebaseFirestore.DocumentData): BudgetTemplate {
   return {
@@ -33,9 +35,9 @@ export type SeedBudgetTemplatesResult =
  * Seeds predefined budget templates into Firestore
  * Only creates templates that don't exist
  */
-export async function budgetTemplates(
+export async function seedBudgetTemplates(
   options: { force?: boolean } = {}
-): Promise<[null, SeedBudgetTemplatesResult] | [Error, null]> {
+): Promise<[null, SeedBudgetTemplatesResult] | [DbError, null]> {
   const { force = false } = options;
 
   try {
@@ -43,7 +45,7 @@ export async function budgetTemplates(
 
     // Check if seeding is needed (unless force is true)
     if (!force) {
-      const needsSeeding = await shouldSeedCollection(BUDGET_TEMPLATES_COLLECTION, DEFAULT_BUDGET_TEMPLATES.length);
+      const needsSeeding = await shouldSeedCollection(COLLECTION_NAME, DEFAULT_BUDGET_TEMPLATES.length);
 
       if (!needsSeeding) {
         logger.info("Budget templates collection already populated, skipping seed");
@@ -53,7 +55,7 @@ export async function budgetTemplates(
 
     // Seed the collection
     const stats = await seedCollection({
-      collectionName: BUDGET_TEMPLATES_COLLECTION,
+      collectionName: COLLECTION_NAME,
       data: DEFAULT_BUDGET_TEMPLATES,
       forceUpdate: force
     });
@@ -62,20 +64,28 @@ export async function budgetTemplates(
 
     return [null, { skipped: false, stats }];
   } catch (error) {
-    logger.error({ error }, "Failed to seed budget templates");
-    return [error as Error, null];
+    const dbError = categorizeDbError(error, RESOURCE_NAME);
+    logger.error(
+      {
+        errorCode: dbError.code,
+        isRetryable: dbError.isRetryable
+      },
+      "Failed to seed budget templates"
+    );
+    return [dbError, null];
   }
 }
 
-export async function getBudgetTemplates(): Promise<[null, Array<BudgetTemplate>] | [Error, null]> {
+export async function getBudgetTemplates(): Promise<[null, Array<BudgetTemplate>] | [DbError, null]> {
   try {
     logger.info("Fetching budget templates");
 
-    const budgetTemplatesDocs = await db.collection(BUDGET_TEMPLATES_COLLECTION).get();
+    const budgetTemplatesDocs = await db.collection(COLLECTION_NAME).get();
 
     if (budgetTemplatesDocs.empty) {
-      logger.warn("Budget templates collection is empty");
-      throw new Error("Budget templates not found.");
+      const error = DbError.notFound(RESOURCE_NAME);
+      logger.warn({ errorCode: error.code }, "Budget templates collection is empty");
+      return [error, null];
     }
 
     const data = budgetTemplatesDocs.docs.map((doc) => transformFirestoreToBudgetTemplate(doc.id, doc.data()));
@@ -83,28 +93,56 @@ export async function getBudgetTemplates(): Promise<[null, Array<BudgetTemplate>
     logger.info({ count: data.length }, "Budget templates fetched successfully");
     return [null, data];
   } catch (error) {
-    logger.error({ error }, "Error fetching budget templates");
-    return [error as Error, null];
+    const dbError = categorizeDbError(error, RESOURCE_NAME);
+    logger.error(
+      {
+        errorCode: dbError.code,
+        isRetryable: dbError.isRetryable
+      },
+      "Error fetching budget templates"
+    );
+    return [dbError, null];
   }
 }
 
-export async function getBudgetTemplateById(templateId: string): Promise<[null, BudgetTemplate] | [Error, null]> {
+export async function getBudgetTemplateById(templateId: string): Promise<[null, BudgetTemplate] | [DbError, null]> {
+  // Input validation
+  if (!templateId || templateId.trim() === "") {
+    const error = DbError.validation("Invalid templateId provided");
+    logger.warn({ templateId, errorCode: error.code }, "Invalid templateId provided");
+    return [error, null];
+  }
+
   try {
     logger.info({ templateId }, "Fetching budget template by ID");
 
-    const doc = await db.collection(BUDGET_TEMPLATES_COLLECTION).doc(templateId).get();
+    const doc = await db.collection(COLLECTION_NAME).doc(templateId).get();
 
     if (!doc.exists) {
-      logger.warn({ templateId }, "Budget template not found");
-      throw new Error(`Budget template with ID ${templateId} not found.`);
+      const error = DbError.notFound(RESOURCE_NAME);
+      logger.warn({ templateId, errorCode: error.code }, "Budget template not found");
+      return [error, null];
     }
 
-    const data = transformFirestoreToBudgetTemplate(doc.id, doc.data()!);
+    const data = doc.data();
+    if (!data) {
+      const error = DbError.dataCorruption(RESOURCE_NAME);
+      logger.error({ templateId, errorCode: error.code }, "Budget template exists but data is undefined");
+      return [error, null];
+    }
 
     logger.info({ templateId }, "Budget template fetched successfully");
-    return [null, data];
+    return [null, transformFirestoreToBudgetTemplate(doc.id, data)];
   } catch (error) {
-    logger.error({ templateId, error }, "Error fetching budget template");
-    return [error as Error, null];
+    const dbError = categorizeDbError(error, RESOURCE_NAME);
+    logger.error(
+      {
+        templateId,
+        errorCode: dbError.code,
+        isRetryable: dbError.isRetryable
+      },
+      "Error fetching budget template"
+    );
+    return [dbError, null];
   }
 }
