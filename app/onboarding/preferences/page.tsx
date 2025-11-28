@@ -13,17 +13,23 @@ const logger = createLogger({ module: "onboarding-preferences-page" });
 async function loadData() {
   const { userId, isAuthenticated } = await auth();
 
-  logger.info({ userId }, "Loading onboarding preferences page data");
-
   if (!isAuthenticated) {
     logger.warn("Unauthorized access attempt");
-    throw unauthorized();
+    unauthorized();
   }
+
+  logger.info({ userId }, "Loading onboarding preferences page data");
 
   const [error, onboarding] = await getOnboardingById(userId);
   if (error) {
-    logger.error({ userId, error }, "Failed to fetch onboarding data");
-    throw notFound();
+    logger.error(
+      {
+        userId,
+        error
+      },
+      error.message
+    );
+    notFound();
   }
 
   logger.info(
@@ -42,13 +48,11 @@ export default async function PreferencesPage() {
 
   async function handleBack() {
     "use server";
-
     redirect(OnboardingSteps.WELCOME);
   }
 
   async function handleSubmitPreferencesStep(data: PreferencesFormData) {
     "use server";
-
     return await submitPreferences(data, onboarding);
   }
 

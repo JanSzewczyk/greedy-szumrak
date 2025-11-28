@@ -7,9 +7,12 @@ import {
   type UpdateOnboardingDto
 } from "~/features/onboarding/types/onboarding";
 import { db } from "~/lib/firebase";
+import { categorizeDbError, DbError } from "~/lib/firebase/errors";
 import { createLogger } from "~/lib/logger";
 
 const logger = createLogger({ module: "onboarding-db" });
+const COLLECTION_NAME = "onboarding";
+const RESOURCE_NAME = "Onboarding";
 
 /**
  * Transforms Firestore document data to application Onboarding type
@@ -25,34 +28,58 @@ function transformFirestoreToOnboarding(docId: string, data: FirebaseFirestore.D
   } as Onboarding;
 }
 
-export async function getOnboardingById(userId: string): Promise<[null, Onboarding] | [Error, null]> {
+export async function getOnboardingById(userId: string): Promise<[null, Onboarding] | [DbError, null]> {
+  // Input validation
+  if (!userId || userId.trim() === "") {
+    const error = DbError.validation("Invalid userId provided");
+    logger.warn({ userId, error }, "Invalid userId provided");
+    return [error, null];
+  }
+
   try {
     logger.info({ userId }, "Fetching onboarding by userId");
 
-    const onboardingDoc = await db.collection("onboarding").doc(userId).get();
+    const onboardingDoc = await db.collection(COLLECTION_NAME).doc(userId).get();
 
     if (!onboardingDoc.exists) {
-      logger.info({ userId }, "Onboarding document not found");
-      throw new Error("Onboarding not found.");
+      const error = DbError.notFound(RESOURCE_NAME);
+      logger.warn({ userId, error }, "Onboarding document not found");
+      return [error, null];
     }
 
     const data = onboardingDoc.data();
     if (!data) {
-      throw new Error("Onboarding data is undefined.");
+      const error = DbError.dataCorruption(RESOURCE_NAME);
+      logger.error({ userId, error }, "Onboarding document exists but data is undefined");
+      return [error, null];
     }
 
     logger.info({ userId }, "Onboarding document found successfully");
     return [null, transformFirestoreToOnboarding(onboardingDoc.id, data)];
   } catch (error) {
-    logger.error({ userId, error }, "Error fetching onboarding by userId");
-    return [error as Error, null];
+    const dbError = categorizeDbError(error, RESOURCE_NAME);
+    logger.error(
+      {
+        userId,
+        error
+      },
+      "Error fetching onboarding by userId"
+    );
+    return [dbError, null];
   }
 }
 
 export async function createOnboardingByUserId(
   userId: string,
   products: OnboardingProducts
-): Promise<[null, Onboarding] | [Error, null]> {
+): Promise<[null, Onboarding] | [DbError, null]> {
+  // Input validation
+  if (!userId || userId.trim() === "") {
+    const error = DbError.validation("Invalid userId provided");
+    logger.warn({ userId, error }, "Invalid userId provided for create");
+    return [error, null];
+  }
+
   const onboardingData: CreateOnboardingDto = {
     completed: false,
     completedAt: null,
@@ -63,38 +90,55 @@ export async function createOnboardingByUserId(
   };
 
   try {
-    logger.info({ userId }, "Starting onboarding by userId");
+    logger.info({ userId }, "Creating onboarding by userId");
 
-    const onboardingDocRef = db.collection("onboarding").doc(userId);
+    const onboardingDocRef = db.collection(COLLECTION_NAME).doc(userId);
     await onboardingDocRef.create(onboardingData);
     logger.info({ onboardingId: onboardingDocRef.id }, "Onboarding document created successfully");
 
     const createdDoc = await onboardingDocRef.get();
     if (!createdDoc.exists) {
-      logger.warn({ onboardingId: onboardingDocRef.id }, "Onboarding document not found");
-      throw new Error("Onboarding not found.");
+      const error = DbError.notFound(RESOURCE_NAME);
+      logger.error({ onboardingId: onboardingDocRef.id, error }, "Onboarding document not found after create");
+      return [error, null];
     }
 
     const data = createdDoc.data();
     if (!data) {
-      throw new Error("Onboarding data is undefined.");
+      const error = DbError.dataCorruption(RESOURCE_NAME);
+      logger.error({ onboardingId: onboardingDocRef.id, error }, "Onboarding data undefined after create");
+      return [error, null];
     }
 
     return [null, transformFirestoreToOnboarding(createdDoc.id, data)];
   } catch (error) {
-    logger.error({ userId, error }, "Error starting onboarding");
-    return [error as Error, null];
+    const dbError = categorizeDbError(error, RESOURCE_NAME);
+    logger.error(
+      {
+        userId,
+        error
+      },
+      "Error creating onboarding"
+    );
+    return [dbError, null];
   }
 }
 
 export async function updateOnboarding(
   onboardingId: string,
   updateData: UpdateOnboardingDto
-): Promise<[null, Onboarding] | [Error, null]> {
+): Promise<[null, Onboarding] | [DbError, null]> {
+  // Input validation
+  if (!onboardingId || onboardingId.trim() === "") {
+    const error = DbError.validation("Invalid onboardingId provided");
+    logger.warn({ onboardingId, error }, "Invalid onboardingId provided for update");
+    return [error, null];
+  }
+
   try {
     logger.info({ onboardingId, updateData }, "Updating onboarding by onboardingId");
 
-    const onboardingDocRef = db.collection("onboarding").doc(onboardingId);
+    const onboardingDocRef = db.collection(COLLECTION_NAME).doc(onboardingId);
     await onboardingDocRef.update({
       ...updateData,
       updatedAt: FieldValue.serverTimestamp()
@@ -102,18 +146,29 @@ export async function updateOnboarding(
 
     const updatedDoc = await onboardingDocRef.get();
     if (!updatedDoc.exists) {
-      throw new Error("Onboarding not found after update.");
+      const error = DbError.notFound(RESOURCE_NAME);
+      logger.error({ onboardingId, error }, "Onboarding document not found after update");
+      return [error, null];
     }
 
     const data = updatedDoc.data();
     if (!data) {
-      throw new Error("Onboarding data is undefined.");
+      const error = DbError.dataCorruption(RESOURCE_NAME);
+      logger.error({ onboardingId, error }, "Onboarding data undefined after update");
+      return [error, null];
     }
 
     logger.info({ onboardingId }, "Onboarding document updated successfully");
     return [null, transformFirestoreToOnboarding(updatedDoc.id, data)];
   } catch (error) {
-    logger.error({ onboardingId, error }, "Error updating onboarding");
-    return [error as Error, null];
+    const dbError = categorizeDbError(error, RESOURCE_NAME);
+    logger.error(
+      {
+        onboardingId,
+        error
+      },
+      "Error updating onboarding"
+    );
+    return [dbError, null];
   }
 }

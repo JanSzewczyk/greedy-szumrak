@@ -12,7 +12,7 @@ import {
   ItemTitle,
   StepperContent
 } from "@szum-tech/design-system";
-import { unauthorized } from "next/navigation";
+import { notFound, unauthorized } from "next/navigation";
 import { ProductsForm } from "~/features/onboarding/components/forms/products-form";
 import { startOnboarding } from "~/features/onboarding/server/actions/start-onboarding";
 import { getOnboardingById } from "~/features/onboarding/server/db/onboarding";
@@ -24,14 +24,24 @@ const logger = createLogger({ module: "onboarding-welcome-page" });
 async function loadData() {
   const { userId, isAuthenticated } = await auth();
 
-  logger.info({ userId }, "Loading onboarding welcome page data");
-
   if (!isAuthenticated) {
     logger.warn("Unauthorized access attempt");
     throw unauthorized();
   }
 
-  const [, onboarding] = await getOnboardingById(userId);
+  logger.info({ userId }, "Loading onboarding welcome page data");
+
+  const [error, onboarding] = await getOnboardingById(userId);
+  if (error && !error.isNotFound) {
+    logger.error(
+      {
+        userId,
+        error
+      },
+      "Database error fetching onboarding data"
+    );
+    notFound();
+  }
 
   if (onboarding) {
     logger.info(

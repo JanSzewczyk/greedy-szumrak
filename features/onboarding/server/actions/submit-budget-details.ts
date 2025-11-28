@@ -17,13 +17,13 @@ export async function submitBudgetDetails(formData: BudgetDetailsFormData, onboa
     budgetDetails: formData
   };
 
-  const [error] = await updateOnboarding(onboarding.id, updateData);
+  const [error, updatedOnboarding] = await updateOnboarding(onboarding.id, updateData);
   if (error) {
     logger.error({ onboardingId: onboarding.id, error }, "Failed to update onboarding with budget details");
     return { success: false, error: error.message };
   }
 
-  logger.info({ onboardingId: onboarding.id }, "Budget details saved successfully, redirecting to categories step");
+  logger.info({ onboardingId: updatedOnboarding.id }, "Budget details saved successfully, redirecting to XXX step");
 
-  return redirect(OnboardingSteps.CATEGORIES);
+  return redirect("/");
 }
