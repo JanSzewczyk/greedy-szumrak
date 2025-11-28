@@ -32,7 +32,7 @@ export async function getOnboardingById(userId: string): Promise<[null, Onboardi
   // Input validation
   if (!userId || userId.trim() === "") {
     const error = DbError.validation("Invalid userId provided");
-    logger.warn({ userId, error }, "Invalid userId provided");
+    logger.warn({ userId, errorCode: error.code }, "Invalid userId provided");
     return [error, null];
   }
 
@@ -43,14 +43,14 @@ export async function getOnboardingById(userId: string): Promise<[null, Onboardi
 
     if (!onboardingDoc.exists) {
       const error = DbError.notFound(RESOURCE_NAME);
-      logger.warn({ userId, error }, "Onboarding document not found");
+      logger.warn({ userId, errorCode: error.code }, "Onboarding document not found");
       return [error, null];
     }
 
     const data = onboardingDoc.data();
     if (!data) {
       const error = DbError.dataCorruption(RESOURCE_NAME);
-      logger.error({ userId, error }, "Onboarding document exists but data is undefined");
+      logger.error({ userId, errorCode: error.code }, "Onboarding document exists but data is undefined");
       return [error, null];
     }
 
@@ -61,7 +61,8 @@ export async function getOnboardingById(userId: string): Promise<[null, Onboardi
     logger.error(
       {
         userId,
-        error
+        errorCode: dbError.code,
+        isRetryable: dbError.isRetryable
       },
       "Error fetching onboarding by userId"
     );
@@ -76,10 +77,11 @@ export async function createOnboardingByUserId(
   // Input validation
   if (!userId || userId.trim() === "") {
     const error = DbError.validation("Invalid userId provided");
-    logger.warn({ userId, error }, "Invalid userId provided for create");
+    logger.warn({ userId, errorCode: error.code }, "Invalid userId provided for create");
     return [error, null];
   }
 
+  const now = new Date();
   const onboardingData: CreateOnboardingDto = {
     completed: false,
     completedAt: null,
@@ -96,27 +98,26 @@ export async function createOnboardingByUserId(
     await onboardingDocRef.create(onboardingData);
     logger.info({ onboardingId: onboardingDocRef.id }, "Onboarding document created successfully");
 
-    const createdDoc = await onboardingDocRef.get();
-    if (!createdDoc.exists) {
-      const error = DbError.notFound(RESOURCE_NAME);
-      logger.error({ onboardingId: onboardingDocRef.id, error }, "Onboarding document not found after create");
-      return [error, null];
-    }
+    // Return constructed object instead of extra read
+    // Firestore guarantees write success if no error thrown
+    const createdOnboarding: Onboarding = {
+      id: onboardingDocRef.id,
+      completed: false,
+      completedAt: null,
+      currentStep: OnboardingSteps.PREFERENCES,
+      products,
+      createdAt: now,
+      updatedAt: now
+    };
 
-    const data = createdDoc.data();
-    if (!data) {
-      const error = DbError.dataCorruption(RESOURCE_NAME);
-      logger.error({ onboardingId: onboardingDocRef.id, error }, "Onboarding data undefined after create");
-      return [error, null];
-    }
-
-    return [null, transformFirestoreToOnboarding(createdDoc.id, data)];
+    return [null, createdOnboarding];
   } catch (error) {
     const dbError = categorizeDbError(error, RESOURCE_NAME);
     logger.error(
       {
         userId,
-        error
+        errorCode: dbError.code,
+        isRetryable: dbError.isRetryable
       },
       "Error creating onboarding"
     );
@@ -131,7 +132,7 @@ export async function updateOnboarding(
   // Input validation
   if (!onboardingId || onboardingId.trim() === "") {
     const error = DbError.validation("Invalid onboardingId provided");
-    logger.warn({ onboardingId, error }, "Invalid onboardingId provided for update");
+    logger.warn({ onboardingId, errorCode: error.code }, "Invalid onboardingId provided for update");
     return [error, null];
   }
 
@@ -144,17 +145,19 @@ export async function updateOnboarding(
       updatedAt: FieldValue.serverTimestamp()
     });
 
+    // Fetch updated document to return full state
+    // Note: Unlike create, update needs to merge with existing data
     const updatedDoc = await onboardingDocRef.get();
     if (!updatedDoc.exists) {
       const error = DbError.notFound(RESOURCE_NAME);
-      logger.error({ onboardingId, error }, "Onboarding document not found after update");
+      logger.error({ onboardingId, errorCode: error.code }, "Onboarding document not found after update");
       return [error, null];
     }
 
     const data = updatedDoc.data();
     if (!data) {
       const error = DbError.dataCorruption(RESOURCE_NAME);
-      logger.error({ onboardingId, error }, "Onboarding data undefined after update");
+      logger.error({ onboardingId, errorCode: error.code }, "Onboarding data undefined after update");
       return [error, null];
     }
 
@@ -165,7 +168,8 @@ export async function updateOnboarding(
     logger.error(
       {
         onboardingId,
-        error
+        errorCode: dbError.code,
+        isRetryable: dbError.isRetryable
       },
       "Error updating onboarding"
     );

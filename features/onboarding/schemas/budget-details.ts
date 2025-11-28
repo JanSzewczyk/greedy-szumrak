@@ -73,9 +73,9 @@ export const budgetDetailsSchema = z
     }
   );
 
-export type BudgetCategoryDetailsFormData = z.infer<typeof budgetCategoryDetailsSchema>;
-export type BudgetAllocationFormData = z.infer<typeof budgetAllocationSchema>;
-export type BudgetDetailsFormData = z.infer<typeof budgetDetailsSchema>;
+export type BudgetCategoryDetailsFormData = z.input<typeof budgetCategoryDetailsSchema>;
+export type BudgetAllocationFormData = z.input<typeof budgetAllocationSchema>;
+export type BudgetDetailsFormData = z.input<typeof budgetDetailsSchema>;
 
 /**
  * Helper function to transform BudgetTemplate to form default values

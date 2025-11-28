@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import clsx from "clsx";
+import { clsx } from "clsx";
 import { ChevronRightIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 
@@ -192,7 +192,7 @@ function AllocationSection({ allocationIndex, allocation, monthlyIncome, currenc
   }, [allocationTotal, allocationIndex, form]);
 
   return (
-    <div className="mb-8">
+    <div className="">
       <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="text-heading-h4">

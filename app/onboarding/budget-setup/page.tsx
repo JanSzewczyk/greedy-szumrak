@@ -1,6 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { StepperContent } from "@szum-tech/design-system";
-import { notFound, redirect, unauthorized } from "next/navigation";
+import { redirect } from "next/navigation";
 import { getBudgetTemplates } from "~/features/budget/server/db/budget-templates";
 import { BudgetSetupForm } from "~/features/onboarding/components/forms/budget-setup-form";
 import { type BudgetSetupFormData } from "~/features/onboarding/schemas/budget-setup";
@@ -12,11 +12,12 @@ import { createLogger } from "~/lib/logger";
 const logger = createLogger({ module: "onboarding-budget-setup-page" });
 
 async function loadData() {
-  const { userId, isAuthenticated } = await auth();
+  const { userId } = await auth();
 
-  if (!isAuthenticated) {
-    logger.warn("Unauthorized access attempt - no userId");
-    unauthorized();
+  // Proxy.ts enforces authentication, but defensive check for type safety
+  if (!userId) {
+    logger.error("No userId despite proxy authentication");
+    redirect("/sign-in");
   }
 
   logger.info({ userId }, "Loading onboarding budget-setup page data");
@@ -26,11 +27,22 @@ async function loadData() {
     logger.error(
       {
         userId,
-        error: onboardingError
+        errorCode: onboardingError.code,
+        isRetryable: onboardingError.isRetryable
       },
-      onboardingError.message
+      "Failed to load onboarding data"
     );
-    notFound();
+
+    if (onboardingError.isNotFound) {
+      redirect(OnboardingSteps.WELCOME);
+    }
+
+    if (onboardingError.isRetryable) {
+      // Transient error - let error.tsx handle with retry UI
+      throw onboardingError;
+    }
+
+    throw new Error("Unable to access onboarding data");
   }
 
   const { preferences } = onboarding;
@@ -44,14 +56,27 @@ async function loadData() {
 
   const [budgetTemplateError, budgetTemplates] = await getBudgetTemplates();
   if (budgetTemplateError) {
-    logger.error({ userId, error: budgetTemplateError }, budgetTemplateError.message);
-    notFound();
+    logger.error(
+      {
+        userId,
+        errorCode: budgetTemplateError.code,
+        isRetryable: budgetTemplateError.isRetryable
+      },
+      "Failed to load budget templates"
+    );
+
+    if (budgetTemplateError.isRetryable) {
+      // Transient error - let error.tsx handle with retry UI
+      throw budgetTemplateError;
+    }
+
+    throw new Error("Unable to access budget templates");
   }
 
   // Runtime validation of budget templates
   if (!Array.isArray(budgetTemplates) || budgetTemplates.length === 0) {
     logger.error({ userId, templateCount: budgetTemplates?.length }, "No budget templates available");
-    notFound();
+    throw new Error("No budget templates available");
   }
 
   const activeBudgetTemplates = budgetTemplates
@@ -60,7 +85,7 @@ async function loadData() {
 
   if (activeBudgetTemplates.length === 0) {
     logger.error({ userId, totalTemplates: budgetTemplates.length }, "No active budget templates available");
-    notFound();
+    throw new Error("No active budget templates available");
   }
 
   logger.info(

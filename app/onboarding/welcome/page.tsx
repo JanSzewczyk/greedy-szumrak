@@ -12,7 +12,7 @@ import {
   ItemTitle,
   StepperContent
 } from "@szum-tech/design-system";
-import { notFound, unauthorized } from "next/navigation";
+import { redirect } from "next/navigation";
 import { ProductsForm } from "~/features/onboarding/components/forms/products-form";
 import { startOnboarding } from "~/features/onboarding/server/actions/start-onboarding";
 import { getOnboardingById } from "~/features/onboarding/server/db/onboarding";
@@ -22,25 +22,32 @@ import { createLogger } from "~/lib/logger";
 const logger = createLogger({ module: "onboarding-welcome-page" });
 
 async function loadData() {
-  const { userId, isAuthenticated } = await auth();
+  const { userId } = await auth();
 
-  if (!isAuthenticated) {
-    logger.warn("Unauthorized access attempt");
-    throw unauthorized();
+  // Proxy.ts enforces authentication, but defensive check for type safety
+  if (!userId) {
+    logger.error("No userId despite proxy authentication");
+    redirect("/sign-in");
   }
 
   logger.info({ userId }, "Loading onboarding welcome page data");
 
   const [error, onboarding] = await getOnboardingById(userId);
+  // Welcome page is special - isNotFound is expected for first-time visitors
   if (error && !error.isNotFound) {
     logger.error(
       {
         userId,
-        error
+        errorCode: error.code,
+        isRetryable: error.isRetryable
       },
       "Database error fetching onboarding data"
     );
-    notFound();
+    if (error.isRetryable) {
+      // Transient error - let error.tsx handle with retry UI
+      throw error;
+    }
+    throw new Error("Unable to access onboarding data");
   }
 
   if (onboarding) {
