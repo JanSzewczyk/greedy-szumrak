@@ -103,8 +103,9 @@ interface CustomJwtSessionClaims {
 **Firestore conventions**:
 
 - Database queries are in `features/*/server/db/*.ts` files
-- Error handling uses tuple pattern: `[Error | null, Data | null]`
+- Error handling uses tuple pattern: `[DbError | null, Data | null]`
 - Always log queries with structured logging using Pino
+- Use `DbError` class from `lib/firebase/errors.ts` for structured error handling
 
 **Firebase Type Pattern**:
 
@@ -193,60 +194,77 @@ function transformFirestoreToEvent(docId: string, data: FirebaseFirestore.Docume
 }
 ```
 
-**Database function pattern**:
+**Database function pattern** (with `DbError`):
 
 ```typescript
-// CREATE
-export async function createOnboardingByUserId(
-  userId: string,
-  products: ProductsFormData
-): Promise<[null, Onboarding] | [Error, null]> {
-  const data: CreateOnboardingDto = {
-    completed: false,
-    currentStep: OnboardingSteps.PREFERENCES,
-    products,
-    updatedAt: FieldValue.serverTimestamp(),
-    createdAt: FieldValue.serverTimestamp()
-  };
+import { categorizeDbError, DbError } from "~/lib/firebase/errors";
+
+const COLLECTION_NAME = "onboarding";
+const RESOURCE_NAME = "Onboarding";
+
+// READ - with input validation and structured errors
+export async function getOnboardingById(userId: string): Promise<[null, Onboarding] | [DbError, null]> {
+  // Input validation
+  if (!userId || userId.trim() === "") {
+    const error = DbError.validation("Invalid userId provided");
+    logger.warn({ userId, errorCode: error.code }, "Invalid userId");
+    return [error, null];
+  }
 
   try {
-    const docRef = db.collection("onboarding").doc(userId);
-    await docRef.create(data);
-    const doc = await docRef.get();
-    return [null, transformFirestoreToOnboarding(doc.id, doc.data()!)];
+    const doc = await db.collection(COLLECTION_NAME).doc(userId).get();
+
+    if (!doc.exists) {
+      const error = DbError.notFound(RESOURCE_NAME);
+      logger.warn({ userId, errorCode: error.code }, "Document not found");
+      return [error, null];
+    }
+
+    const data = doc.data();
+    if (!data) {
+      const error = DbError.dataCorruption(RESOURCE_NAME);
+      logger.error({ userId, errorCode: error.code }, "Data undefined");
+      return [error, null];
+    }
+
+    return [null, transformFirestoreToOnboarding(doc.id, data)];
   } catch (error) {
-    return [error as Error, null];
+    const dbError = categorizeDbError(error, RESOURCE_NAME);
+    logger.error({
+      userId,
+      errorCode: dbError.code,
+      isRetryable: dbError.isRetryable
+    }, "Database error");
+    return [dbError, null];
   }
 }
+```
 
-// UPDATE
-export async function updateOnboarding(
-  onboardingId: string,
-  updateData: UpdateOnboardingDto
-): Promise<[null, Onboarding] | [Error, null]> {
-  try {
-    const docRef = db.collection("onboarding").doc(onboardingId);
-    // Always add updatedAt automatically
-    await docRef.update({
-      ...updateData,
-      updatedAt: FieldValue.serverTimestamp()
-    });
-    const doc = await docRef.get();
-    return [null, transformFirestoreToOnboarding(doc.id, doc.data()!)];
-  } catch (error) {
-    return [error as Error, null];
-  }
-}
+**DbError properties** (`lib/firebase/errors.ts`):
 
-// READ
-export async function getOnboardingById(userId: string): Promise<[null, Onboarding] | [Error, null]> {
-  try {
-    const doc = await db.collection("onboarding").doc(userId).get();
-    if (!doc.exists) throw new Error("Not found");
-    return [null, transformFirestoreToOnboarding(doc.id, doc.data()!)];
-  } catch (error) {
-    return [error as Error, null];
-  }
+- `code` - Firestore error code or `validation` | `data-corruption`
+- `isRetryable` - True for transient errors (unavailable, deadline-exceeded)
+- `isNotFound` - True when resource doesn't exist
+- `isAlreadyExists` - True when creating existing resource
+- `isPermissionDenied` - True for auth/permission issues
+
+**Static factory methods**:
+
+```typescript
+DbError.notFound("Onboarding")      // Resource not found
+DbError.alreadyExists("User")       // Resource already exists
+DbError.validation("Invalid input") // Input validation failed
+DbError.dataCorruption("Event")     // Document exists but data invalid
+```
+
+**Usage in page loaders**:
+
+```typescript
+const [error, onboarding] = await getOnboardingById(userId);
+if (error) {
+  if (error.isNotFound) redirect("/onboarding/welcome");
+  if (error.isRetryable) throw error; // Let error.tsx handle retry
+  notFound();
 }
 ```
 
@@ -404,12 +422,12 @@ The project has **React Compiler** enabled (`next.config.ts`):
 
 **Onboarding Flow**:
 
-- Multi-step process: Welcome → Preferences → Set Up Budgets → Categories
+- Multi-step process: Welcome → Preferences → Budget Setup → Budget Details → Categories
 - Steps defined in `features/onboarding/types/onboarding.ts` as `OnboardingSteps` constant
 - Current step stored in Firestore `onboarding` collection
 - Layout wraps all onboarding pages with `OnboardingStepper` component
 - Forms use React Hook Form with Zod validation
-- Data stored per step: `products`, `preferences`, `budget`, and `expenses`
+- Data stored per step: `products`, `preferences`, `budget`, `budgetDetails`, and `expenses`
 
 **Server Actions Pattern** (`lib/action-types.ts`):
 
@@ -503,9 +521,12 @@ export async function submitAction() {
 
 **Error Handling**:
 
-- Database queries use tuple pattern: `[Error | null, Data | null]`
+- Database queries use tuple pattern: `[DbError | null, Data | null]`
+- Use `DbError` class for structured error information (see `lib/firebase/errors.ts`)
+- Use `categorizeDbError(error, context)` to convert Firestore errors to `DbError`
+- Check error properties: `isNotFound`, `isRetryable`, `isAlreadyExists`, `isPermissionDenied`
 - Server Actions use `ActionResponse` or `RedirectAction` return types
-- Always log errors with structured context before returning
+- Always log errors with structured context (`errorCode`, `isRetryable`) before returning
 - Validate data with Zod schemas where applicable
 - Use toast notifications for user-facing feedback
 

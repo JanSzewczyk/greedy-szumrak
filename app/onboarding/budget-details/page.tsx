@@ -14,44 +14,55 @@ const logger = createLogger({ module: "onboarding-budget-details-page" });
 async function loadData() {
   const { userId, isAuthenticated } = await auth();
 
-  logger.info({ userId }, "Loading onboarding budget-details page data");
-
   if (!isAuthenticated) {
     logger.warn("Unauthorized access attempt");
     unauthorized();
   }
 
+  logger.info({ userId }, "Loading onboarding budget-details page data");
+
   const [onboardingError, onboarding] = await getOnboardingById(userId);
   if (onboardingError) {
-    logger.error({ userId, error: onboardingError }, "Failed to fetch onboarding data");
+    logger.error(
+      {
+        userId,
+        error: onboardingError
+      },
+      onboardingError.message
+    );
     notFound();
   }
 
   const { preferences, budget } = onboarding;
 
   if (!preferences) {
-    logger.warn({ userId }, "Preferences data required, redirect to preferences step");
+    logger.warn(
+      { userId, currentStep: onboarding.currentStep },
+      "Preferences data required, redirecting to preferences step"
+    );
     redirect(OnboardingSteps.PREFERENCES);
   }
 
   if (!budget) {
-    logger.warn({ userId }, "Budget configuration required, redirect to budget-setup step");
+    logger.warn(
+      { userId, currentStep: onboarding.currentStep },
+      "Budget configuration required, redirecting to budget-setup step"
+    );
     redirect(OnboardingSteps.BUDGET_SETUP);
   }
 
   const [budgetTemplateError, budgetTemplate] = await getBudgetTemplateById(budget.budgetProfile);
   if (budgetTemplateError) {
-    logger.error(
-      { userId, budgetProfile: budget.budgetProfile, error: budgetTemplateError },
-      "Budget template not found"
-    );
+    logger.error({ userId, error: budgetTemplateError }, "Budget template not found");
     notFound();
   }
 
   logger.info(
     {
       userId,
-      onboardingId: onboarding.id
+      onboardingId: onboarding.id,
+      budgetProfile: budget.budgetProfile,
+      allocationCount: budgetTemplate.allocations.length
     },
     "Successfully loaded page data"
   );

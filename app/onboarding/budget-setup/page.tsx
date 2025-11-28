@@ -14,44 +14,68 @@ const logger = createLogger({ module: "onboarding-budget-setup-page" });
 async function loadData() {
   const { userId, isAuthenticated } = await auth();
 
-  logger.info({ userId }, "Loading onboarding budget-setup page data");
-
   if (!isAuthenticated) {
-    logger.warn("Unauthorized access attempt");
-    throw unauthorized();
+    logger.warn("Unauthorized access attempt - no userId");
+    unauthorized();
   }
+
+  logger.info({ userId }, "Loading onboarding budget-setup page data");
 
   const [onboardingError, onboarding] = await getOnboardingById(userId);
   if (onboardingError) {
-    logger.error({ userId, error: onboardingError }, "Failed to fetch onboarding data");
-    throw notFound();
+    logger.error(
+      {
+        userId,
+        error: onboardingError
+      },
+      onboardingError.message
+    );
+    notFound();
   }
 
   const { preferences } = onboarding;
   if (!preferences) {
-    logger.warn({ userId, pageName: "budget-setup" }, "Preferences data required, redirect to preferences step");
-    throw redirect(OnboardingSteps.PREFERENCES);
+    logger.warn(
+      { userId, currentStep: onboarding.currentStep },
+      "Preferences data required, redirecting to preferences step"
+    );
+    redirect(OnboardingSteps.PREFERENCES);
   }
 
   const [budgetTemplateError, budgetTemplates] = await getBudgetTemplates();
   if (budgetTemplateError) {
-    logger.error({ userId, error: budgetTemplateError }, "Failed to fetch budget templates");
-    throw notFound();
+    logger.error({ userId, error: budgetTemplateError }, budgetTemplateError.message);
+    notFound();
+  }
+
+  // Runtime validation of budget templates
+  if (!Array.isArray(budgetTemplates) || budgetTemplates.length === 0) {
+    logger.error({ userId, templateCount: budgetTemplates?.length }, "No budget templates available");
+    notFound();
+  }
+
+  const activeBudgetTemplates = budgetTemplates
+    .filter((budgetTemplate) => budgetTemplate.isActive)
+    .sort((a, b) => (b.isRecommended === a.isRecommended ? 0 : b.isRecommended ? 1 : -1));
+
+  if (activeBudgetTemplates.length === 0) {
+    logger.error({ userId, totalTemplates: budgetTemplates.length }, "No active budget templates available");
+    notFound();
   }
 
   logger.info(
     {
       userId,
-      onboardingId: onboarding.id
+      onboardingId: onboarding.id,
+      totalTemplates: budgetTemplates.length,
+      activeTemplates: activeBudgetTemplates.length
     },
     "Successfully loaded page data"
   );
 
   return {
     onboarding,
-    budgetTemplates: budgetTemplates
-      .filter((budgetTemplate) => budgetTemplate.isActive)
-      .sort((a, b) => (b.isRecommended === a.isRecommended ? 0 : b.isRecommended ? 1 : -1)),
+    budgetTemplates: activeBudgetTemplates,
     preferences
   };
 }
@@ -61,13 +85,11 @@ export default async function BudgetSetupPage() {
 
   async function handleBack() {
     "use server";
-
     redirect(OnboardingSteps.PREFERENCES);
   }
 
   async function handleSubmitBudgetConfiguration(data: BudgetSetupFormData) {
     "use server";
-
     return await submitBudgetConfiguration(data, onboarding);
   }
 
