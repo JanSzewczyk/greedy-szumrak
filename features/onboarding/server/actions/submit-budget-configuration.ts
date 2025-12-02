@@ -12,10 +12,19 @@ const logger = createLogger({ module: "onboarding-actions" });
 export async function submitBudgetConfiguration(formData: BudgetSetupFormData, onboarding: Onboarding): RedirectAction {
   logger.info({ onboardingId: onboarding.id, formData }, "Submitting budget configuration");
 
-  const updateData: UpdateOnboardingDto = {
-    currentStep: OnboardingSteps.BUDGET_SETUP,
-    budget: formData
-  };
+  let updateData: UpdateOnboardingDto = { currentStep: OnboardingSteps.BUDGET_SETUP, budget: formData };
+
+  if (
+    onboarding.budgetDetails &&
+    onboarding.budget?.budgetProfile &&
+    onboarding.budget?.budgetProfile !== formData.budgetProfile
+  ) {
+    logger.info({ onboardingId: onboarding.id }, "Reset budget details when budget profile changes");
+    updateData = {
+      ...updateData,
+      budgetDetails: undefined
+    };
+  }
 
   const [error] = await updateOnboarding(onboarding.id, updateData);
   if (error) {
