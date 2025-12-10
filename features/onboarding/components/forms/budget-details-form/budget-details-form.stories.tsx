@@ -1,7 +1,7 @@
 import { type Meta, type StoryObj } from "@storybook/nextjs-vite";
 import { expect, fn, userEvent, waitFor } from "storybook/test";
 import { createTestBudgetTemplate } from "~/features/budget/test/builders";
-import { BudgetDetailsForm } from "~/features/onboarding/components/forms/budget-details-form";
+import { BudgetDetailsForm } from "~/features/onboarding/components/forms/budget-details-form/budget-details-form";
 import { onboardingBudgetDetailsBuilder, onboardingPreferencesBuilder } from "~/features/onboarding/test/builders";
 import { type RedirectAction } from "~/lib/action-types";
 

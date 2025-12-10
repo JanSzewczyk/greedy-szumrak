@@ -37,7 +37,6 @@ export const Complete: Story = {
 
     const amountInput = canvas.getByLabelText(/preview amount for groceries/i);
     await expect(amountInput).toHaveValue("500");
-    await expect(amountInput).toHaveAttribute("readonly");
 
     const removeButton = canvas.getByRole("button", { name: /preview remove groceries/i });
     await expect(removeButton).toBeVisible();

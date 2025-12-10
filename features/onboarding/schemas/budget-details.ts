@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { type IconName } from "lucide-react/dynamic";
+import { type BudgetTemplate } from "~/features/budget/types/budget-template";
 
 /**
  * Allocation types matching BudgetTemplate structure
@@ -17,10 +18,9 @@ export type AllocationType = (typeof AllocationTypes)[keyof typeof AllocationTyp
  * Matches BudgetCategoryTemplate structure with additional amount field for user input
  */
 export const budgetCategoryDetailsSchema = z.object({
-  id: z.string().min(1, "Category ID is required"),
   name: z.string().min(1, "Category name is required"),
   description: z.string().optional(),
-  icon: z.custom<IconName>(),
+  icon: z.custom<IconName>().nonoptional(),
   color: z.string().min(1, "Color is required"),
   percentage: z.number().min(0, "Percentage must be at least 0").max(100, "Percentage cannot exceed 100"),
   amount: z.number().min(0, "Amount must be at least 0"),
@@ -80,35 +80,13 @@ export type BudgetDetailsFormData = z.input<typeof budgetDetailsSchema>;
 /**
  * Helper function to transform BudgetTemplate to form default values
  */
-export function templateToFormDefaults(
-  template: {
-    id: string;
-    allocations: Array<{
-      type: "needs" | "wants" | "savings";
-      percentage: number;
-      label: string;
-      categories: Array<{
-        id: string;
-        name: string;
-        description?: string;
-        icon: IconName;
-        color: string;
-        percentage: number;
-        order: number;
-        examples?: string[];
-      }>;
-    }>;
-    totalPercentage: number;
-  },
-  monthlyIncome: number
-): BudgetDetailsFormData {
+export function templateToFormDefaults(template: BudgetTemplate, monthlyIncome: number): BudgetDetailsFormData {
   const allocations: BudgetAllocationFormData[] = template.allocations.map((allocation) => ({
     type: allocation.type,
     percentage: allocation.percentage,
     amount: Math.round((monthlyIncome * allocation.percentage) / 100),
     label: allocation.label,
     categories: allocation.categories.map((category) => ({
-      id: category.id,
       name: category.name,
       description: category.description,
       icon: category.icon,

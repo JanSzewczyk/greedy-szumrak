@@ -34,7 +34,6 @@ export type TemplateAllocation = {
 };
 
 export type BudgetCategoryTemplate = {
-  id: string;
   name: string;
   description?: string;
   icon: IconName;

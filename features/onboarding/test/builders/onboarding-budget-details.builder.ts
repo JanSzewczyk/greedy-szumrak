@@ -75,7 +75,6 @@ const CATEGORY_COLORS = [
  */
 export const budgetCategoryDetailsBuilder = build<BudgetCategoryDetailsFormData>({
   fields: {
-    id: perBuild(() => faker.string.uuid()),
     name: perBuild(() => faker.commerce.department()),
     description: perBuild(() => faker.commerce.productDescription()),
     icon: perBuild(() => faker.helpers.arrayElement(CATEGORY_ICONS)),
