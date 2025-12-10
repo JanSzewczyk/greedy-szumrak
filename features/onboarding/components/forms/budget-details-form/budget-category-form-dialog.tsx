@@ -49,7 +49,7 @@ export function BudgetCategoryFormDialog({
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <Dialog defaultOpen onOpenChange={handleClose}>
       <DialogContent width="lg" showCloseButton className="flex max-h-[calc(100%-1rem)] flex-1 flex-col">
         <DialogHeader>
           <DialogTitle>{mode === "create" ? "Add New Category" : "Edit Category"}</DialogTitle>

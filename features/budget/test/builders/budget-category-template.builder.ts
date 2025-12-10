@@ -18,7 +18,6 @@ import { type BudgetCategoryTemplate } from "~/features/budget/types/budget-temp
  * // Override specific fields
  * const housing = budgetCategoryTemplateBuilder.one({
  *   overrides: {
- *     id: "housing",
  *     name: "Housing",
  *     icon: "home"
  *   }
@@ -32,7 +31,6 @@ import { type BudgetCategoryTemplate } from "~/features/budget/types/budget-temp
  */
 export const budgetCategoryTemplateBuilder = build<BudgetCategoryTemplate>({
   fields: {
-    id: perBuild(() => faker.helpers.slugify(faker.commerce.department()).toLowerCase()),
     name: perBuild(() => faker.commerce.department()),
     description: perBuild(() => faker.commerce.productDescription()),
     icon: perBuild(() =>
@@ -76,7 +74,6 @@ export const budgetCategoryTemplateBuilder = build<BudgetCategoryTemplate>({
   traits: {
     housing: {
       overrides: {
-        id: "housing",
         name: "Housing",
         description: "Rent, utilities, internet",
         icon: "home",
@@ -87,7 +84,6 @@ export const budgetCategoryTemplateBuilder = build<BudgetCategoryTemplate>({
     },
     groceries: {
       overrides: {
-        id: "groceries",
         name: "Groceries",
         description: "Daily shopping and essentials",
         icon: "shopping-cart",
@@ -98,7 +94,6 @@ export const budgetCategoryTemplateBuilder = build<BudgetCategoryTemplate>({
     },
     transportation: {
       overrides: {
-        id: "transportation",
         name: "Transportation",
         description: "Commute to work and daily travel",
         icon: "car",
@@ -109,7 +104,6 @@ export const budgetCategoryTemplateBuilder = build<BudgetCategoryTemplate>({
     },
     health: {
       overrides: {
-        id: "health",
         name: "Health",
         description: "Health insurance, doctors, medications",
         icon: "heart",
@@ -120,7 +114,6 @@ export const budgetCategoryTemplateBuilder = build<BudgetCategoryTemplate>({
     },
     entertainment: {
       overrides: {
-        id: "entertainment",
         name: "Entertainment",
         description: "Going out, cinema, cultural events",
         icon: "film",
@@ -131,7 +124,6 @@ export const budgetCategoryTemplateBuilder = build<BudgetCategoryTemplate>({
     },
     diningOut: {
       overrides: {
-        id: "dining_out",
         name: "Dining Out & Cafes",
         description: "Eating outside home",
         icon: "coffee",
@@ -142,7 +134,6 @@ export const budgetCategoryTemplateBuilder = build<BudgetCategoryTemplate>({
     },
     shopping: {
       overrides: {
-        id: "shopping",
         name: "Shopping",
         description: "Clothing, electronics, personal items",
         icon: "shopping-bag",
@@ -153,7 +144,6 @@ export const budgetCategoryTemplateBuilder = build<BudgetCategoryTemplate>({
     },
     savings: {
       overrides: {
-        id: "savings",
         name: "Savings",
         description: "Emergency fund and short-term goals",
         icon: "piggy-bank",
@@ -164,7 +154,6 @@ export const budgetCategoryTemplateBuilder = build<BudgetCategoryTemplate>({
     },
     investments: {
       overrides: {
-        id: "investments",
         name: "Investments",
         description: "Long-term wealth building",
         icon: "landmark",

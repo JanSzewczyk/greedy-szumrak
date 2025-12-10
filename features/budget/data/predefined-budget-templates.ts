@@ -29,7 +29,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
         label: "Needs",
         categories: [
           {
-            id: "housing",
             name: "Housing",
             description: "Rent, utilities, internet",
             icon: "home",
@@ -39,7 +38,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Rent", "Electricity", "Gas", "Water", "Internet", "Trash"]
           },
           {
-            id: "groceries",
             name: "Groceries",
             description: "Daily shopping and essentials",
             icon: "shopping-cart",
@@ -49,7 +47,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Supermarket", "Vegetables and fruits", "Bread", "Meat"]
           },
           {
-            id: "transportation",
             name: "Transportation",
             description: "Commute to work and daily travel",
             icon: "car",
@@ -59,7 +56,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Gas", "Monthly pass", "Uber", "Parking"]
           },
           {
-            id: "health",
             name: "Health",
             description: "Health insurance, doctors, medications",
             icon: "heart",
@@ -76,7 +72,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
         label: "Wants",
         categories: [
           {
-            id: "entertainment",
             name: "Entertainment",
             description: "Going out, cinema, cultural events",
             icon: "film",
@@ -86,7 +81,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Cinema", "Theater", "Concerts", "Netflix", "Spotify"]
           },
           {
-            id: "dining_out",
             name: "Dining Out & Cafes",
             description: "Eating outside home",
             icon: "coffee",
@@ -96,7 +90,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Restaurants", "Fast food", "Cafes", "Bars"]
           },
           {
-            id: "shopping",
             name: "Shopping",
             description: "Clothes, electronics, gadgets",
             icon: "shopping-bag",
@@ -106,7 +99,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Clothes", "Shoes", "Accessories", "Electronics"]
           },
           {
-            id: "hobbies",
             name: "Hobbies & Sports",
             description: "Gym, hobbies, courses",
             icon: "dumbbell",
@@ -123,7 +115,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
         label: "Savings",
         categories: [
           {
-            id: "emergency_fund",
             name: "Emergency Fund",
             description: "Financial cushion for unexpected expenses",
             icon: "shield",
@@ -133,7 +124,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Savings account", "Term deposit"]
           },
           {
-            id: "investments",
             name: "Investments",
             description: "Stocks, funds, ETFs",
             icon: "trending-up",
@@ -143,7 +133,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Stocks", "ETFs", "Investment funds", "Crypto"]
           },
           {
-            id: "future_goals",
             name: "Future Goals",
             description: "Saving for specific goals",
             icon: "target",
@@ -185,7 +174,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
         label: "Needs",
         categories: [
           {
-            id: "housing",
             name: "Housing",
             description: "Rent/mortgage, utilities",
             icon: "home",
@@ -195,7 +183,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Mortgage payment", "Rent", "Utilities", "Home insurance"]
           },
           {
-            id: "groceries",
             name: "Groceries",
             description: "Food for the whole family",
             icon: "shopping-cart",
@@ -205,7 +192,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Supermarket", "Children's items", "Diapers"]
           },
           {
-            id: "children_education",
             name: "Children's Education",
             description: "School, kindergarten, tutoring",
             icon: "graduation-cap",
@@ -215,7 +201,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Kindergarten", "Private school", "Tutoring", "Textbooks"]
           },
           {
-            id: "transportation",
             name: "Transportation",
             description: "Family car, commutes",
             icon: "car",
@@ -225,7 +210,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Gas", "Car insurance", "Maintenance", "Parking"]
           },
           {
-            id: "health",
             name: "Family Health",
             description: "Medical care for everyone",
             icon: "heart",
@@ -242,7 +226,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
         label: "Wants",
         categories: [
           {
-            id: "family_entertainment",
             name: "Family Entertainment",
             description: "Outings with children, toys",
             icon: "party-popper",
@@ -252,7 +235,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Zoo", "Cinema", "Playground", "Toys"]
           },
           {
-            id: "dining_out",
             name: "Restaurants",
             description: "Dining out",
             icon: "coffee",
@@ -262,7 +244,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Family restaurants", "Pizza", "Fast food"]
           },
           {
-            id: "parents_hobbies",
             name: "Parents' Hobbies",
             description: "Time for yourself",
             icon: "smile",
@@ -272,7 +253,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Books", "Hobbies", "Small pleasures"]
           },
           {
-            id: "vacation",
             name: "Family Vacation",
             description: "Trips with family",
             icon: "palmtree",
@@ -289,7 +269,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
         label: "Savings",
         categories: [
           {
-            id: "emergency_fund",
             name: "Emergency Fund",
             description: "Larger cushion for family",
             icon: "shield",
@@ -299,7 +278,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Savings account", "6 months reserve"]
           },
           {
-            id: "children_future",
             name: "Children's Future",
             description: "College, starting life",
             icon: "baby",
@@ -309,7 +287,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Child's account", "Education policy"]
           },
           {
-            id: "retirement",
             name: "Retirement",
             description: "Long-term savings",
             icon: "landmark",
@@ -351,7 +328,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
         label: "Needs",
         categories: [
           {
-            id: "housing",
             name: "Housing",
             description: "Minimal rent or shared apartment",
             icon: "home",
@@ -361,7 +337,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Shared apartment", "Small flat", "Utilities"]
           },
           {
-            id: "groceries",
             name: "Groceries",
             description: "Basic products, meal prep",
             icon: "shopping-cart",
@@ -371,7 +346,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Discount stores", "Bulk buying", "Meal planning"]
           },
           {
-            id: "transportation",
             name: "Transportation",
             description: "Public transport, bike",
             icon: "bike",
@@ -381,7 +355,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Monthly pass", "Bike", "Walking"]
           },
           {
-            id: "health",
             name: "Health",
             description: "Basic insurance",
             icon: "heart",
@@ -398,7 +371,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
         label: "Wants",
         categories: [
           {
-            id: "entertainment",
             name: "Entertainment",
             description: "Minimal budget for pleasure",
             icon: "film",
@@ -408,7 +380,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Free events", "Streaming", "Library"]
           },
           {
-            id: "personal",
             name: "Personal",
             description: "Small personal pleasures",
             icon: "smile",
@@ -425,7 +396,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
         label: "Savings",
         categories: [
           {
-            id: "investments",
             name: "Investments",
             description: "Maximum allocation to investments",
             icon: "trending-up",
@@ -435,7 +405,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Index funds", "ETFs", "Stocks", "Real estate"]
           },
           {
-            id: "emergency_fund",
             name: "Emergency Fund",
             description: "Building 12-month cushion",
             icon: "shield",
@@ -445,7 +414,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["High-yield savings", "12 months expenses"]
           },
           {
-            id: "retirement",
             name: "Retirement",
             description: "Tax-advantaged accounts",
             icon: "landmark",
@@ -487,7 +455,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
         label: "Needs",
         categories: [
           {
-            id: "housing",
             name: "Housing",
             description: "Dorm or shared apartment",
             icon: "home",
@@ -497,7 +464,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Dorm", "Shared apartment", "Utilities"]
           },
           {
-            id: "groceries",
             name: "Groceries",
             description: "Basic food shopping",
             icon: "shopping-cart",
@@ -507,7 +473,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Discount stores", "Cafeteria", "Quick meals"]
           },
           {
-            id: "education",
             name: "Education",
             description: "Books, materials, courses",
             icon: "graduation-cap",
@@ -517,7 +482,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Textbooks", "Scripts", "Study materials", "Software"]
           },
           {
-            id: "transportation",
             name: "Transportation",
             description: "Getting to university",
             icon: "bus",
@@ -527,7 +491,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Student pass", "Bike", "Public transport"]
           },
           {
-            id: "health",
             name: "Health",
             description: "Basic care",
             icon: "heart",
@@ -544,7 +507,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
         label: "Wants",
         categories: [
           {
-            id: "entertainment",
             name: "Entertainment",
             description: "Meeting friends, social life",
             icon: "party-popper",
@@ -554,7 +516,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Cinema", "Student parties", "Concerts"]
           },
           {
-            id: "dining_out",
             name: "Eating Out",
             description: "Occasional eating out",
             icon: "coffee",
@@ -564,7 +525,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Fast food", "Coffee", "Pizza"]
           },
           {
-            id: "hobbies",
             name: "Hobbies",
             description: "Interests, sports",
             icon: "gamepad-2",
@@ -581,7 +541,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
         label: "Savings",
         categories: [
           {
-            id: "emergency_fund",
             name: "Emergency Fund",
             description: "Small financial cushion",
             icon: "shield",
@@ -591,7 +550,6 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
             examples: ["Savings account", "Reserve for emergencies"]
           },
           {
-            id: "future_goals",
             name: "Future Goals",
             description: "Saving for after graduation",
             icon: "target",

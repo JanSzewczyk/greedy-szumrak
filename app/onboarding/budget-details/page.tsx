@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { StepperContent } from "@szum-tech/design-system";
 import { redirect } from "next/navigation";
 import { getBudgetTemplateById } from "~/features/budget/server/db/budget-templates";
-import { BudgetDetailsForm } from "~/features/onboarding/components/forms/budget-details-form";
+import { BudgetDetailsForm } from "~/features/onboarding/components/forms/budget-details-form/budget-details-form";
 import { type BudgetDetailsFormData } from "~/features/onboarding/schemas/budget-details";
 import { submitBudgetDetails } from "~/features/onboarding/server/actions/submit-budget-details";
 import { getOnboardingById } from "~/features/onboarding/server/db/onboarding";

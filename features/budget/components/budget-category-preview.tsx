@@ -6,7 +6,7 @@ import { type BudgetCategoryFormData } from "~/features/budget/schemas/budget-ca
 
 export function BudgetCategoryPreview({ category }: { category: BudgetCategoryFormData }) {
   return (
-    <FieldGroup>
+    <FieldGroup inert>
       <Field orientation="responsive">
         <FieldContent className="flex-row items-center gap-3">
           {category?.icon ? (
@@ -27,8 +27,7 @@ export function BudgetCategoryPreview({ category }: { category: BudgetCategoryFo
             className="sm:w-28"
             aria-label={`Preview Amount for ${category?.name}`}
             placeholder="0"
-            value={category?.amount || ""}
-            readOnly
+            defaultValue={category?.amount || ""}
           />
           <Button type="button" variant="ghost" size="sm" aria-label={`Preview Remove ${category?.name}`}>
             <TrashIcon className="size-4" />

@@ -4,7 +4,7 @@ import * as React from "react";
 
 import { clsx } from "clsx";
 import { ChevronRightIcon, PlusIcon, TrashIcon } from "lucide-react";
-import { useFieldArray, useForm, useWatch } from "react-hook-form";
+import { type DefaultValues, useFieldArray, useForm, useWatch } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -25,6 +25,7 @@ import {
 } from "@szum-tech/design-system";
 import { DynamicIcon } from "lucide-react/dynamic";
 import { type BudgetTemplate } from "~/features/budget/types/budget-template";
+import { BudgetCategoryFormDialog } from "~/features/onboarding/components/forms/budget-details-form/budget-category-form-dialog";
 import {
   type BudgetDetailsFormData,
   budgetDetailsSchema,
@@ -39,7 +40,7 @@ export type BudgetDetailsFormProps = {
   monthlyIncome: number;
   onBackAction(): void;
   onContinueAction(data: BudgetDetailsFormData): RedirectAction;
-  defaultValues?: BudgetDetailsFormData;
+  defaultValues?: DefaultValues<BudgetDetailsFormData>;
   preferences: OnboardingPreferences;
 };
 
@@ -178,6 +179,8 @@ type AllocationSectionProps = {
 };
 
 function AllocationSection({ allocationIndex, allocation, monthlyIncome, currency, form }: AllocationSectionProps) {
+  const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
+
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: `allocations.${allocationIndex}.categories`
@@ -192,7 +195,7 @@ function AllocationSection({ allocationIndex, allocation, monthlyIncome, currenc
   }, [allocationTotal, allocationIndex, form]);
 
   return (
-    <div className="">
+    <div>
       <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="text-heading-h4">
@@ -226,14 +229,14 @@ function AllocationSection({ allocationIndex, allocation, monthlyIncome, currenc
               <FieldSeparator />
               <Field orientation="responsive">
                 <FieldContent className="flex-row items-center gap-3">
-                  {category?.icon && (
+                  {category?.icon ? (
                     <div
                       className="flex size-10 items-center justify-center rounded"
                       style={{ backgroundColor: category.color + "20" }}
                     >
                       <DynamicIcon name={category.icon} className="size-5" style={{ color: category.color }} />
                     </div>
-                  )}
+                  ) : null}
                   <div className="flex-1">
                     <FieldTitle>{category?.name}</FieldTitle>
                     {category?.description && <FieldDescription>{category.description}</FieldDescription>}
@@ -276,9 +279,33 @@ function AllocationSection({ allocationIndex, allocation, monthlyIncome, currenc
           );
         })}
 
-        <Button variant="outline" size="sm" disabled startIcon={<PlusIcon />}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setIsAddModalOpen(true)}
+          disabled={allocationTotal >= allocationTarget}
+          startIcon={<PlusIcon />}
+        >
           Add Category
         </Button>
+
+        {isAddModalOpen ? (
+          <BudgetCategoryFormDialog
+            isOpen={isAddModalOpen}
+            onClose={() => setIsAddModalOpen(false)}
+            onSubmit={(data) => {
+              append({
+                ...data,
+                description: data.description ?? "",
+                order: fields.length,
+                percentage: (data.amount / monthlyIncome) * 100
+              });
+            }}
+            defaultValues={{
+              remainingAmount: allocationTarget - allocationTotal
+            }}
+          />
+        ) : null}
       </FieldGroup>
     </div>
   );

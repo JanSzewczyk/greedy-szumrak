@@ -49,20 +49,35 @@ export function BudgetCategoryFormFields({ form }: { form: UseFormReturn<BudgetC
         name="icon"
         render={({ field: { onChange, value, ...fieldProps }, fieldState }) => (
           <Field data-invalid={!!fieldState.error}>
-            <FieldLabel>Icon</FieldLabel>
+            <FieldLabel id="icon-group-label">Icon</FieldLabel>
             <RadioGroup
               onValueChange={onChange}
               value={value}
+              aria-labelledby="icon-group-label"
+              aria-invalid={!!fieldState.error}
+              orientation="horizontal"
+              className="grid grid-cols-4 place-items-center sm:grid-cols-8"
               {...fieldProps}
-              className="grid grid-cols-4 gap-2 sm:grid-cols-8"
             >
               {CATEGORY_ICONS.map((icon) => (
-                <FieldLabel key={icon.id} className="">
-                  <Field className="flex size-10 items-center justify-center !p-0">
-                    <RadioGroupItem value={icon.id} className="hidden" />
-                    <DynamicIcon name={icon.id} className={clsx(value === icon.id ? "text-primary" : "", "size-5")} />
-                  </Field>
-                </FieldLabel>
+                <label
+                  key={icon.id}
+                  className={clsx(
+                    "flex size-10 cursor-pointer items-center justify-center rounded border transition-colors",
+                    "hover:bg-accent",
+                    "has-[:focus-visible]:border-ring has-[:focus-visible]:ring-ring/50 has-[:focus-visible]:ring-[3px]",
+                    value === icon.id ? "border-primary bg-primary/10" : "border-transparent"
+                  )}
+                >
+                  <RadioGroupItem value={icon.id} aria-label={icon.label} className="sr-only" />
+                  <DynamicIcon
+                    name={icon.id}
+                    className={clsx(
+                      "size-5 transition-colors",
+                      value === icon.id ? "text-primary" : "text-muted-foreground"
+                    )}
+                  />
+                </label>
               ))}
             </RadioGroup>
             <FieldError errors={[fieldState.error]} />
@@ -73,22 +88,31 @@ export function BudgetCategoryFormFields({ form }: { form: UseFormReturn<BudgetC
       <Controller
         control={form.control}
         name="color"
-        render={({ field, fieldState: { error } }) => (
+        render={({ field: { onChange, value, ...fieldProps }, fieldState: { error } }) => (
           <Field data-invalid={!!error}>
-            <FieldLabel>Color</FieldLabel>
-            <div className="mx-auto grid grid-cols-4 gap-2 sm:grid-cols-8">
+            <FieldLabel id="color-group-label">Color</FieldLabel>
+            <RadioGroup
+              onValueChange={onChange}
+              value={value}
+              aria-labelledby="color-group-label"
+              aria-invalid={!!error}
+              orientation="horizontal"
+              className="grid grid-cols-8 place-items-center"
+              {...fieldProps}
+            >
               {CATEGORY_COLORS.map((color) => (
-                <ColorSwatch key={color.id} className={color.id === field.value ? "ring-primary ring-2" : ""} asChild>
-                  <button
-                    type="button"
-                    title={color.label}
-                    onClick={() => field.onChange(color.id)}
+                <label
+                  key={color.id}
+                  className="has-[:focus-visible]:border-ring has-[:focus-visible]:ring-ring/50 flex-0 rounded border border-transparent has-[:focus-visible]:ring-[3px]"
+                >
+                  <RadioGroupItem value={color.id} aria-label={color.label} className="sr-only" />
+                  <ColorSwatch
+                    className={clsx("cursor-pointer transition-all", value === color.id ? "ring-primary ring-2" : "")}
                     style={{ backgroundColor: color.id }}
                   />
-                </ColorSwatch>
+                </label>
               ))}
-            </div>
-
+            </RadioGroup>
             <FieldError errors={[error]} />
           </Field>
         )}
