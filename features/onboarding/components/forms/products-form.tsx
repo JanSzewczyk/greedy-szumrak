@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronRightIcon } from "lucide-react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, type DefaultValues, useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -19,7 +19,7 @@ import { type ProductsFormData, productsSchema } from "~/features/onboarding/sch
 import { type RedirectAction } from "~/lib/action-types";
 
 export type ProductsFormProps = {
-  defaultValues?: ProductsFormData;
+  defaultValues?: DefaultValues<ProductsFormData> | null;
   onContinueAction(data: ProductsFormData): RedirectAction;
 };
 
@@ -30,7 +30,7 @@ export function ProductsForm({ defaultValues, onContinueAction }: ProductsFormPr
     handleSubmit,
     control,
     formState: { isSubmitting }
-  } = useForm({
+  } = useForm<ProductsFormData>({
     resolver: zodResolver(productsSchema),
     defaultValues: defaultValues ?? { budget: true, investment: false }
   });

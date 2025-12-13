@@ -40,7 +40,7 @@ export type BudgetDetailsFormProps = {
   monthlyIncome: number;
   onBackAction(): void;
   onContinueAction(data: BudgetDetailsFormData): RedirectAction;
-  defaultValues?: DefaultValues<BudgetDetailsFormData>;
+  defaultValues?: DefaultValues<BudgetDetailsFormData> | null;
   preferences: OnboardingPreferences;
 };
 

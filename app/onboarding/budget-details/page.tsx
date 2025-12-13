@@ -112,7 +112,7 @@ export default async function BudgetDetailsPage() {
         onBackAction={handleBack}
         onContinueAction={handleSubmitBudgetDetails}
         preferences={preferences}
-        defaultValues={onboarding?.budgetDetails}
+        defaultValues={onboarding.budgetDetails}
       />
     </StepperContent>
   );

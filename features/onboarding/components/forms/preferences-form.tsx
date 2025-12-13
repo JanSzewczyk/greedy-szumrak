@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronRightIcon } from "lucide-react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, type DefaultValues, useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -23,7 +23,7 @@ import { type PreferencesFormData, preferencesSchema } from "~/features/onboardi
 import { type RedirectAction } from "~/lib/action-types";
 
 export type PreferencesFormProps = {
-  defaultValues?: PreferencesFormData;
+  defaultValues?: DefaultValues<PreferencesFormData> | null;
   onBackAction(): void;
   onContinueAction(data: PreferencesFormData): RedirectAction;
 };
@@ -33,9 +33,9 @@ export function PreferencesForm({ onBackAction, defaultValues, onContinueAction 
     handleSubmit,
     control,
     formState: { isSubmitting }
-  } = useForm({
+  } = useForm<PreferencesFormData>({
     resolver: zodResolver(preferencesSchema),
-    defaultValues
+    defaultValues: defaultValues ?? {}
   });
 
   async function onSubmit(data: PreferencesFormData) {
