@@ -65,7 +65,7 @@ export function BudgetCategoryFormFields({ form }: { form: UseFormReturn<BudgetC
                   className={clsx(
                     "flex size-10 cursor-pointer items-center justify-center rounded border transition-colors",
                     "hover:bg-accent",
-                    "has-[:focus-visible]:border-ring has-[:focus-visible]:ring-ring/50 has-[:focus-visible]:ring-[3px]",
+                    "has-[:focus-visible]:border-ring has-[:focus-visible]:ring-ring/50 has-[:focus-visible]:ring",
                     value === icon.id ? "border-primary bg-primary/10" : "border-transparent"
                   )}
                 >
@@ -103,7 +103,7 @@ export function BudgetCategoryFormFields({ form }: { form: UseFormReturn<BudgetC
               {CATEGORY_COLORS.map((color) => (
                 <label
                   key={color.id}
-                  className="has-[:focus-visible]:border-ring has-[:focus-visible]:ring-ring/50 flex-0 rounded border border-transparent has-[:focus-visible]:ring-[3px]"
+                  className="has-[:focus-visible]:border-ring has-[:focus-visible]:ring-ring/50 flex-0 rounded border border-transparent has-[:focus-visible]:ring"
                 >
                   <RadioGroupItem value={color.id} aria-label={color.label} className="sr-only" />
                   <ColorSwatch

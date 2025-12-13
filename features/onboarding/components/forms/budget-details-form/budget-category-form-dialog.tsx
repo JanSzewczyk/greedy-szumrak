@@ -58,7 +58,7 @@ export function BudgetCategoryFormDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="-mr-3 -ml-1 min-h-0 flex-1 overflow-y-auto px-1">
+        <div className="-ml-1 -mr-3 min-h-0 flex-1 overflow-y-auto px-1">
           <BudgetCategoryFormFields form={form} />
 
           {mode === "edit" ? (
