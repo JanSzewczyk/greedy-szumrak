@@ -1,6 +1,13 @@
 import { type IconName } from "lucide-react/dynamic";
 import { type WithDates } from "~/lib/firebase/types";
 
+export const AllocationType = {
+  NEEDS: "needs",
+  WANTS: "wants",
+  SAVINGS: "savings"
+} as const;
+export type AllocationType = (typeof AllocationType)[keyof typeof AllocationType];
+
 export const BudgetProfile = {
   YOUNG_PROFESSIONAL: "young_professional",
   FAMILY: "family",
@@ -27,7 +34,7 @@ export type BudgetTemplateBase = {
 };
 
 export type TemplateAllocation = {
-  type: "needs" | "wants" | "savings";
+  type: AllocationType;
   percentage: number;
   label: string;
   categories: BudgetCategoryTemplate[];
@@ -35,7 +42,7 @@ export type TemplateAllocation = {
 
 export type BudgetCategoryTemplate = {
   name: string;
-  description?: string;
+  description: string | null;
   icon: IconName;
   color: string;
   percentage: number;

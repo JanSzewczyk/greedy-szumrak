@@ -26,17 +26,14 @@ export type OnboardingBase = {
   completedAt: Date | null;
   currentStep: OnboardingStep;
   products: OnboardingProducts;
-  preferences?: OnboardingPreferences;
-  budget?: OnboardingBudget;
-  budgetDetails?: OnboardingBudgetDetails;
-  goals?: {
+  preferences: OnboardingPreferences | null;
+  budget: OnboardingBudget | null;
+  budgetDetails: OnboardingBudgetDetails | null;
+  goals: {
     budget: number;
     savings: number;
     investmentTarget: number;
-  };
-  expenses?: {
-    categories: Array<string>;
-  };
+  } | null;
 };
 
 /**

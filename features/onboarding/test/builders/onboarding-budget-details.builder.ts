@@ -1,11 +1,14 @@
 import { faker } from "@faker-js/faker/locale/pl";
 import { build, perBuild } from "@jackfranklin/test-data-bot";
 import { type IconName } from "lucide-react/dynamic";
+import { DEFAULT_BUDGET_TEMPLATES } from "~/features/budget/data/predefined-budget-templates";
+import { BudgetProfile, type BudgetTemplate, type BudgetTemplateBase } from "~/features/budget/types/budget-template";
 import {
   type BudgetAllocationFormData,
-  type BudgetCategoryDetailsFormData
+  type BudgetCategoryDetailsFormData,
+  type BudgetDetailsFormData,
+  templateToFormDefaults
 } from "~/features/onboarding/schemas/budget-details";
-import { type OnboardingBudgetDetails } from "~/features/onboarding/types/onboarding";
 
 /**
  * Available category icons for budget categories
@@ -50,6 +53,19 @@ const CATEGORY_COLORS = [
   "#ec4899"
 ];
 
+// Helper to convert BudgetTemplateBase to BudgetTemplate
+const toTemplate = (base: BudgetTemplateBase): BudgetTemplate => ({
+  ...base,
+  createdAt: new Date(),
+  updatedAt: new Date()
+});
+
+// Get predefined templates
+const getTemplate = (profileId: BudgetProfile): BudgetTemplate => {
+  const base = DEFAULT_BUDGET_TEMPLATES.find((t) => t.id === profileId) ?? DEFAULT_BUDGET_TEMPLATES[0]!;
+  return toTemplate(base);
+};
+
 /**
  * Builder for generating BudgetCategoryDetailsFormData test data.
  *
@@ -62,7 +78,6 @@ const CATEGORY_COLORS = [
  * const housingCategory = budgetCategoryDetailsBuilder.one({
  *   overrides: {
  *     name: "Housing",
- *     percentage: 30,
  *     amount: 3000
  *   }
  * });
@@ -79,9 +94,7 @@ export const budgetCategoryDetailsBuilder = build<BudgetCategoryDetailsFormData>
     description: perBuild(() => faker.commerce.productDescription()),
     icon: perBuild(() => faker.helpers.arrayElement(CATEGORY_ICONS)),
     color: perBuild(() => faker.helpers.arrayElement(CATEGORY_COLORS)),
-    percentage: perBuild(() => faker.number.int({ min: 5, max: 20 })),
     amount: perBuild(() => faker.number.int({ min: 100, max: 2000, multipleOf: 50 })),
-    order: perBuild(() => faker.number.int({ min: 0, max: 10 })),
     examples: perBuild(() =>
       faker.helpers.arrayElements(["rent", "groceries", "utilities", "transport", "insurance"], { min: 1, max: 3 })
     )
@@ -93,7 +106,6 @@ export const budgetCategoryDetailsBuilder = build<BudgetCategoryDetailsFormData>
           faker.helpers.arrayElement(["Housing", "Groceries", "Utilities", "Transportation", "Healthcare"])
         ),
         icon: perBuild(() => faker.helpers.arrayElement<IconName>(["home", "shopping-cart", "zap", "car", "heart"])),
-        percentage: perBuild(() => faker.number.int({ min: 10, max: 25 })),
         examples: perBuild(() =>
           faker.helpers.arrayElements(["rent", "mortgage", "groceries", "electricity", "gas", "water"], {
             min: 2,
@@ -108,7 +120,6 @@ export const budgetCategoryDetailsBuilder = build<BudgetCategoryDetailsFormData>
           faker.helpers.arrayElement(["Entertainment", "Dining Out", "Shopping", "Subscriptions", "Hobbies"])
         ),
         icon: perBuild(() => faker.helpers.arrayElement<IconName>(["film", "utensils", "gift", "music", "smartphone"])),
-        percentage: perBuild(() => faker.number.int({ min: 5, max: 15 })),
         examples: perBuild(() =>
           faker.helpers.arrayElements(["movies", "restaurants", "clothes", "Netflix", "gym"], { min: 2, max: 4 })
         )
@@ -122,7 +133,6 @@ export const budgetCategoryDetailsBuilder = build<BudgetCategoryDetailsFormData>
         icon: perBuild(() =>
           faker.helpers.arrayElement<IconName>(["piggy-bank", "trending-up", "building", "briefcase"])
         ),
-        percentage: perBuild(() => faker.number.int({ min: 5, max: 20 })),
         examples: perBuild(() =>
           faker.helpers.arrayElements(["stocks", "bonds", "401k", "emergency fund", "savings"], { min: 2, max: 3 })
         )
@@ -147,8 +157,7 @@ export const budgetCategoryDetailsBuilder = build<BudgetCategoryDetailsFormData>
 export const budgetAllocationBuilder = build<BudgetAllocationFormData>({
   fields: {
     type: perBuild(() => faker.helpers.arrayElement(["needs", "wants", "savings"] as const)),
-    percentage: perBuild(() => faker.number.int({ min: 10, max: 60 })),
-    amount: perBuild(() => faker.number.int({ min: 500, max: 5000, multipleOf: 100 })),
+    targetAmount: perBuild(() => faker.number.int({ min: 500, max: 5000, multipleOf: 100 })),
     label: perBuild(() => faker.helpers.arrayElement(["Needs", "Wants", "Savings"])),
     categories: perBuild(() => [
       budgetCategoryDetailsBuilder.one(),
@@ -160,71 +169,35 @@ export const budgetAllocationBuilder = build<BudgetAllocationFormData>({
     needs: {
       overrides: {
         type: "needs",
-        percentage: 50,
         label: "Needs",
         categories: perBuild(() => [
-          budgetCategoryDetailsBuilder.one({
-            traits: ["needs"],
-            overrides: { name: "Housing", percentage: 25, order: 0 }
-          }),
-          budgetCategoryDetailsBuilder.one({
-            traits: ["needs"],
-            overrides: { name: "Groceries", percentage: 10, order: 1 }
-          }),
-          budgetCategoryDetailsBuilder.one({
-            traits: ["needs"],
-            overrides: { name: "Utilities", percentage: 8, order: 2 }
-          }),
-          budgetCategoryDetailsBuilder.one({
-            traits: ["needs"],
-            overrides: { name: "Transportation", percentage: 7, order: 3 }
-          })
+          budgetCategoryDetailsBuilder.one({ traits: ["needs"], overrides: { name: "Housing" } }),
+          budgetCategoryDetailsBuilder.one({ traits: ["needs"], overrides: { name: "Groceries" } }),
+          budgetCategoryDetailsBuilder.one({ traits: ["needs"], overrides: { name: "Utilities" } }),
+          budgetCategoryDetailsBuilder.one({ traits: ["needs"], overrides: { name: "Transportation" } })
         ])
       }
     },
     wants: {
       overrides: {
         type: "wants",
-        percentage: 30,
         label: "Wants",
         categories: perBuild(() => [
-          budgetCategoryDetailsBuilder.one({
-            traits: ["wants"],
-            overrides: { name: "Entertainment", percentage: 10, order: 0 }
-          }),
-          budgetCategoryDetailsBuilder.one({
-            traits: ["wants"],
-            overrides: { name: "Dining Out", percentage: 8, order: 1 }
-          }),
-          budgetCategoryDetailsBuilder.one({
-            traits: ["wants"],
-            overrides: { name: "Shopping", percentage: 7, order: 2 }
-          }),
-          budgetCategoryDetailsBuilder.one({
-            traits: ["wants"],
-            overrides: { name: "Subscriptions", percentage: 5, order: 3 }
-          })
+          budgetCategoryDetailsBuilder.one({ traits: ["wants"], overrides: { name: "Entertainment" } }),
+          budgetCategoryDetailsBuilder.one({ traits: ["wants"], overrides: { name: "Dining Out" } }),
+          budgetCategoryDetailsBuilder.one({ traits: ["wants"], overrides: { name: "Shopping" } }),
+          budgetCategoryDetailsBuilder.one({ traits: ["wants"], overrides: { name: "Subscriptions" } })
         ])
       }
     },
     savings: {
       overrides: {
         type: "savings",
-        percentage: 20,
         label: "Savings",
         categories: perBuild(() => [
-          budgetCategoryDetailsBuilder.one({
-            traits: ["savings"],
-            overrides: { name: "Emergency Fund", percentage: 10, order: 0 }
-          }),
-          budgetCategoryDetailsBuilder.one({
-            traits: ["savings"],
-            overrides: { name: "Investments", percentage: 7, order: 1 }
-          }),
-          budgetCategoryDetailsBuilder.one({
-            traits: ["savings"],
-            overrides: { name: "Retirement", percentage: 3, order: 2 }
-          })
+          budgetCategoryDetailsBuilder.one({ traits: ["savings"], overrides: { name: "Emergency Fund" } }),
+          budgetCategoryDetailsBuilder.one({ traits: ["savings"], overrides: { name: "Investments" } }),
+          budgetCategoryDetailsBuilder.one({ traits: ["savings"], overrides: { name: "Retirement" } })
         ])
       }
     }
@@ -232,169 +205,64 @@ export const budgetAllocationBuilder = build<BudgetAllocationFormData>({
 });
 
 /**
- * Builder for generating OnboardingBudgetDetails (BudgetDetailsFormData) test data.
+ * Builder for generating BudgetDetailsFormData test data.
+ * Uses real predefined budget templates from DEFAULT_BUDGET_TEMPLATES.
  *
  * @example
  * // Basic usage (using .one())
  * const budgetDetails = onboardingBudgetDetailsBuilder.one();
  *
  * @example
- * // Alternative usage (direct call)
- * const budgetDetails = onboardingBudgetDetailsBuilder();
- *
- * @example
- * // Override specific fields
- * const customBudgetDetails = onboardingBudgetDetailsBuilder.one({
- *   overrides: {
- *     monthlyIncome: 10000,
- *     budgetProfileId: "family"
- *   }
- * });
- *
- * @example
- * // Using traits
+ * // Using traits with real template data
  * const youngProfessional = onboardingBudgetDetailsBuilder.one({ traits: ["youngProfessional"] });
  * const family = onboardingBudgetDetailsBuilder.one({ traits: ["family"] });
  * const aggressiveSaver = onboardingBudgetDetailsBuilder.one({ traits: ["aggressiveSaver"] });
  * const student = onboardingBudgetDetailsBuilder.one({ traits: ["student"] });
- * const balanced = onboardingBudgetDetailsBuilder.one({ traits: ["balanced"] });
  */
-export const onboardingBudgetDetailsBuilder = build<OnboardingBudgetDetails>({
+export const onboardingBudgetDetailsBuilder = build<BudgetDetailsFormData>({
   fields: {
-    budgetProfileId: perBuild(() =>
-      faker.helpers.arrayElement(["young_professional", "family", "aggressive_saver", "student", "custom"])
-    ),
     monthlyIncome: perBuild(() => faker.number.int({ min: 3000, max: 20000, multipleOf: 100 })),
     allocations: perBuild(() => [
       budgetAllocationBuilder.one({ traits: ["needs"] }),
       budgetAllocationBuilder.one({ traits: ["wants"] }),
       budgetAllocationBuilder.one({ traits: ["savings"] })
-    ]),
-    totalAllocated: perBuild(() => faker.number.int({ min: 3000, max: 20000, multipleOf: 100 })),
-    totalPercentage: 100,
-    remainingAmount: 0
+    ])
   },
   traits: {
     youngProfessional: {
       overrides: {
-        budgetProfileId: "young_professional",
-        monthlyIncome: perBuild(() => faker.number.int({ min: 5000, max: 10000, multipleOf: 100 })),
+        monthlyIncome: perBuild(() => faker.number.int({ min: 4000, max: 8000, multipleOf: 100 })),
         allocations: perBuild(() => {
-          const income = faker.number.int({ min: 5000, max: 10000, multipleOf: 100 });
-          return [
-            budgetAllocationBuilder.one({ traits: ["needs"], overrides: { amount: Math.round(income * 0.5) } }),
-            budgetAllocationBuilder.one({ traits: ["wants"], overrides: { amount: Math.round(income * 0.3) } }),
-            budgetAllocationBuilder.one({ traits: ["savings"], overrides: { amount: Math.round(income * 0.2) } })
-          ];
-        }),
-        totalPercentage: 100,
-        remainingAmount: 0
+          const income = faker.number.int({ min: 4000, max: 8000, multipleOf: 100 });
+          return templateToFormDefaults(getTemplate(BudgetProfile.YOUNG_PROFESSIONAL), income).allocations;
+        })
       }
     },
     family: {
       overrides: {
-        budgetProfileId: "family",
-        monthlyIncome: perBuild(() => faker.number.int({ min: 8000, max: 15000, multipleOf: 100 })),
+        monthlyIncome: perBuild(() => faker.number.int({ min: 6000, max: 15000, multipleOf: 100 })),
         allocations: perBuild(() => {
-          const income = faker.number.int({ min: 8000, max: 15000, multipleOf: 100 });
-          return [
-            budgetAllocationBuilder.one({
-              traits: ["needs"],
-              overrides: { percentage: 60, amount: Math.round(income * 0.6) }
-            }),
-            budgetAllocationBuilder.one({
-              traits: ["wants"],
-              overrides: { percentage: 20, amount: Math.round(income * 0.2) }
-            }),
-            budgetAllocationBuilder.one({
-              traits: ["savings"],
-              overrides: { percentage: 20, amount: Math.round(income * 0.2) }
-            })
-          ];
-        }),
-        totalPercentage: 100,
-        remainingAmount: 0
+          const income = faker.number.int({ min: 6000, max: 15000, multipleOf: 100 });
+          return templateToFormDefaults(getTemplate(BudgetProfile.FAMILY), income).allocations;
+        })
       }
     },
     aggressiveSaver: {
       overrides: {
-        budgetProfileId: "aggressive_saver",
-        monthlyIncome: perBuild(() => faker.number.int({ min: 6000, max: 12000, multipleOf: 100 })),
+        monthlyIncome: perBuild(() => faker.number.int({ min: 5000, max: 20000, multipleOf: 100 })),
         allocations: perBuild(() => {
-          const income = faker.number.int({ min: 6000, max: 12000, multipleOf: 100 });
-          return [
-            budgetAllocationBuilder.one({
-              traits: ["needs"],
-              overrides: { percentage: 40, amount: Math.round(income * 0.4) }
-            }),
-            budgetAllocationBuilder.one({
-              traits: ["wants"],
-              overrides: { percentage: 10, amount: Math.round(income * 0.1) }
-            }),
-            budgetAllocationBuilder.one({
-              traits: ["savings"],
-              overrides: { percentage: 50, amount: Math.round(income * 0.5) }
-            })
-          ];
-        }),
-        totalPercentage: 100,
-        remainingAmount: 0
+          const income = faker.number.int({ min: 5000, max: 20000, multipleOf: 100 });
+          return templateToFormDefaults(getTemplate(BudgetProfile.AGGRESSIVE_SAVER), income).allocations;
+        })
       }
     },
     student: {
       overrides: {
-        budgetProfileId: "student",
-        monthlyIncome: perBuild(() => faker.number.int({ min: 2000, max: 5000, multipleOf: 100 })),
+        monthlyIncome: perBuild(() => faker.number.int({ min: 1000, max: 3000, multipleOf: 100 })),
         allocations: perBuild(() => {
-          const income = faker.number.int({ min: 2000, max: 5000, multipleOf: 100 });
-          return [
-            budgetAllocationBuilder.one({
-              traits: ["needs"],
-              overrides: { percentage: 60, amount: Math.round(income * 0.6) }
-            }),
-            budgetAllocationBuilder.one({
-              traits: ["wants"],
-              overrides: { percentage: 25, amount: Math.round(income * 0.25) }
-            }),
-            budgetAllocationBuilder.one({
-              traits: ["savings"],
-              overrides: { percentage: 15, amount: Math.round(income * 0.15) }
-            })
-          ];
-        }),
-        totalPercentage: 100,
-        remainingAmount: 0
-      }
-    },
-    balanced: {
-      overrides: {
-        budgetProfileId: "custom",
-        monthlyIncome: perBuild(() => faker.number.int({ min: 5000, max: 15000, multipleOf: 100 })),
-        allocations: perBuild(() => {
-          const income = faker.number.int({ min: 5000, max: 15000, multipleOf: 100 });
-          return [
-            budgetAllocationBuilder.one({
-              traits: ["needs"],
-              overrides: { percentage: 50, amount: Math.round(income * 0.5) }
-            }),
-            budgetAllocationBuilder.one({
-              traits: ["wants"],
-              overrides: { percentage: 30, amount: Math.round(income * 0.3) }
-            }),
-            budgetAllocationBuilder.one({
-              traits: ["savings"],
-              overrides: { percentage: 20, amount: Math.round(income * 0.2) }
-            })
-          ];
-        }),
-        totalPercentage: 100,
-        remainingAmount: 0
-      }
-    },
-    withRemainingAmount: {
-      overrides: {
-        totalPercentage: perBuild(() => faker.number.int({ min: 80, max: 95 })),
-        remainingAmount: perBuild(() => faker.number.int({ min: 100, max: 1000, multipleOf: 50 }))
+          const income = faker.number.int({ min: 1000, max: 3000, multipleOf: 100 });
+          return templateToFormDefaults(getTemplate(BudgetProfile.STUDENT), income).allocations;
+        })
       }
     }
   }
@@ -402,57 +270,46 @@ export const onboardingBudgetDetailsBuilder = build<OnboardingBudgetDetails>({
 
 /**
  * Helper functions for common budget details test scenarios.
+ * All helpers use real predefined budget template data.
  */
 export const createTestBudgetDetails = {
   /**
    * Create budget details for a young professional (50/30/20 split)
+   * Uses real Young Professional template data
    */
-  youngProfessional: () => onboardingBudgetDetailsBuilder.one({ traits: ["youngProfessional"] }),
+  youngProfessional: (income = 6000) =>
+    templateToFormDefaults(getTemplate(BudgetProfile.YOUNG_PROFESSIONAL), income),
 
   /**
    * Create budget details for a family (60/20/20 split)
+   * Uses real Family template data
    */
-  family: () => onboardingBudgetDetailsBuilder.one({ traits: ["family"] }),
+  family: (income = 10000) =>
+    templateToFormDefaults(getTemplate(BudgetProfile.FAMILY), income),
 
   /**
    * Create budget details for an aggressive saver (40/10/50 split)
+   * Uses real Aggressive Saver template data
    */
-  aggressiveSaver: () => onboardingBudgetDetailsBuilder.one({ traits: ["aggressiveSaver"] }),
+  aggressiveSaver: (income = 8000) =>
+    templateToFormDefaults(getTemplate(BudgetProfile.AGGRESSIVE_SAVER), income),
 
   /**
    * Create budget details for a student (60/25/15 split)
+   * Uses real Student template data
    */
-  student: () => onboardingBudgetDetailsBuilder.one({ traits: ["student"] }),
+  student: (income = 2000) =>
+    templateToFormDefaults(getTemplate(BudgetProfile.STUDENT), income),
 
   /**
-   * Create balanced budget details (50/30/20 split with custom profile)
+   * Create budget details with a specific monthly income using Young Professional template
    */
-  balanced: () => onboardingBudgetDetailsBuilder.one({ traits: ["balanced"] }),
-
-  /**
-   * Create budget details with a specific monthly income
-   */
-  withIncome: (monthlyIncome: number) => {
-    const allocations = [
-      budgetAllocationBuilder.one({ traits: ["needs"], overrides: { amount: Math.round(monthlyIncome * 0.5) } }),
-      budgetAllocationBuilder.one({ traits: ["wants"], overrides: { amount: Math.round(monthlyIncome * 0.3) } }),
-      budgetAllocationBuilder.one({ traits: ["savings"], overrides: { amount: Math.round(monthlyIncome * 0.2) } })
-    ];
-    return onboardingBudgetDetailsBuilder.one({
-      overrides: {
-        monthlyIncome,
-        allocations,
-        totalAllocated: monthlyIncome,
-        remainingAmount: 0
-      }
-    });
-  },
+  withIncome: (monthlyIncome: number) =>
+    templateToFormDefaults(getTemplate(BudgetProfile.YOUNG_PROFESSIONAL), monthlyIncome),
 
   /**
    * Create budget details for a specific profile
    */
-  forProfile: (profileId: string) =>
-    onboardingBudgetDetailsBuilder.one({
-      overrides: { budgetProfileId: profileId }
-    })
+  forProfile: (profileId: BudgetProfile, income: number) =>
+    templateToFormDefaults(getTemplate(profileId), income)
 };
