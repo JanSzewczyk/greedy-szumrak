@@ -60,12 +60,8 @@ export function BudgetDetailsForm({
       return templateToFormDefaults(budgetTemplate, monthlyIncome);
     }
     return {
-      budgetProfileId: "",
       monthlyIncome,
-      allocations: [],
-      totalAllocated: 0,
-      totalPercentage: 0,
-      remainingAmount: monthlyIncome
+      allocations: []
     };
   }, [defaultValues, budgetTemplate, monthlyIncome]);
 
@@ -96,11 +92,6 @@ export function BudgetDetailsForm({
       percentage: Math.min(100, Math.round((total / monthlyIncome) * 100))
     };
   }, [watchedAllocations, monthlyIncome]);
-
-  React.useEffect(() => {
-    form.setValue("totalAllocated", totalAllocated);
-    form.setValue("remainingAmount", remainingAmount);
-  }, [totalAllocated, remainingAmount, form]);
 
   async function handleSubmit(data: BudgetDetailsFormData) {
     const result = await onContinueAction(data);
@@ -186,35 +177,30 @@ function AllocationSection({ allocationIndex, allocation, monthlyIncome, currenc
     name: `allocations.${allocationIndex}.categories`
   });
 
-  const allocationTarget = (monthlyIncome * allocation.percentage) / 100;
-  const allocationTotal = allocation.categories.reduce((sum, cat) => sum + (cat.amount || 0), 0);
-
-  // Update allocation amount when categories change
-  React.useEffect(() => {
-    form.setValue(`allocations.${allocationIndex}.amount`, allocationTotal);
-  }, [allocationTotal, allocationIndex, form]);
+  const allocationTarget = allocation.targetAmount;
+  const allocationAmount = allocation.categories.reduce((sum, category) => sum + (category.amount || 0), 0);
 
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <span className="text-heading-h4">
-            {allocation.label} ({allocation.percentage}%)
+            {allocation.label} ({(allocationTarget / monthlyIncome) * 100}%)
           </span>
         </div>
         <div
           className={clsx(
             "text-body-sm transition-colors duration-500",
-            allocationTotal > allocationTarget
+            allocationAmount > allocationTarget
               ? "text-error"
-              : allocationTotal === allocationTarget
+              : allocationAmount === allocationTarget
                 ? "text-success"
                 : ""
           )}
         >
           Allocated:{" "}
           <strong>
-            {formatMoney(allocationTotal, { currency, decimals: 0 })}/
+            {formatMoney(allocationAmount, { currency, decimals: 0 })}/
             {formatMoney(allocationTarget, { currency, decimals: 0 })}
           </strong>
         </div>
@@ -250,17 +236,9 @@ function AllocationSection({ allocationIndex, allocation, monthlyIncome, currenc
                     invalid={
                       !!form.formState.errors.allocations?.[allocationIndex]?.categories?.[categoryIndex]?.amount
                     }
-                    placeholder="0"
+                    placeholder={formatMoney(0, { currency, decimals: 0 })}
                     {...form.register(`allocations.${allocationIndex}.categories.${categoryIndex}.amount`, {
-                      valueAsNumber: true,
-                      onChange: (e) => {
-                        const amount = parseFloat(e.target.value) || 0;
-                        const percentage = (amount / monthlyIncome) * 100;
-                        form.setValue(
-                          `allocations.${allocationIndex}.categories.${categoryIndex}.percentage`,
-                          Math.round(percentage * 100) / 100
-                        );
-                      }
+                      valueAsNumber: true
                     })}
                   />
                   <Button
@@ -283,7 +261,7 @@ function AllocationSection({ allocationIndex, allocation, monthlyIncome, currenc
           variant="outline"
           size="sm"
           onClick={() => setIsAddModalOpen(true)}
-          disabled={allocationTotal >= allocationTarget}
+          disabled={allocationAmount >= allocationTarget}
           startIcon={<PlusIcon />}
         >
           Add Category
@@ -291,18 +269,12 @@ function AllocationSection({ allocationIndex, allocation, monthlyIncome, currenc
 
         {isAddModalOpen ? (
           <BudgetCategoryFormDialog
-            isOpen={isAddModalOpen}
             onClose={() => setIsAddModalOpen(false)}
             onSubmit={(data) => {
-              append({
-                ...data,
-                description: data.description ?? "",
-                order: fields.length,
-                percentage: (data.amount / monthlyIncome) * 100
-              });
+              append(data);
             }}
             defaultValues={{
-              remainingAmount: allocationTarget - allocationTotal
+              remainingAmount: allocationTarget - allocationAmount
             }}
           />
         ) : null}

@@ -18,7 +18,6 @@ import { BudgetCategoryFormFields } from "~/features/budget/components/forms/bud
 import { type BudgetCategoryFormData, budgetCategorySchema } from "~/features/budget/schemas/budget-category";
 
 export type BudgetCategoryFormDialogProps = {
-  isOpen: boolean;
   onClose: () => void;
   defaultValues?: DefaultValues<BudgetCategoryFormData>;
   onSubmit: (data: BudgetCategoryFormData) => void;
@@ -27,7 +26,6 @@ export type BudgetCategoryFormDialogProps = {
 
 export function BudgetCategoryFormDialog({
   onClose,
-  isOpen,
   defaultValues,
   onSubmit,
   mode = "create"
@@ -63,11 +61,13 @@ export function BudgetCategoryFormDialog({
         <div className="-mr-3 -ml-1 min-h-0 flex-1 overflow-y-auto px-1">
           <BudgetCategoryFormFields form={form} />
 
-          <div className="space-y-3 py-6">
-            <Separator />
-            <h3 className="text-heading-h4 text-center">Preview:</h3>
-            <BudgetCategoryPreview category={form.watch()} />
-          </div>
+          {mode === "edit" ? (
+            <div className="space-y-3 py-6">
+              <Separator />
+              <h3 className="text-heading-h4 text-center">Preview:</h3>
+              <BudgetCategoryPreview category={form.watch()} />
+            </div>
+          ) : null}
         </div>
 
         <DialogFooter>

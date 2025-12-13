@@ -1,4 +1,4 @@
-import { BudgetProfile, type BudgetTemplateBase } from "~/features/budget/types/budget-template";
+import { AllocationType, BudgetProfile, type BudgetTemplateBase } from "~/features/budget/types/budget-template";
 
 export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
   // ===== YOUNG PROFESSIONAL ===== //
@@ -323,7 +323,7 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
     isRecommended: false,
     allocations: [
       {
-        type: "needs",
+        type: AllocationType.NEEDS,
         percentage: 40,
         label: "Needs",
         categories: [
@@ -366,7 +366,7 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
         ]
       },
       {
-        type: "wants",
+        type: AllocationType.WANTS,
         percentage: 10,
         label: "Wants",
         categories: [
@@ -391,7 +391,7 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
         ]
       },
       {
-        type: "savings",
+        type: AllocationType.SAVINGS,
         percentage: 50,
         label: "Savings",
         categories: [
@@ -450,7 +450,7 @@ export const DEFAULT_BUDGET_TEMPLATES: Array<BudgetTemplateBase> = [
     isRecommended: false,
     allocations: [
       {
-        type: "needs",
+        type: AllocationType.NEEDS,
         percentage: 60,
         label: "Needs",
         categories: [

@@ -38,7 +38,11 @@ export const onboardingBaseBuilder = build<OnboardingBase>({
     completed: false,
     completedAt: null,
     currentStep: OnboardingSteps.PREFERENCES,
-    products: perBuild(() => onboardingProductsBuilder.one())
+    products: perBuild(() => onboardingProductsBuilder.one()),
+    preferences: null,
+    budget: null,
+    budgetDetails: null,
+    goals: null
   },
   traits: {
     initial: {
@@ -79,19 +83,11 @@ export const onboardingBaseBuilder = build<OnboardingBase>({
         preferences: perBuild(() => onboardingPreferencesBuilder.one({ traits: ["pln"] })),
         budget: perBuild(() => onboardingBudgetBuilder.one({ traits: ["youngProfessional"] })),
         budgetDetails: perBuild(() => onboardingBudgetDetailsBuilder.one({ traits: ["youngProfessional"] })),
-        goals: {
-          budget: perBuild(() => faker.number.float({ min: 5000, max: 20000, fractionDigits: 2 })),
-          savings: perBuild(() => faker.number.float({ min: 1000, max: 10000, fractionDigits: 2 })),
-          investmentTarget: perBuild(() => faker.number.float({ min: 5000, max: 50000, fractionDigits: 2 }))
-        },
-        expenses: {
-          categories: perBuild(() =>
-            faker.helpers.arrayElements(
-              ["groceries", "transport", "entertainment", "utilities", "healthcare", "education"],
-              { min: 2, max: 5 }
-            )
-          )
-        }
+        goals: perBuild(() => ({
+          budget: faker.number.float({ min: 5000, max: 20000, fractionDigits: 2 }),
+          savings: faker.number.float({ min: 1000, max: 10000, fractionDigits: 2 }),
+          investmentTarget: faker.number.float({ min: 5000, max: 50000, fractionDigits: 2 })
+        }))
       }
     },
     withAllData: {
@@ -103,19 +99,11 @@ export const onboardingBaseBuilder = build<OnboardingBase>({
         preferences: perBuild(() => onboardingPreferencesBuilder.one()),
         budget: perBuild(() => onboardingBudgetBuilder.one()),
         budgetDetails: perBuild(() => onboardingBudgetDetailsBuilder.one()),
-        goals: {
-          budget: perBuild(() => faker.number.float({ min: 5000, max: 20000, fractionDigits: 2 })),
-          savings: perBuild(() => faker.number.float({ min: 1000, max: 10000, fractionDigits: 2 })),
-          investmentTarget: perBuild(() => faker.number.float({ min: 5000, max: 50000, fractionDigits: 2 }))
-        },
-        expenses: {
-          categories: perBuild(() =>
-            faker.helpers.arrayElements(
-              ["groceries", "transport", "entertainment", "utilities", "healthcare", "education"],
-              { min: 3, max: 6 }
-            )
-          )
-        }
+        goals: perBuild(() => ({
+          budget: faker.number.float({ min: 5000, max: 20000, fractionDigits: 2 }),
+          savings: faker.number.float({ min: 1000, max: 10000, fractionDigits: 2 }),
+          investmentTarget: faker.number.float({ min: 5000, max: 50000, fractionDigits: 2 })
+        }))
       }
     }
   }
@@ -169,6 +157,10 @@ export const onboardingBuilder = build<Onboarding>({
     completedAt: null,
     currentStep: OnboardingSteps.PREFERENCES,
     products: perBuild(() => onboardingProductsBuilder.one()),
+    preferences: null,
+    budget: null,
+    budgetDetails: null,
+    goals: null,
     createdAt: perBuild(() => faker.date.past()),
     updatedAt: perBuild(() => faker.date.recent())
   },
@@ -211,19 +203,11 @@ export const onboardingBuilder = build<Onboarding>({
         preferences: perBuild(() => onboardingPreferencesBuilder.one({ traits: ["pln"] })),
         budget: perBuild(() => onboardingBudgetBuilder.one({ traits: ["youngProfessional"] })),
         budgetDetails: perBuild(() => onboardingBudgetDetailsBuilder.one({ traits: ["youngProfessional"] })),
-        goals: {
-          budget: perBuild(() => faker.number.float({ min: 5000, max: 20000, fractionDigits: 2 })),
-          savings: perBuild(() => faker.number.float({ min: 1000, max: 10000, fractionDigits: 2 })),
-          investmentTarget: perBuild(() => faker.number.float({ min: 5000, max: 50000, fractionDigits: 2 }))
-        },
-        expenses: {
-          categories: perBuild(() =>
-            faker.helpers.arrayElements(
-              ["groceries", "transport", "entertainment", "utilities", "healthcare", "education"],
-              { min: 2, max: 5 }
-            )
-          )
-        }
+        goals: perBuild(() => ({
+          budget: faker.number.float({ min: 5000, max: 20000, fractionDigits: 2 }),
+          savings: faker.number.float({ min: 1000, max: 10000, fractionDigits: 2 }),
+          investmentTarget: faker.number.float({ min: 5000, max: 50000, fractionDigits: 2 })
+        }))
       }
     },
     withAllData: {
@@ -235,19 +219,11 @@ export const onboardingBuilder = build<Onboarding>({
         preferences: perBuild(() => onboardingPreferencesBuilder.one()),
         budget: perBuild(() => onboardingBudgetBuilder.one()),
         budgetDetails: perBuild(() => onboardingBudgetDetailsBuilder.one()),
-        goals: {
-          budget: perBuild(() => faker.number.float({ min: 5000, max: 20000, fractionDigits: 2 })),
-          savings: perBuild(() => faker.number.float({ min: 1000, max: 10000, fractionDigits: 2 })),
-          investmentTarget: perBuild(() => faker.number.float({ min: 5000, max: 50000, fractionDigits: 2 }))
-        },
-        expenses: {
-          categories: perBuild(() =>
-            faker.helpers.arrayElements(
-              ["groceries", "transport", "entertainment", "utilities", "healthcare", "education"],
-              { min: 3, max: 6 }
-            )
-          )
-        }
+        goals: perBuild(() => ({
+          budget: faker.number.float({ min: 5000, max: 20000, fractionDigits: 2 }),
+          savings: faker.number.float({ min: 1000, max: 10000, fractionDigits: 2 }),
+          investmentTarget: faker.number.float({ min: 5000, max: 50000, fractionDigits: 2 })
+        }))
       }
     }
   }

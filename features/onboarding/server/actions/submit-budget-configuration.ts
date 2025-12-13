@@ -12,7 +12,10 @@ const logger = createLogger({ module: "onboarding-actions" });
 export async function submitBudgetConfiguration(formData: BudgetSetupFormData, onboarding: Onboarding): RedirectAction {
   logger.info({ onboardingId: onboarding.id, formData }, "Submitting budget configuration");
 
-  let updateData: UpdateOnboardingDto = { currentStep: OnboardingSteps.BUDGET_SETUP, budget: formData };
+  let updateData: UpdateOnboardingDto = {
+    currentStep: OnboardingSteps.BUDGET_DETAILS,
+    budget: formData
+  };
 
   if (
     onboarding.budgetDetails &&
@@ -22,7 +25,7 @@ export async function submitBudgetConfiguration(formData: BudgetSetupFormData, o
     logger.info({ onboardingId: onboarding.id }, "Reset budget details when budget profile changes");
     updateData = {
       ...updateData,
-      budgetDetails: undefined
+      budgetDetails: null
     };
   }
 

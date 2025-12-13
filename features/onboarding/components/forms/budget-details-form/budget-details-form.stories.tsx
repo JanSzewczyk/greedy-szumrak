@@ -1,9 +1,30 @@
 import { type Meta, type StoryObj } from "@storybook/nextjs-vite";
 import { expect, fn, userEvent, waitFor } from "storybook/test";
-import { createTestBudgetTemplate } from "~/features/budget/test/builders";
+import { DEFAULT_BUDGET_TEMPLATES } from "~/features/budget/data/predefined-budget-templates";
+import { BudgetProfile, type BudgetTemplate, type BudgetTemplateBase } from "~/features/budget/types/budget-template";
 import { BudgetDetailsForm } from "~/features/onboarding/components/forms/budget-details-form/budget-details-form";
-import { onboardingBudgetDetailsBuilder, onboardingPreferencesBuilder } from "~/features/onboarding/test/builders";
+import { templateToFormDefaults } from "~/features/onboarding/schemas/budget-details";
+import { onboardingPreferencesBuilder } from "~/features/onboarding/test/builders";
 import { type RedirectAction } from "~/lib/action-types";
+
+// Helper to convert BudgetTemplateBase to BudgetTemplate with timestamps
+const toTemplate = (base: BudgetTemplateBase): BudgetTemplate => ({
+  ...base,
+  createdAt: new Date(),
+  updatedAt: new Date()
+});
+
+// Helper to get predefined template by profile ID
+const getTemplate = (profileId: BudgetProfile): BudgetTemplate => {
+  const base = DEFAULT_BUDGET_TEMPLATES.find((t) => t.id === profileId) ?? DEFAULT_BUDGET_TEMPLATES[0]!;
+  return toTemplate(base);
+};
+
+// Get templates for different scenarios
+const youngProfessionalTemplate = getTemplate(BudgetProfile.YOUNG_PROFESSIONAL);
+const familyTemplate = getTemplate(BudgetProfile.FAMILY);
+const aggressiveSaverTemplate = getTemplate(BudgetProfile.AGGRESSIVE_SAVER);
+const studentTemplate = getTemplate(BudgetProfile.STUDENT);
 
 const meta = {
   title: "Features/Onboarding/Budget Details Form",
@@ -17,7 +38,7 @@ const meta = {
         }) as unknown as RedirectAction
     ),
     onBackAction: fn(),
-    budgetTemplate: createTestBudgetTemplate.youngProfessional(),
+    budgetTemplate: youngProfessionalTemplate,
     monthlyIncome: 8000,
     preferences: onboardingPreferencesBuilder.one()
   }
@@ -86,11 +107,11 @@ export const InitialForm: Story = {
 
 /**
  * Form prefilled with default values showing saved budget details.
- * Uses the onboardingBudgetDetailsBuilder to generate consistent test data.
+ * Uses real predefined budget template data transformed to form defaults.
  */
 export const Prefilled: Story = {
   args: {
-    defaultValues: onboardingBudgetDetailsBuilder.one()
+    defaultValues: templateToFormDefaults(youngProfessionalTemplate, 8000)
   },
   play: async ({ canvas, args, step }) => {
     await step("Verify allocation sections are displayed", async () => {

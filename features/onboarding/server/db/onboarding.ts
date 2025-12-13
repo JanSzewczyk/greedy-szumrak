@@ -87,6 +87,10 @@ export async function createOnboardingByUserId(
     completedAt: null,
     currentStep: OnboardingSteps.PREFERENCES,
     products,
+    preferences: null,
+    goals: null,
+    budgetDetails: null,
+    budget: null,
     updatedAt: FieldValue.serverTimestamp(),
     createdAt: FieldValue.serverTimestamp()
   };
@@ -106,6 +110,10 @@ export async function createOnboardingByUserId(
       completedAt: null,
       currentStep: OnboardingSteps.PREFERENCES,
       products,
+      preferences: null,
+      goals: null,
+      budgetDetails: null,
+      budget: null,
       createdAt: now,
       updatedAt: now
     };
