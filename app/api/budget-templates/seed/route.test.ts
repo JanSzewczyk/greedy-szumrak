@@ -20,9 +20,9 @@ vi.mock("~/lib/logger", () => ({
 }));
 
 // Mock the seed function
-const mockBudgetTemplates = vi.fn();
+const mockSeedBudgetTemplates = vi.fn();
 vi.mock("~/features/budget/server/db/budget-templates", () => ({
-  budgetTemplates: mockBudgetTemplates
+  seedBudgetTemplates: mockSeedBudgetTemplates
 }));
 
 // Import after mocks
@@ -44,13 +44,13 @@ describe("GET /api/budget-templates/seed", () => {
       }
     };
 
-    mockBudgetTemplates.mockResolvedValue([null, mockResult]);
+    mockSeedBudgetTemplates.mockResolvedValue([null, mockResult]);
 
     const request = new Request("http://localhost:3000/api/budget-templates/seed");
     const response = await GET(request);
     const data = await response.json();
 
-    expect(mockBudgetTemplates).toHaveBeenCalledWith({ force: false });
+    expect(mockSeedBudgetTemplates).toHaveBeenCalledWith({ force: false });
     expect(response.status).toBe(200);
     expect(data).toEqual({
       success: true,
@@ -72,13 +72,13 @@ describe("GET /api/budget-templates/seed", () => {
       }
     };
 
-    mockBudgetTemplates.mockResolvedValue([null, mockResult]);
+    mockSeedBudgetTemplates.mockResolvedValue([null, mockResult]);
 
     const request = new Request("http://localhost:3000/api/budget-templates/seed?force=true");
     const response = await GET(request);
     const data = await response.json();
 
-    expect(mockBudgetTemplates).toHaveBeenCalledWith({ force: true });
+    expect(mockSeedBudgetTemplates).toHaveBeenCalledWith({ force: true });
     expect(response.status).toBe(200);
     expect(data).toEqual({
       success: true,
@@ -91,7 +91,7 @@ describe("GET /api/budget-templates/seed", () => {
 
   it("should handle errors from budgetTemplates function", async () => {
     const errorMessage = "Database connection failed";
-    mockBudgetTemplates.mockResolvedValue([new Error(errorMessage), null]);
+    mockSeedBudgetTemplates.mockResolvedValue([new Error(errorMessage), null]);
 
     const request = new Request("http://localhost:3000/api/budget-templates/seed");
     const response = await GET(request);
@@ -106,7 +106,7 @@ describe("GET /api/budget-templates/seed", () => {
 
   it("should handle unexpected exceptions", async () => {
     // Mock throwing a non-Error value (string)
-    mockBudgetTemplates.mockRejectedValue("Unknown error");
+    mockSeedBudgetTemplates.mockRejectedValue("Unknown error");
 
     const request = new Request("http://localhost:3000/api/budget-templates/seed");
     const response = await GET(request);
@@ -130,12 +130,12 @@ describe("GET /api/budget-templates/seed", () => {
       }
     };
 
-    mockBudgetTemplates.mockResolvedValue([null, mockResult]);
+    mockSeedBudgetTemplates.mockResolvedValue([null, mockResult]);
 
     const request = new Request("http://localhost:3000/api/budget-templates/seed?force=false");
     await GET(request);
 
-    expect(mockBudgetTemplates).toHaveBeenCalledWith({ force: false });
+    expect(mockSeedBudgetTemplates).toHaveBeenCalledWith({ force: false });
   });
 
   it("should parse force parameter correctly when set to any other value", async () => {
@@ -149,12 +149,12 @@ describe("GET /api/budget-templates/seed", () => {
       }
     };
 
-    mockBudgetTemplates.mockResolvedValue([null, mockResult]);
+    mockSeedBudgetTemplates.mockResolvedValue([null, mockResult]);
 
     const request = new Request("http://localhost:3000/api/budget-templates/seed?force=yes");
     await GET(request);
 
-    expect(mockBudgetTemplates).toHaveBeenCalledWith({ force: false });
+    expect(mockSeedBudgetTemplates).toHaveBeenCalledWith({ force: false });
   });
 
   it("should handle skipped seeding result", async () => {
@@ -163,13 +163,13 @@ describe("GET /api/budget-templates/seed", () => {
       stats: null
     };
 
-    mockBudgetTemplates.mockResolvedValue([null, mockResult]);
+    mockSeedBudgetTemplates.mockResolvedValue([null, mockResult]);
 
     const request = new Request("http://localhost:3000/api/budget-templates/seed");
     const response = await GET(request);
     const data = await response.json();
 
-    expect(mockBudgetTemplates).toHaveBeenCalledWith({ force: false });
+    expect(mockSeedBudgetTemplates).toHaveBeenCalledWith({ force: false });
     expect(response.status).toBe(200);
     expect(data).toEqual({
       success: true,

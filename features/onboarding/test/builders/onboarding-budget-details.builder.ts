@@ -277,29 +277,25 @@ export const createTestBudgetDetails = {
    * Create budget details for a young professional (50/30/20 split)
    * Uses real Young Professional template data
    */
-  youngProfessional: (income = 6000) =>
-    templateToFormDefaults(getTemplate(BudgetProfile.YOUNG_PROFESSIONAL), income),
+  youngProfessional: (income = 6000) => templateToFormDefaults(getTemplate(BudgetProfile.YOUNG_PROFESSIONAL), income),
 
   /**
    * Create budget details for a family (60/20/20 split)
    * Uses real Family template data
    */
-  family: (income = 10000) =>
-    templateToFormDefaults(getTemplate(BudgetProfile.FAMILY), income),
+  family: (income = 10000) => templateToFormDefaults(getTemplate(BudgetProfile.FAMILY), income),
 
   /**
    * Create budget details for an aggressive saver (40/10/50 split)
    * Uses real Aggressive Saver template data
    */
-  aggressiveSaver: (income = 8000) =>
-    templateToFormDefaults(getTemplate(BudgetProfile.AGGRESSIVE_SAVER), income),
+  aggressiveSaver: (income = 8000) => templateToFormDefaults(getTemplate(BudgetProfile.AGGRESSIVE_SAVER), income),
 
   /**
    * Create budget details for a student (60/25/15 split)
    * Uses real Student template data
    */
-  student: (income = 2000) =>
-    templateToFormDefaults(getTemplate(BudgetProfile.STUDENT), income),
+  student: (income = 2000) => templateToFormDefaults(getTemplate(BudgetProfile.STUDENT), income),
 
   /**
    * Create budget details with a specific monthly income using Young Professional template
@@ -310,6 +306,5 @@ export const createTestBudgetDetails = {
   /**
    * Create budget details for a specific profile
    */
-  forProfile: (profileId: BudgetProfile, income: number) =>
-    templateToFormDefaults(getTemplate(profileId), income)
+  forProfile: (profileId: BudgetProfile, income: number) => templateToFormDefaults(getTemplate(profileId), income)
 };
