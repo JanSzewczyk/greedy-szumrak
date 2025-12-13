@@ -125,7 +125,7 @@ export default async function BudgetSetupPage() {
         onBackAction={handleBack}
         onContinueAction={handleSubmitBudgetConfiguration}
         preferences={preferences}
-        defaultValues={onboarding?.budget}
+        defaultValues={onboarding.budget}
       />
     </StepperContent>
   );

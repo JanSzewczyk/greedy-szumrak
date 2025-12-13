@@ -8,7 +8,6 @@ const meta = {
   title: "Features/Onboarding/Budget Category Form Dialog",
   component: BudgetCategoryFormDialog,
   args: {
-    isOpen: true,
     onClose: fn(),
     onSubmit: fn(),
     mode: "create",

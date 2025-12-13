@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import { ChevronRightIcon } from "lucide-react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, type DefaultValues, useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -35,7 +35,7 @@ export type BudgetSetupFormProps = {
   budgetTemplates?: Array<BudgetTemplate>;
   onBackAction(): void;
   onContinueAction(data: BudgetSetupFormData): RedirectAction;
-  defaultValues?: BudgetSetupFormData;
+  defaultValues?: DefaultValues<BudgetSetupFormData> | null;
   preferences: OnboardingPreferences;
 };
 
@@ -46,13 +46,13 @@ export function BudgetSetupForm({
   defaultValues,
   preferences: { currency }
 }: BudgetSetupFormProps) {
-  const form = useForm({
-    defaultValues,
-    resolver: zodResolver(budgetSetupSchema)
+  const form = useForm<BudgetSetupFormData>({
+    resolver: zodResolver(budgetSetupSchema),
+    defaultValues: defaultValues ?? {}
   });
 
   const [displayedMonthlyIncome, setDisplayedMonthlyIncome] = React.useState<number | null>(
-    defaultValues ? defaultValues.monthlyIncome : null
+    defaultValues?.monthlyIncome ?? null
   );
 
   async function handleIncomeBlur() {
