@@ -22,4 +22,4 @@ export const investmentAccountSchema = z
     }
   );
 
-export type InvestmentAccountSchemaFormData = z.infer<typeof investmentAccountSchema>;
+export type InvestmentAccountFormData = z.infer<typeof investmentAccountSchema>;

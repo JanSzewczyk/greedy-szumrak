@@ -1,9 +1,9 @@
 import { type BudgetDetailsFormData } from "~/features/onboarding/schemas/budget-details";
 import { type BudgetSetupFormData } from "~/features/onboarding/schemas/budget-setup";
+import { type InvestmentAccountFormData } from "~/features/onboarding/schemas/investments";
 import { type PreferencesFormData } from "~/features/onboarding/schemas/preferences";
 import { type ProductsFormData } from "~/features/onboarding/schemas/product";
 import { type CreateDto, type UpdateDto, type WithDates, type WithFirestoreTimestamps } from "~/lib/firebase/types";
-import { InvestmentAccountSchemaFormData } from "~/features/onboarding/schemas/investments";
 
 export const OnboardingSteps = {
   WELCOME: "/onboarding/welcome",
@@ -20,7 +20,8 @@ export type OnboardingProducts = ProductsFormData;
 export type OnboardingPreferences = PreferencesFormData;
 export type OnboardingBudget = BudgetSetupFormData;
 export type OnboardingBudgetDetails = BudgetDetailsFormData;
-export type OnboardingInvestments = Array<InvestmentAccountSchemaFormData>;
+export type OnboardingInvestment = InvestmentAccountFormData;
+export type OnboardingInvestments = Array<OnboardingInvestment>;
 
 /**
  * Base type representing onboarding fields without timestamps
@@ -33,7 +34,7 @@ export type OnboardingBase = {
   preferences: OnboardingPreferences | null;
   budget: OnboardingBudget | null;
   budgetDetails: OnboardingBudgetDetails | null;
-  investments: OnboardingInvestments;
+  investments: Array<OnboardingInvestment>;
 };
 
 /**

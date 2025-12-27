@@ -1,5 +1,5 @@
 import { CheckCircle2Icon, XIcon } from "lucide-react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, type DefaultValues, useForm } from "react-hook-form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -22,24 +22,27 @@ import {
   SelectLabel
 } from "@szum-tech/design-system";
 import { BrokerId, brokers, investmentCurrencyOptions } from "~/features/onboarding/constants/investments";
-import {
-  investmentAccountSchema,
-  type InvestmentAccountSchemaFormData
-} from "~/features/onboarding/schemas/investments";
+import { investmentAccountSchema, type InvestmentAccountFormData } from "~/features/onboarding/schemas/investments";
 
 export type InvestmentAccountCardFormProps = {
   mode?: "create" | "edit";
-  onSave: (data: InvestmentAccountSchemaFormData) => void;
+  defaultValues?: DefaultValues<InvestmentAccountFormData>;
+  onSave: (data: InvestmentAccountFormData) => void;
   onCancel: () => void;
 };
 
 const popularBrokers = brokers.filter((b) => b.isPopular);
 const otherBrokers = brokers.filter((b) => !b.isPopular);
 
-export function InvestmentAccountCardForm({ onSave, onCancel, mode = "create" }: InvestmentAccountCardFormProps) {
-  const form = useForm<InvestmentAccountSchemaFormData>({
+export function InvestmentAccountCardForm({
+  onSave,
+  onCancel,
+  mode = "create",
+  defaultValues
+}: InvestmentAccountCardFormProps) {
+  const form = useForm<InvestmentAccountFormData>({
     resolver: zodResolver(investmentAccountSchema),
-    defaultValues: {}
+    defaultValues: defaultValues ?? {}
   });
 
   const brokerId = form.watch("brokerId");

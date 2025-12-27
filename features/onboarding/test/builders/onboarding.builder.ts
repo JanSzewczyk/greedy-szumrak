@@ -2,6 +2,7 @@ import { faker } from "@faker-js/faker/locale/pl";
 import { build, perBuild } from "@jackfranklin/test-data-bot";
 import { type Onboarding, type OnboardingBase, OnboardingSteps } from "~/features/onboarding/types/onboarding";
 
+import { onboardingInvestmentBuilder } from "./onboarding-investment.builder";
 import { onboardingBudgetDetailsBuilder } from "./onboarding-budget-details.builder";
 import { onboardingBudgetBuilder } from "./onboarding-budget.builder";
 import { onboardingPreferencesBuilder } from "./onboarding-preferences.builder";
@@ -42,7 +43,7 @@ export const onboardingBaseBuilder = build<OnboardingBase>({
     preferences: null,
     budget: null,
     budgetDetails: null,
-    investments: null
+    investments: []
   },
   traits: {
     initial: {
@@ -74,36 +75,60 @@ export const onboardingBaseBuilder = build<OnboardingBase>({
         budgetDetails: perBuild(() => onboardingBudgetDetailsBuilder.one({ traits: ["youngProfessional"] }))
       }
     },
-    completed: {
+    inProgressInvestments: {
       overrides: {
-        completed: true,
-        completedAt: perBuild(() => faker.date.recent()),
-        currentStep: OnboardingSteps.CATEGORIES,
+        completed: false,
+        completedAt: null,
+        currentStep: OnboardingSteps.INVESTMENTS,
         products: perBuild(() => onboardingProductsBuilder.one({ traits: ["all"] })),
         preferences: perBuild(() => onboardingPreferencesBuilder.one({ traits: ["pln"] })),
         budget: perBuild(() => onboardingBudgetBuilder.one({ traits: ["youngProfessional"] })),
         budgetDetails: perBuild(() => onboardingBudgetDetailsBuilder.one({ traits: ["youngProfessional"] })),
-        goals: perBuild(() => ({
-          budget: faker.number.float({ min: 5000, max: 20000, fractionDigits: 2 }),
-          savings: faker.number.float({ min: 1000, max: 10000, fractionDigits: 2 }),
-          investmentTarget: faker.number.float({ min: 5000, max: 50000, fractionDigits: 2 })
-        }))
+        investments: perBuild(() => [onboardingInvestmentBuilder.one({ traits: ["xtb", "pln"] })])
+      }
+    },
+    completed: {
+      overrides: {
+        completed: true,
+        completedAt: perBuild(() => faker.date.recent()),
+        currentStep: OnboardingSteps.COMPLETE,
+        products: perBuild(() => onboardingProductsBuilder.one({ traits: ["all"] })),
+        preferences: perBuild(() => onboardingPreferencesBuilder.one({ traits: ["pln"] })),
+        budget: perBuild(() => onboardingBudgetBuilder.one({ traits: ["youngProfessional"] })),
+        budgetDetails: perBuild(() => onboardingBudgetDetailsBuilder.one({ traits: ["youngProfessional"] })),
+        investments: perBuild(() => [
+          onboardingInvestmentBuilder.one({ traits: ["xtb", "pln"] }),
+          onboardingInvestmentBuilder.one({ traits: ["revolut", "eur"] })
+        ])
+      }
+    },
+    withInvestments: {
+      overrides: {
+        investments: perBuild(() => [
+          onboardingInvestmentBuilder.one({ traits: ["xtb", "pln"] }),
+          onboardingInvestmentBuilder.one({ traits: ["revolut", "eur"] }),
+          onboardingInvestmentBuilder.one({ traits: ["interactiveBrokers", "usd"] })
+        ])
+      }
+    },
+    withSingleInvestment: {
+      overrides: {
+        investments: perBuild(() => [onboardingInvestmentBuilder.one()])
       }
     },
     withAllData: {
       overrides: {
         completed: false,
         completedAt: null,
-        currentStep: OnboardingSteps.CATEGORIES,
+        currentStep: OnboardingSteps.COMPLETE,
         products: perBuild(() => onboardingProductsBuilder.one({ traits: ["all"] })),
         preferences: perBuild(() => onboardingPreferencesBuilder.one()),
         budget: perBuild(() => onboardingBudgetBuilder.one()),
         budgetDetails: perBuild(() => onboardingBudgetDetailsBuilder.one()),
-        goals: perBuild(() => ({
-          budget: faker.number.float({ min: 5000, max: 20000, fractionDigits: 2 }),
-          savings: faker.number.float({ min: 1000, max: 10000, fractionDigits: 2 }),
-          investmentTarget: faker.number.float({ min: 5000, max: 50000, fractionDigits: 2 })
-        }))
+        investments: perBuild(() => [
+          onboardingInvestmentBuilder.one({ traits: ["xtb", "pln"] }),
+          onboardingInvestmentBuilder.one({ traits: ["mbank", "pln"] })
+        ])
       }
     }
   }
@@ -160,8 +185,7 @@ export const onboardingBuilder = build<Onboarding>({
     preferences: null,
     budget: null,
     budgetDetails: null,
-    goals: null,
-    investments: null,
+    investments: [],
     createdAt: perBuild(() => faker.date.past()),
     updatedAt: perBuild(() => faker.date.recent())
   },
@@ -195,36 +219,60 @@ export const onboardingBuilder = build<Onboarding>({
         budgetDetails: perBuild(() => onboardingBudgetDetailsBuilder.one({ traits: ["youngProfessional"] }))
       }
     },
-    completed: {
+    inProgressInvestments: {
       overrides: {
-        completed: true,
-        completedAt: perBuild(() => faker.date.recent()),
-        currentStep: OnboardingSteps.CATEGORIES,
+        completed: false,
+        completedAt: null,
+        currentStep: OnboardingSteps.INVESTMENTS,
         products: perBuild(() => onboardingProductsBuilder.one({ traits: ["all"] })),
         preferences: perBuild(() => onboardingPreferencesBuilder.one({ traits: ["pln"] })),
         budget: perBuild(() => onboardingBudgetBuilder.one({ traits: ["youngProfessional"] })),
         budgetDetails: perBuild(() => onboardingBudgetDetailsBuilder.one({ traits: ["youngProfessional"] })),
-        goals: perBuild(() => ({
-          budget: faker.number.float({ min: 5000, max: 20000, fractionDigits: 2 }),
-          savings: faker.number.float({ min: 1000, max: 10000, fractionDigits: 2 }),
-          investmentTarget: faker.number.float({ min: 5000, max: 50000, fractionDigits: 2 })
-        }))
+        investments: perBuild(() => [onboardingInvestmentBuilder.one({ traits: ["xtb", "pln"] })])
+      }
+    },
+    completed: {
+      overrides: {
+        completed: true,
+        completedAt: perBuild(() => faker.date.recent()),
+        currentStep: OnboardingSteps.COMPLETE,
+        products: perBuild(() => onboardingProductsBuilder.one({ traits: ["all"] })),
+        preferences: perBuild(() => onboardingPreferencesBuilder.one({ traits: ["pln"] })),
+        budget: perBuild(() => onboardingBudgetBuilder.one({ traits: ["youngProfessional"] })),
+        budgetDetails: perBuild(() => onboardingBudgetDetailsBuilder.one({ traits: ["youngProfessional"] })),
+        investments: perBuild(() => [
+          onboardingInvestmentBuilder.one({ traits: ["xtb", "pln"] }),
+          onboardingInvestmentBuilder.one({ traits: ["revolut", "eur"] })
+        ])
+      }
+    },
+    withInvestments: {
+      overrides: {
+        investments: perBuild(() => [
+          onboardingInvestmentBuilder.one({ traits: ["xtb", "pln"] }),
+          onboardingInvestmentBuilder.one({ traits: ["revolut", "eur"] }),
+          onboardingInvestmentBuilder.one({ traits: ["interactiveBrokers", "usd"] })
+        ])
+      }
+    },
+    withSingleInvestment: {
+      overrides: {
+        investments: perBuild(() => [onboardingInvestmentBuilder.one()])
       }
     },
     withAllData: {
       overrides: {
         completed: false,
         completedAt: null,
-        currentStep: OnboardingSteps.CATEGORIES,
+        currentStep: OnboardingSteps.COMPLETE,
         products: perBuild(() => onboardingProductsBuilder.one({ traits: ["all"] })),
         preferences: perBuild(() => onboardingPreferencesBuilder.one()),
         budget: perBuild(() => onboardingBudgetBuilder.one()),
         budgetDetails: perBuild(() => onboardingBudgetDetailsBuilder.one()),
-        goals: perBuild(() => ({
-          budget: faker.number.float({ min: 5000, max: 20000, fractionDigits: 2 }),
-          savings: faker.number.float({ min: 1000, max: 10000, fractionDigits: 2 }),
-          investmentTarget: faker.number.float({ min: 5000, max: 50000, fractionDigits: 2 })
-        }))
+        investments: perBuild(() => [
+          onboardingInvestmentBuilder.one({ traits: ["xtb", "pln"] }),
+          onboardingInvestmentBuilder.one({ traits: ["mbank", "pln"] })
+        ])
       }
     }
   }
@@ -250,9 +298,24 @@ export const createTestOnboarding = {
   inProgressBudgetDetails: () => onboardingBuilder.one({ traits: ["inProgressBudgetDetails"] }),
 
   /**
+   * Create an in-progress onboarding at investments step
+   */
+  inProgressInvestments: () => onboardingBuilder.one({ traits: ["inProgressInvestments"] }),
+
+  /**
    * Create a completed onboarding with all data filled
    */
   completed: () => onboardingBuilder.one({ traits: ["completed"] }),
+
+  /**
+   * Create an onboarding with investment accounts
+   */
+  withInvestments: () => onboardingBuilder.one({ traits: ["withInvestments"] }),
+
+  /**
+   * Create an onboarding with a single investment account
+   */
+  withSingleInvestment: () => onboardingBuilder.one({ traits: ["withSingleInvestment"] }),
 
   /**
    * Create an onboarding with all optional fields populated but not yet completed
