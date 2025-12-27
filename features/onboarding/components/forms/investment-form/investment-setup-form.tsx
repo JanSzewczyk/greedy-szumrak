@@ -55,13 +55,17 @@ function getBrokerInfo(brokerId: string) {
   return brokers.find((b) => b.id === brokerId);
 }
 
-export function InvestmentSetupForm({ onBackAction, onSkipAction, initialAccounts = [] }: InvestmentSetupFormProps) {
-  const [accounts, setAccounts] = React.useState<Array<OnboardingInvestment>>(initialAccounts ?? []);
+export function InvestmentSetupForm({
+  onBackAction,
+  onSkipAction,
+  initialAccounts = [],
+  onContinueAction
+}: InvestmentSetupFormProps) {
+  const [accounts, setAccounts] = React.useState<Array<OnboardingInvestment>>(initialAccounts);
+  const [isPending, startTransition] = React.useTransition();
 
   const [showInvestmentAccountForm, setShowInvestmentAccountForm] = React.useState<
-    | false
-    | { mode: "create" }
-    | { mode: "edit"; index: number; defaultValues: DefaultValues<OnboardingInvestment> }
+    false | { mode: "create" } | { mode: "edit"; index: number; defaultValues: DefaultValues<OnboardingInvestment> }
   >(false);
 
   function handleAddAccount() {
@@ -96,18 +100,22 @@ export function InvestmentSetupForm({ onBackAction, onSkipAction, initialAccount
     setAccounts((prev) => prev.filter((_, idx) => idx !== index));
   }
 
-  async function handleContinue() {
-    // const result = await onContinueAction({ accounts });
-    // if (!result.success) {
-    //   toast.error(result.error);
-    // }
+  function handleContinue() {
+    startTransition(async () => {
+      const result = await onContinueAction(accounts);
+      if (!result.success) {
+        toast.error(result.error);
+      }
+    });
   }
 
-  async function handleSkip() {
-    const result = await onSkipAction();
-    if (!result.success) {
-      toast.error(result.error);
-    }
+  function handleSkip() {
+    startTransition(async () => {
+      const result = await onSkipAction();
+      if (!result.success) {
+        toast.error(result.error);
+      }
+    });
   }
 
   return (
@@ -174,12 +182,12 @@ export function InvestmentSetupForm({ onBackAction, onSkipAction, initialAccount
 
         <div className="flex items-center gap-3">
           {accounts.length === 0 ? (
-            <Button onClick={handleSkip}>
+            <Button onClick={handleSkip} loading={isPending}>
               Skip for now
               <ChevronRightIcon className="ml-2 size-4" />
             </Button>
           ) : (
-            <Button onClick={handleContinue}>
+            <Button onClick={handleContinue} loading={isPending}>
               Continue with accounts
               <ChevronRightIcon className="ml-2 size-4" />
             </Button>
@@ -190,13 +198,15 @@ export function InvestmentSetupForm({ onBackAction, onSkipAction, initialAccount
   );
 }
 
-type AccountItemProps = {
+function AccountItem({
+  account,
+  onRemove,
+  onEdit
+}: {
   account: OnboardingInvestment;
   onRemove: () => void;
   onEdit: () => void;
-};
-
-function AccountItem({ account, onRemove, onEdit }: AccountItemProps) {
+}) {
   const brokerInfo = getBrokerInfo(account.brokerId);
 
   return (

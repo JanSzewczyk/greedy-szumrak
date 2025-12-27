@@ -34,7 +34,7 @@ export type OnboardingBase = {
   preferences: OnboardingPreferences | null;
   budget: OnboardingBudget | null;
   budgetDetails: OnboardingBudgetDetails | null;
-  investments: Array<OnboardingInvestment>;
+  investments: OnboardingInvestments;
 };
 
 /**

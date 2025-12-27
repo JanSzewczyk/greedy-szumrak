@@ -1,5 +1,5 @@
 import { type Meta, type StoryObj } from "@storybook/nextjs-vite";
-import { expect, fn, userEvent, waitFor, within } from "storybook/test";
+import { expect, fn, userEvent, waitFor } from "storybook/test";
 import { BrokerId } from "~/features/onboarding/constants/investments";
 import {
   createTestOnboardingInvestment,
@@ -32,7 +32,6 @@ export const DefaultEmptyState: Story = {
     initialAccounts: []
   },
   play: async ({ canvas, step }) => {
-
     await step("Verify page header and description", async () => {
       await expect(canvas.getByText(/add investment accounts/i)).toBeVisible();
       await expect(canvas.getByText(/optional/i)).toBeVisible();
@@ -52,9 +51,7 @@ export const DefaultEmptyState: Story = {
 
     await step("Verify empty state message is displayed", async () => {
       await expect(canvas.getByText(/no accounts added yet/i)).toBeVisible();
-      await expect(
-        canvas.getByText(/add your investment accounts to track your portfolio performance/i)
-      ).toBeVisible();
+      await expect(canvas.getByText(/add your investment accounts to track your portfolio performance/i)).toBeVisible();
       await expect(canvas.getByText(/track stocks, etfs, bonds, and more/i)).toBeVisible();
     });
 
@@ -91,7 +88,6 @@ export const WithInitialAccounts: Story = {
     ]
   },
   play: async ({ canvas, step }) => {
-
     await step("Verify accounts count header is displayed", async () => {
       await expect(canvas.getByText(/accounts \(3\)/i)).toBeVisible();
     });
@@ -127,7 +123,6 @@ export const AddAccountButtonOpensForm: Story = {
     initialAccounts: []
   },
   play: async ({ canvas, step }) => {
-
     await step("Click 'Add Investment Account' button", async () => {
       const addButton = canvas.getByRole("button", { name: /add investment account/i });
       await userEvent.click(addButton);
@@ -163,7 +158,6 @@ export const CancelFormReturnsToDefaultView: Story = {
     initialAccounts: []
   },
   play: async ({ canvas, step }) => {
-
     await step("Open the add account form", async () => {
       const addButton = canvas.getByRole("button", { name: /add investment account/i });
       await userEvent.click(addButton);
@@ -290,7 +284,6 @@ export const BackButtonCallsOnBackAction: Story = {
     initialAccounts: []
   },
   play: async ({ canvas, args, step }) => {
-
     await step("Click Back button", async () => {
       const backButton = canvas.getByRole("button", { name: /back/i });
       await userEvent.click(backButton);
@@ -310,7 +303,6 @@ export const SkipButtonWhenNoAccounts: Story = {
     initialAccounts: []
   },
   play: async ({ canvas, args, step }) => {
-
     await step("Verify 'Skip for now' button is visible", async () => {
       await expect(canvas.getByRole("button", { name: /skip for now/i })).toBeVisible();
     });
@@ -338,7 +330,6 @@ export const ContinueButtonWhenAccountsExist: Story = {
     initialAccounts: [createTestOnboardingInvestment.xtb()]
   },
   play: async ({ canvas, step }) => {
-
     await step("Verify 'Continue with accounts' button is visible", async () => {
       await expect(canvas.getByRole("button", { name: /continue with accounts/i })).toBeVisible();
     });
@@ -374,7 +365,6 @@ export const AccountDisplayWithCustomName: Story = {
     ]
   },
   play: async ({ canvas, step }) => {
-
     await step("Verify custom name is displayed as title", async () => {
       await expect(canvas.getByText(/retirement portfolio/i)).toBeVisible();
     });
@@ -408,7 +398,6 @@ export const AccountDisplayWithoutCustomName: Story = {
     ]
   },
   play: async ({ canvas, step }) => {
-
     await step("Verify broker name is displayed as title", async () => {
       await expect(canvas.getByText(/revolut/i)).toBeVisible();
     });
@@ -443,7 +432,6 @@ export const MaskedAccountNumberDisplay: Story = {
     ]
   },
   play: async ({ canvas, step }) => {
-
     await step("Verify account number is masked", async () => {
       // Account number "1234567890" should display as "******7890"
       await expect(canvas.getByText(/account: \*+7890/i)).toBeVisible();
