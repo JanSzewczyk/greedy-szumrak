@@ -3,13 +3,16 @@ import { type BudgetSetupFormData } from "~/features/onboarding/schemas/budget-s
 import { type PreferencesFormData } from "~/features/onboarding/schemas/preferences";
 import { type ProductsFormData } from "~/features/onboarding/schemas/product";
 import { type CreateDto, type UpdateDto, type WithDates, type WithFirestoreTimestamps } from "~/lib/firebase/types";
+import { InvestmentAccountSchemaFormData } from "~/features/onboarding/schemas/investments";
 
 export const OnboardingSteps = {
   WELCOME: "/onboarding/welcome",
   PREFERENCES: "/onboarding/preferences",
   BUDGET_SETUP: "/onboarding/budget-setup",
   BUDGET_DETAILS: "/onboarding/budget-details",
-  CATEGORIES: "/onboarding/categories"
+  CATEGORIES: "/onboarding/categories",
+  INVESTMENTS: "/onboarding/investments",
+  COMPLETE: "/onboarding/complete"
 } as const;
 export type OnboardingStep = (typeof OnboardingSteps)[keyof typeof OnboardingSteps];
 
@@ -17,6 +20,7 @@ export type OnboardingProducts = ProductsFormData;
 export type OnboardingPreferences = PreferencesFormData;
 export type OnboardingBudget = BudgetSetupFormData;
 export type OnboardingBudgetDetails = BudgetDetailsFormData;
+export type OnboardingInvestments = Array<InvestmentAccountSchemaFormData>;
 
 /**
  * Base type representing onboarding fields without timestamps
@@ -29,11 +33,7 @@ export type OnboardingBase = {
   preferences: OnboardingPreferences | null;
   budget: OnboardingBudget | null;
   budgetDetails: OnboardingBudgetDetails | null;
-  goals: {
-    budget: number;
-    savings: number;
-    investmentTarget: number;
-  } | null;
+  investments: OnboardingInvestments;
 };
 
 /**

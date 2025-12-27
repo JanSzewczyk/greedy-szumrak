@@ -23,7 +23,10 @@ export async function submitBudgetDetails(formData: BudgetDetailsFormData, onboa
     return { success: false, error: error.message };
   }
 
-  logger.info({ onboardingId: updatedOnboarding.id }, "Budget details saved successfully, redirecting to XXX step");
+  logger.info(
+    { onboardingId: updatedOnboarding.id },
+    "Budget details saved successfully, redirecting to investments step"
+  );
 
-  return redirect("/");
+  return redirect(OnboardingSteps.INVESTMENTS);
 }

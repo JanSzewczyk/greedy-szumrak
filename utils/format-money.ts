@@ -1,4 +1,4 @@
-type Currency = "PLN" | "EUR" | "USD" | string;
+import { type Currency } from "~/constants/currency";
 
 export type FormatMoneyOptions = {
   /**
