@@ -90,7 +90,7 @@ export async function createOnboardingByUserId(
     preferences: null,
     budgetDetails: null,
     budget: null,
-    investments: null,
+    investments: [],
     updatedAt: FieldValue.serverTimestamp(),
     createdAt: FieldValue.serverTimestamp()
   };
@@ -113,7 +113,7 @@ export async function createOnboardingByUserId(
       preferences: null,
       budgetDetails: null,
       budget: null,
-      investments: null,
+      investments: [],
       createdAt: now,
       updatedAt: now
     };

@@ -5,7 +5,6 @@ import * as React from "react";
 import {
   BriefcaseIcon,
   Building2Icon,
-  CheckCircle2Icon,
   ChevronRightIcon,
   Edit2Icon,
   InfoIcon,
@@ -13,6 +12,7 @@ import {
   Trash2Icon,
   TrendingUpIcon
 } from "lucide-react";
+import { type DefaultValues } from "react-hook-form";
 
 import {
   Alert,
@@ -41,14 +41,14 @@ import {
 } from "@szum-tech/design-system";
 import { InvestmentAccountCardForm } from "~/features/onboarding/components/forms/investment-form/investment-account-card-form";
 import { brokers } from "~/features/onboarding/constants/investments";
-import { type InvestmentAccountSchemaFormData } from "~/features/onboarding/schemas/investments";
+import { type OnboardingInvestment } from "~/features/onboarding/types/onboarding";
 import { type RedirectAction } from "~/lib/action-types";
 
 export type InvestmentSetupFormProps = {
   onBackAction(): void;
-  // onContinueAction(data: InvestmentsFormData): RedirectAction;
+  onContinueAction(data: Array<OnboardingInvestment>): RedirectAction;
   onSkipAction(): RedirectAction;
-  initialAccounts?: Array<InvestmentAccountSchemaFormData>;
+  initialAccounts?: Array<OnboardingInvestment>;
 };
 
 function getBrokerInfo(brokerId: string) {
@@ -56,32 +56,44 @@ function getBrokerInfo(brokerId: string) {
 }
 
 export function InvestmentSetupForm({ onBackAction, onSkipAction, initialAccounts = [] }: InvestmentSetupFormProps) {
-  const [accounts, setAccounts] = React.useState<Array<InvestmentAccountSchemaFormData>>(initialAccounts ?? []);
+  const [accounts, setAccounts] = React.useState<Array<OnboardingInvestment>>(initialAccounts ?? []);
 
-  const [isAddingAccount, setIsAddingAccount] = React.useState(false);
+  const [showInvestmentAccountForm, setShowInvestmentAccountForm] = React.useState<
+    | false
+    | { mode: "create" }
+    | { mode: "edit"; index: number; defaultValues: DefaultValues<OnboardingInvestment> }
+  >(false);
 
   function handleAddAccount() {
-    setIsAddingAccount(true);
+    setShowInvestmentAccountForm({ mode: "create" });
   }
 
-  function handleSaveAccount(data: InvestmentAccountSchemaFormData) {
-    const accountData: InvestmentAccountSchemaFormData = {
-      brokerId: data.brokerId,
-      name: data.name,
-      number: data.number,
-      currency: data.currency
-    };
+  function handleSaveAccount(formData: OnboardingInvestment) {
+    if (showInvestmentAccountForm) {
+      if (showInvestmentAccountForm.mode === "edit") {
+        setAccounts((prev) => prev.map((acc, idx) => (idx === showInvestmentAccountForm.index ? formData : acc)));
+      } else {
+        setAccounts((prev) => [...prev, formData]);
+      }
+    }
 
-    setAccounts((prev) => [...prev, accountData]);
     handleCancelForm();
   }
 
   function handleCancelForm() {
-    setIsAddingAccount(false);
+    setShowInvestmentAccountForm(false);
   }
 
-  function handleRemoveAccount(accountId: string) {
-    // setAccounts((prev) => prev.filter((acc) => acc.id !== accountId));
+  function handleEditAccount(investmentAccount: OnboardingInvestment, index: number) {
+    setShowInvestmentAccountForm({
+      mode: "edit",
+      index,
+      defaultValues: investmentAccount
+    });
+  }
+
+  function handleRemoveAccount(index: number) {
+    setAccounts((prev) => prev.filter((_, idx) => idx !== index));
   }
 
   async function handleContinue() {
@@ -117,8 +129,15 @@ export function InvestmentSetupForm({ onBackAction, onSkipAction, initialAccount
 
         <FieldGroup>
           {/* Add/Edit Form */}
-          {isAddingAccount ? (
-            <InvestmentAccountCardForm onSave={handleSaveAccount} onCancel={handleCancelForm} />
+          {showInvestmentAccountForm ? (
+            <InvestmentAccountCardForm
+              mode={showInvestmentAccountForm.mode}
+              defaultValues={
+                (showInvestmentAccountForm.mode === "edit" && showInvestmentAccountForm.defaultValues) || undefined
+              }
+              onSave={handleSaveAccount}
+              onCancel={handleCancelForm}
+            />
           ) : (
             <AddInvestmentButton onClick={handleAddAccount} />
           )}
@@ -127,16 +146,21 @@ export function InvestmentSetupForm({ onBackAction, onSkipAction, initialAccount
           {accounts.length > 0 ? (
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <h3 className="text-muted-foreground text-sm font-semibold">Added Accounts ({accounts.length})</h3>
+                <h3 className="text-muted-foreground text-sm font-semibold">Accounts ({accounts.length})</h3>
               </div>
 
               <ItemGroup className="space-y-2">
                 {accounts.map((account, index) => (
-                  <AccountItem key={index} account={account} />
+                  <AccountItem
+                    key={index}
+                    account={account}
+                    onEdit={() => handleEditAccount(account, index)}
+                    onRemove={() => handleRemoveAccount(index)}
+                  />
                 ))}
               </ItemGroup>
             </div>
-          ) : !isAddingAccount ? (
+          ) : !showInvestmentAccountForm ? (
             <InvestmentsEmptyState />
           ) : null}
         </FieldGroup>
@@ -166,7 +190,13 @@ export function InvestmentSetupForm({ onBackAction, onSkipAction, initialAccount
   );
 }
 
-function AccountItem({ account }: { account: InvestmentAccountSchemaFormData; onRemove: () => void, on Edit: () => void }) {
+type AccountItemProps = {
+  account: OnboardingInvestment;
+  onRemove: () => void;
+  onEdit: () => void;
+};
+
+function AccountItem({ account, onRemove, onEdit }: AccountItemProps) {
   const brokerInfo = getBrokerInfo(account.brokerId);
 
   return (
@@ -182,10 +212,10 @@ function AccountItem({ account }: { account: InvestmentAccountSchemaFormData; on
         <ItemDescription>Account: {account.number.slice(-4).padStart(account.number.length, "*")}</ItemDescription>
       </ItemContent>
       <ItemActions>
-        <Button variant="ghost" size="sm">
+        <Button variant="ghost" size="sm" onClick={onEdit}>
           <Edit2Icon className="size-4" />
         </Button>
-        <Button variant="ghost" size="sm">
+        <Button variant="ghost" size="sm" onClick={onRemove}>
           <Trash2Icon className="size-4" />
         </Button>
       </ItemActions>

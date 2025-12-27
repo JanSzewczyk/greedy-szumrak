@@ -63,7 +63,7 @@ Examine the component to identify:
 File location: Same directory as the component, with `.stories.tsx` extension
 
 ```typescript
-import { type Meta, type StoryObj } from "@storybook/react";
+import { type Meta, type StoryObj } from "@storybook/nextjs-vite";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 
 import { ComponentName } from "./component-name";
@@ -784,7 +784,7 @@ npm run storybook:dev   # View stories in Storybook UI
 ## Example Template
 
 ```typescript
-import { type Meta, type StoryObj } from "@storybook/react";
+import { type Meta, type StoryObj } from "@storybook/nextjs-vite";
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 
 import { MyComponent } from "./my-component";

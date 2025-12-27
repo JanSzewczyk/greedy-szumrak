@@ -106,7 +106,7 @@ export default async function InvestmentsPage() {
     <StepperContent value={OnboardingSteps.INVESTMENTS}>
       <InvestmentSetupForm
         onBackAction={handleBack}
-        // onContinueAction={handleSubmitInvestments}
+        onContinueAction={handleSubmitInvestments}
         onSkipAction={handleSkipInvestments}
         initialAccounts={onboarding.investments}
       />

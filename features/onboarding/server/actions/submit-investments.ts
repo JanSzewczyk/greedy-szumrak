@@ -1,9 +1,13 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { type InvestmentsFormData } from "~/features/onboarding/schemas/investments";
 import { updateOnboarding } from "~/features/onboarding/server/db/onboarding";
-import { type Onboarding, OnboardingSteps, type UpdateOnboardingDto } from "~/features/onboarding/types/onboarding";
+import {
+  type Onboarding,
+  type OnboardingInvestment,
+  OnboardingSteps,
+  type UpdateOnboardingDto
+} from "~/features/onboarding/types/onboarding";
 import { type RedirectAction } from "~/lib/action-types";
 import { createLogger } from "~/lib/logger";
 import { setToastCookie } from "~/lib/toast/server/toast.cookie";
@@ -14,8 +18,8 @@ const logger = createLogger({ module: "onboarding-actions" });
  * Server action to submit the investments step
  * Saves investment accounts and redirects to the next step (COMPLETE)
  */
-export async function submitInvestments(formData: InvestmentsFormData, onboarding: Onboarding): RedirectAction {
-  logger.info({ onboardingId: onboarding.id, accountCount: formData.accounts.length }, "Submitting investments step");
+export async function submitInvestments(formData: Array<OnboardingInvestment>, onboarding: Onboarding): RedirectAction {
+  logger.info({ onboardingId: onboarding.id, accountCount: formData.length }, "Submitting investments step");
 
   const updateData: UpdateOnboardingDto = {
     currentStep: OnboardingSteps.COMPLETE,
@@ -51,7 +55,7 @@ export async function skipInvestments(onboarding: Onboarding): RedirectAction {
 
   const updateData: UpdateOnboardingDto = {
     currentStep: OnboardingSteps.COMPLETE,
-    investments: { accounts: [] }
+    investments: []
   };
 
   const [error] = await updateOnboarding(onboarding.id, updateData);
