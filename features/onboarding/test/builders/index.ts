@@ -7,4 +7,5 @@ export {
   budgetAllocationBuilder,
   createTestBudgetDetails
 } from "./onboarding-budget-details.builder";
+export { createTestOnboardingInvestment, onboardingInvestmentBuilder } from "./onboarding-investment.builder";
 export { onboardingBuilder, onboardingBaseBuilder, createTestOnboarding } from "./onboarding.builder";

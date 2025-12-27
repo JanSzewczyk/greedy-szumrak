@@ -12,7 +12,6 @@ const logger = createLogger({ module: "onboarding-investments-page" });
 async function loadData() {
   const { userId } = await auth();
 
-  // Proxy.ts enforces authentication, but defensive check for type safety
   if (!userId) {
     logger.error("No userId despite proxy authentication");
     redirect("/sign-in");

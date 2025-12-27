@@ -36,7 +36,6 @@ export async function submitInvestments(formData: Array<OnboardingInvestment>, o
       },
       "Failed to update onboarding with investments"
     );
-    await setToastCookie("Failed to save investment accounts. Please try again.", "error");
     return { success: false, error: error.message };
   }
 
@@ -68,7 +67,6 @@ export async function skipInvestments(onboarding: Onboarding): RedirectAction {
       },
       "Failed to skip investments step"
     );
-    await setToastCookie("Failed to skip investments step. Please try again.", "error");
     return { success: false, error: error.message };
   }
 
