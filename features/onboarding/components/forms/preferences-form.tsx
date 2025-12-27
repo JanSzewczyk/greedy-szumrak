@@ -18,7 +18,8 @@ import {
   SelectItem,
   toast
 } from "@szum-tech/design-system";
-import { currencyOptions, dateFormat } from "~/features/onboarding/constants/preferences";
+import { currencyOptions } from "~/constants/currency";
+import { dateFormat } from "~/features/onboarding/constants/preferences";
 import { type PreferencesFormData, preferencesSchema } from "~/features/onboarding/schemas/preferences";
 import { type RedirectAction } from "~/lib/action-types";
 
@@ -55,14 +56,14 @@ export function PreferencesForm({ onBackAction, defaultValues, onContinueAction 
           <Controller
             control={control}
             name="currency"
-            render={({ field: { onChange, ...fieldProps }, fieldState: { error } }) => (
-              <Field>
+            render={({ field: { onChange, ...fieldProps }, fieldState }) => (
+              <Field aria-invalid={!!fieldState.error}>
                 <FieldLabel htmlFor="currency">Currency</FieldLabel>
                 <Select
                   id="currency"
                   placeholder="Select Your Currency"
                   onValueChange={onChange}
-                  invalid={!!error}
+                  invalid={!!fieldState.error}
                   {...fieldProps}
                 >
                   <SelectContent>
@@ -73,7 +74,7 @@ export function PreferencesForm({ onBackAction, defaultValues, onContinueAction 
                     ))}
                   </SelectContent>
                 </Select>
-                <FieldError errors={[error]} />
+                <FieldError errors={[fieldState.error]} />
               </Field>
             )}
           />
@@ -81,14 +82,14 @@ export function PreferencesForm({ onBackAction, defaultValues, onContinueAction 
           <Controller
             control={control}
             name="dateFormat"
-            render={({ field: { onChange, ...fieldProps }, fieldState: { error } }) => (
-              <Field>
+            render={({ field: { onChange, ...fieldProps }, fieldState }) => (
+              <Field aria-invalid={!!fieldState.error}>
                 <FieldLabel htmlFor="dateFormat">Date Format</FieldLabel>
                 <Select
                   id="dateFormat"
                   placeholder="Select Date Format"
                   onValueChange={onChange}
-                  invalid={!!error}
+                  invalid={!!fieldState.error}
                   {...fieldProps}
                 >
                   <SelectContent>
@@ -99,7 +100,7 @@ export function PreferencesForm({ onBackAction, defaultValues, onContinueAction 
                     ))}
                   </SelectContent>
                 </Select>
-                <FieldError errors={[error]} />
+                <FieldError errors={[fieldState.error]} />
               </Field>
             )}
           />

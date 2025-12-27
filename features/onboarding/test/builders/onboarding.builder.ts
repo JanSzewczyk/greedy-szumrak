@@ -42,7 +42,7 @@ export const onboardingBaseBuilder = build<OnboardingBase>({
     preferences: null,
     budget: null,
     budgetDetails: null,
-    goals: null
+    investments: null
   },
   traits: {
     initial: {
@@ -161,6 +161,7 @@ export const onboardingBuilder = build<Onboarding>({
     budget: null,
     budgetDetails: null,
     goals: null,
+    investments: null,
     createdAt: perBuild(() => faker.date.past()),
     updatedAt: perBuild(() => faker.date.recent())
   },

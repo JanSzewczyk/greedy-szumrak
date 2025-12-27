@@ -1,5 +1,7 @@
 import { faker } from "@faker-js/faker/locale/pl";
 import { build, perBuild } from "@jackfranklin/test-data-bot";
+
+import { Currency, currencyValues } from "~/constants/currency";
 import { type OnboardingPreferences } from "~/features/onboarding/types/onboarding";
 
 /**
@@ -29,31 +31,31 @@ import { type OnboardingPreferences } from "~/features/onboarding/types/onboardi
  */
 export const onboardingPreferencesBuilder = build<OnboardingPreferences>({
   fields: {
-    currency: perBuild(() => faker.helpers.arrayElement(["PLN", "USD", "EUR", "GBP"])),
+    currency: perBuild(() => faker.helpers.arrayElement(currencyValues)),
     dateFormat: perBuild(() => faker.helpers.arrayElement(["dd/MM/yyyy", "MM/dd/yyyy", "yyyy-MM-dd"]))
   },
   traits: {
     pln: {
       overrides: {
-        currency: "PLN",
+        currency: Currency.PLN,
         dateFormat: "dd/MM/yyyy"
       }
     },
     eur: {
       overrides: {
-        currency: "EUR",
+        currency: Currency.EUR,
         dateFormat: "dd/MM/yyyy"
       }
     },
     usd: {
       overrides: {
-        currency: "USD",
+        currency: Currency.USD,
         dateFormat: "MM/dd/yyyy"
       }
     },
     gbp: {
       overrides: {
-        currency: "GBP",
+        currency: Currency.GBP,
         dateFormat: "dd/MM/yyyy"
       }
     }
