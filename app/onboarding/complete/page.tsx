@@ -10,6 +10,17 @@ import { createLogger } from "~/lib/logger";
 
 const logger = createLogger({ module: "onboarding-complete-page" });
 
+/**
+ * Load and validate onboarding data required for the completion page.
+ *
+ * Performs authentication, fetches the user's onboarding record, validates that
+ * prerequisite steps and data are present, and optionally loads a budget template.
+ * May redirect the request to other onboarding steps or sign-in when required.
+ *
+ * @returns An object with `onboarding` (the user's onboarding record) and `budgetTemplate` (the loaded template or `null` if unavailable)
+ *
+ * @throws The original onboarding error when it is marked retryable, or a generic `Error` if onboarding cannot be accessed
+ */
 async function loadData() {
   const { userId } = await auth();
 
@@ -114,6 +125,13 @@ async function loadData() {
   };
 }
 
+/**
+ * Render the onboarding completion page showing the final summary and actions to complete onboarding or go back.
+ *
+ * Loads onboarding data and an optional budget template, provides server actions for navigating back and completing onboarding, and renders the stepper and final summary UI.
+ *
+ * @returns The React element for the onboarding completion step
+ */
 export default async function OnboardingCompletePage() {
   const { onboarding, budgetTemplate } = await loadData();
 

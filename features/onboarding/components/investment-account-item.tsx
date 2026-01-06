@@ -13,6 +13,15 @@ import {
 import { getBrokerInfo } from "~/features/onboarding/constants/investments";
 import { type OnboardingInvestment } from "~/features/onboarding/types/onboarding";
 
+/**
+ * Render a list item representing an investment account, including a masked account number, broker and currency info, and optional edit/remove actions.
+ *
+ * @param account - The investment account to display (includes name, number, currency, and brokerId).
+ * @param onRemove - Optional callback invoked when the remove/delete button is clicked.
+ * @param onEdit - Optional callback invoked when the edit button is clicked.
+ * @param readOnly - When `true`, hides the edit and remove action buttons.
+ * @returns The JSX element for the investment account list item.
+ */
 export function InvestmentAccountItem({
   account,
   onRemove,

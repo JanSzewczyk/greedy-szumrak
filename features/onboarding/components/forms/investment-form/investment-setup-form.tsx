@@ -56,6 +56,17 @@ function getBrokerInfo(brokerId: string) {
   return brokers.find((b) => b.id === brokerId);
 }
 
+/**
+ * Renders the investment accounts setup form used during onboarding, allowing users to add, edit, remove, skip, or continue with connected brokerage accounts.
+ *
+ * The component manages a local list of accounts and an inline add/edit form. Invoking the continue or skip actions calls the provided callbacks and displays an error toast when the callback result has `success === false`.
+ *
+ * @param onBackAction - Called when the Back button is clicked.
+ * @param onSkipAction - Called when the user chooses to skip adding accounts; should return an object with a `success` boolean and optional `error` message.
+ * @param initialAccounts - Optional initial list of onboarding investment accounts to populate the form.
+ * @param onContinueAction - Called with the current accounts when the user continues; should return an object with a `success` boolean and optional `error` message.
+ * @returns The rendered investment setup form JSX element.
+ */
 export function InvestmentSetupForm({
   onBackAction,
   onSkipAction,
@@ -199,6 +210,13 @@ export function InvestmentSetupForm({
   );
 }
 
+/**
+ * Renders a button-styled empty card that prompts the user to add an investment account.
+ *
+ * Displays a dashed empty state with an icon, title, and description; invokes `onClick` when pressed.
+ *
+ * @param onClick - Optional click handler called when the button is clicked
+ */
 function AddInvestmentButton({ onClick }: { onClick?: () => void }) {
   return (
     <button onClick={onClick} className="hover:[&>div]:border-primary hover:[&>div]:bg-primary/5">

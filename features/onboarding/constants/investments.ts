@@ -64,6 +64,12 @@ export const brokers: Broker[] = [
   }
 ];
 
+/**
+ * Lookup broker metadata by its identifier.
+ *
+ * @param brokerId - The broker identifier to match (one of the `BrokerId` values)
+ * @returns The matching `Broker` object if found, `undefined` otherwise
+ */
 export function getBrokerInfo(brokerId: string) {
   return brokers.find((b) => b.id === brokerId);
 }

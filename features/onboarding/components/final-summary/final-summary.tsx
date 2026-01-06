@@ -39,6 +39,15 @@ export type CompleteFormProps = {
   onCompleteAction(): RedirectAction;
 };
 
+/**
+ * Render the final onboarding review UI that displays preferences, budget and investment summaries and provides Back and Complete actions.
+ *
+ * @param onboarding - Onboarding data used to populate summaries (preferences, budgetDetails, investments, products)
+ * @param budgetTemplate - Optional budget template used when showing the budget summary
+ * @param onBackAction - Callback invoked when the Back button is pressed
+ * @param onCompleteAction - Callback invoked to finalize setup; its result is used to surface an error if completion fails
+ * @returns The rendered React element for the final onboarding summary screen
+ */
 export function FinalSummary({ onboarding, budgetTemplate, onBackAction, onCompleteAction }: CompleteFormProps) {
   const [isPending, startTransition] = React.useTransition();
 

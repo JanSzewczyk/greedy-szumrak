@@ -17,6 +17,15 @@ import {
 import { usePathname, useRouter } from "next/navigation";
 import { OnboardingSteps } from "~/features/onboarding/types/onboarding";
 
+/**
+ * Renders the onboarding stepper UI and panel, keeping the active step synchronized with the current URL.
+ *
+ * The stepper includes steps for Welcome, Preferences, Budget Setup, Budget Details, Investments, and Complete.
+ *
+ * @param children - Content displayed inside the active step's panel.
+ * @param hideNav - When true, visually hides the stepper navigation.
+ * @returns The onboarding stepper React element.
+ */
 export function OnboardingStepper({ children, hideNav }: { children: React.ReactNode; hideNav: boolean }) {
   const pathname = usePathname();
   const router = useRouter();

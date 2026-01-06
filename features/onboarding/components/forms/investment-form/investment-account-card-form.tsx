@@ -35,6 +35,18 @@ export type InvestmentAccountCardFormProps = {
 const popularBrokers = brokers.filter((b) => b.isPopular);
 const otherBrokers = brokers.filter((b) => !b.isPopular);
 
+/**
+ * Render a form for creating or editing an investment account.
+ *
+ * Renders a card-styled form bound to a Zod-validated react-hook-form that collects broker, account name,
+ * account number, and currency; submission invokes `onSave` with validated form data and cancel invokes `onCancel`.
+ *
+ * @param onSave - Callback invoked with the validated InvestmentAccountFormData when the form is submitted
+ * @param onCancel - Callback invoked when the cancel action is triggered
+ * @param mode - Form mode, `"create"` or `"edit"`, which adjusts headings and submit button label
+ * @param defaultValues - Optional initial form values to populate the form
+ * @returns The JSX element for the investment account card form
+ */
 export function InvestmentAccountCardForm({
   onSave,
   onCancel,

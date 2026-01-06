@@ -8,11 +8,11 @@ const logger = createLogger({ module: "user-db" });
 const RESOURCE_NAME = "User";
 
 /**
- * Updates Clerk user public metadata
+ * Merge the provided fields into a Clerk user's public metadata.
  *
- * @param userId - The Clerk user ID
- * @param metadata - The metadata object to merge with existing public metadata
- * @returns Tuple of [error, null] or [null, updated metadata]
+ * @param userId - Clerk user identifier to update
+ * @param metadata - Partial public metadata to merge into the user's existing publicMetadata
+ * @returns `[null, updatedUser]` on success where `updatedUser` is the updated Clerk `User`, or `[DbError, null]` on failure
  */
 export async function updateUserMetadata(
   userId: string,
