@@ -43,6 +43,7 @@ import { InvestmentAccountCardForm } from "~/features/onboarding/components/form
 import { brokers } from "~/features/onboarding/constants/investments";
 import { type OnboardingInvestment } from "~/features/onboarding/types/onboarding";
 import { type RedirectAction } from "~/lib/action-types";
+import { InvestmentAccountItem } from "~/features/onboarding/components/investment-account-item";
 
 export type InvestmentSetupFormProps = {
   onBackAction(): void;
@@ -159,7 +160,7 @@ export function InvestmentSetupForm({
 
               <ItemGroup className="space-y-2">
                 {accounts.map((account, index) => (
-                  <AccountItem
+                  <InvestmentAccountItem
                     key={index}
                     account={account}
                     onEdit={() => handleEditAccount(account, index)}
@@ -195,41 +196,6 @@ export function InvestmentSetupForm({
         </div>
       </div>
     </div>
-  );
-}
-
-function AccountItem({
-  account,
-  onRemove,
-  onEdit
-}: {
-  account: OnboardingInvestment;
-  onRemove: () => void;
-  onEdit: () => void;
-}) {
-  const brokerInfo = getBrokerInfo(account.brokerId);
-
-  return (
-    <Item variant="outline">
-      <ItemMedia variant="icon">
-        <Building2Icon />
-      </ItemMedia>
-      <ItemContent>
-        <ItemTitle>
-          {account?.name || brokerInfo?.name} <Badge variant="secondary">{account.currency}</Badge>
-        </ItemTitle>
-        {account.name ? <ItemDescription>{brokerInfo?.name}</ItemDescription> : null}
-        <ItemDescription>Account: {account.number.slice(-4).padStart(account.number.length, "*")}</ItemDescription>
-      </ItemContent>
-      <ItemActions>
-        <Button variant="ghost" size="sm" onClick={onEdit}>
-          <Edit2Icon className="size-4" />
-        </Button>
-        <Button variant="ghost" size="sm" onClick={onRemove}>
-          <Trash2Icon className="size-4" />
-        </Button>
-      </ItemActions>
-    </Item>
   );
 }
 

@@ -21,7 +21,8 @@ import {
   SelectItem,
   SelectLabel
 } from "@szum-tech/design-system";
-import { BrokerId, brokers, investmentCurrencyOptions } from "~/features/onboarding/constants/investments";
+import { currencyOptions } from "~/constants/currency";
+import { BrokerId, brokers } from "~/features/onboarding/constants/investments";
 import { investmentAccountSchema, type InvestmentAccountFormData } from "~/features/onboarding/schemas/investments";
 
 export type InvestmentAccountCardFormProps = {
@@ -138,9 +139,9 @@ export function InvestmentAccountCardForm({
                     {...fieldProps}
                   >
                     <SelectContent>
-                      {investmentCurrencyOptions.map((curr) => (
-                        <SelectItem key={curr.value} value={curr.value}>
-                          {curr.label}
+                      {currencyOptions.map((currency) => (
+                        <SelectItem key={currency.value} value={currency.value}>
+                          {currency.label}
                         </SelectItem>
                       ))}
                     </SelectContent>

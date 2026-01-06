@@ -1,6 +1,5 @@
 import { faker } from "@faker-js/faker/locale/pl";
 import { build, perBuild } from "@jackfranklin/test-data-bot";
-
 import { Currency, currencyValues } from "~/constants/currency";
 import { type OnboardingPreferences } from "~/features/onboarding/types/onboarding";
 

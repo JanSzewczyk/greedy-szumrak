@@ -64,4 +64,6 @@ export const brokers: Broker[] = [
   }
 ];
 
-export { currencyOptions as investmentCurrencyOptions } from "~/constants/currency";
+export function getBrokerInfo(brokerId: string) {
+  return brokers.find((b) => b.id === brokerId);
+}
