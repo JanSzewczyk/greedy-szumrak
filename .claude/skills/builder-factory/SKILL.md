@@ -29,7 +29,44 @@ realistic Polish-localized mock data. Builders are used for:
 
 When the user provides a TypeScript type/interface or asks to create a factory for a model:
 
-1. **Analyze the Type Structure**
+### 0. **Pre-Check: Discover Existing Builders**
+
+**IMPORTANT: Before creating ANY new builder, search for existing builders in the project.**
+
+```bash
+# Search for existing builders
+find . -name "*.builder.ts" -type f
+
+# Check feature-specific builders
+ls features/*/test/builders/ 2>/dev/null
+
+# Check shared builders
+ls tests/builders/ 2>/dev/null
+```
+
+**What to look for:**
+- Builders for related types that can be reused
+- Existing patterns and conventions in the project
+- Nested builders that your new builder might depend on
+
+**If existing builders found:**
+1. Import and reuse them for relationships
+2. Follow the same naming conventions
+3. Match the existing code style
+4. Consider if the type already has a builder (avoid duplicates)
+
+**Example pre-check output:**
+```markdown
+## Existing Builders Found
+
+- `features/budget/test/builders/budget-template.builder.ts`
+- `features/onboarding/test/builders/onboarding-products.builder.ts`
+- `tests/builders/user.builder.ts`
+
+**Related to requested type:** budget-template.builder.ts (can be reused for category allocations)
+```
+
+### 1. **Analyze the Type Structure**
    - Identify all fields, their types, and relationships
    - Check for nested types, arrays, optional fields
    - Look for Date fields, enum types, and union types
