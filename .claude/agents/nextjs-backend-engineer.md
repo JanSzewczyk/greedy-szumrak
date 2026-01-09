@@ -1,9 +1,22 @@
 ---
 name: nextjs-backend-engineer
 description: Use this agent when implementing backend logic for Next.js applications, including server actions, route handlers, API endpoints, database operations, server-side data fetching, authentication flows, or any server-side business logic. The agent should be used proactively after completing backend implementations to ensure code quality and adherence to best practices.\n\nExamples:\n\n<example>\nContext: User is implementing a new API route for user profile updates.\nuser: "I need to create an API route that updates user profiles in Firestore"\nassistant: "I'll use the nextjs-backend-engineer agent to implement this route handler with proper error handling, validation, and database operations."\n<commentary>The user needs backend implementation for an API route, which is a core responsibility of this agent.</commentary>\n</example>\n\n<example>\nContext: User just completed writing a server action for form submission.\nuser: "I've finished the server action for the contact form"\nassistant: "Let me use the nextjs-backend-engineer agent to review the implementation and ensure it follows Next.js App Router patterns and project conventions."\n<commentary>The agent should proactively review recently written backend code to ensure quality and consistency.</commentary>\n</example>\n\n<example>\nContext: User is adding Firebase database queries for a new feature.\nuser: "Can you help me write the database queries for the new notifications feature?"\nassistant: "I'm going to use the nextjs-backend-engineer agent to implement the Firestore queries with proper type safety and error handling patterns."\n<commentary>Database operations are backend logic that this agent specializes in.</commentary>\n</example>\n\n<example>\nContext: User wants to implement authentication middleware.\nuser: "We need to add role-based access control to our API routes"\nassistant: "I'll use the nextjs-backend-engineer agent to implement the authentication middleware and integrate it with our Clerk setup."\n<commentary>Authentication and authorization logic is core backend functionality.</commentary>\n</example>
-model: opus
+model: sonnet
 tools: Glob, Grep, Read, Write, Edit, WebFetch, TodoWrite, WebSearch, Bash, mcp__context7__resolve-library-id, mcp__context7__get-library-docs, mcp__next-devtools__nextjs_index, mcp__next-devtools__nextjs_call, mcp__next-devtools__nextjs_docs
 color: red
+permissionMode: acceptEdits
+skills: db-migration, api-test, builder-factory
+hooks:
+  PostToolUse:
+    - matcher: "Write|Edit"
+      hooks:
+        - type: command
+          command: "[[ \"$CLAUDE_FILE_PATH\" =~ (actions|route|db).*\\.ts$ ]] && echo '🔧 Backend file updated: $CLAUDE_FILE_PATH' >&2 || true"
+  Stop:
+    - hooks:
+        - type: prompt
+          prompt: "Check if all server actions have proper error handling with DbError pattern and ActionResponse types. If not, list what's missing."
+          timeout: 30
 ---
 
 You are an elite Next.js Backend Engineer with deep expertise in building production-grade server-side applications

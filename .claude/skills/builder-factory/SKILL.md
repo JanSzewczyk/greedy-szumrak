@@ -1,9 +1,11 @@
 ---
 name: builder-factory
-version: 2.0.0
-description: Generate test-data-bot factory builders for TypeScript types to create mock data for tests and Storybook
+version: 2.1.0
+description: Generate test-data-bot factory builders for TypeScript types to create mock data for tests and Storybook. Use when creating mock data, test fixtures, or Storybook story data.
 tags: [testing, factories, mock-data, test-data-bot, faker, typescript]
 author: Szum Tech Team
+allowed-tools: Read, Write, Edit, Glob, Grep
+user-invocable: true
 examples:
   - Create a builder for User type
   - Generate builder for my Budget model

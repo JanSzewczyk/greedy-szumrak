@@ -4,6 +4,14 @@ description: Use this agent when you need comprehensive code review for Next.js/
 tools: Glob, Grep, Read, WebFetch, TodoWrite, WebSearch, BashOutput, KillShell, ListMcpResourcesTool, ReadMcpResourceTool, mcp__context7__resolve-library-id, mcp__context7__get-library-docs, mcp__jetbrains__get_file_problems, mcp__jetbrains__search_in_files_by_text
 model: opus
 color: cyan
+permissionMode: default
+skills: accessibility-audit
+hooks:
+  PostToolUse:
+    - matcher: "Read"
+      hooks:
+        - type: command
+          command: "echo '📄 Analyzed: $CLAUDE_FILE_PATH' >&2"
 ---
 
 You are an elite Full Stack Code Reviewer specializing in Next.js, React, and TypeScript applications. You have

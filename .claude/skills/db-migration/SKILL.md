@@ -1,9 +1,13 @@
 ---
 name: db-migration
 version: 1.0.0
-description: Generate Firestore data migration scripts for schema changes, field additions, and data transformations
+description: Generate Firestore data migration scripts for schema changes, field additions, and data transformations. Use when migrating data, adding fields, or restructuring collections.
 tags: [database, firebase, firestore, migration, schema]
 author: Szum Tech Team
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash
+context: fork
+agent: general-purpose
+user-invocable: true
 examples:
   - Add 'tags' field to all budget documents
   - Rename 'categoryId' to 'categoryIds' across expenses collection

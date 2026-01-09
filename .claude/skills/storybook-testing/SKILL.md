@@ -1,9 +1,11 @@
 ---
 name: storybook-testing
-version: 1.0.0
-description: Create comprehensive Storybook stories with interactive tests for React components using play functions
+version: 1.1.0
+description: Create comprehensive Storybook stories with interactive tests for React components using play functions. Use when writing component tests, interaction tests, or documenting component behavior.
 tags: [testing, storybook, react, component-testing, integration-testing, play-function, test-function]
 author: Szum Tech Team
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash
+user-invocable: true
 examples:
   - Write Storybook tests for UserProfileCard component
   - Create story tests for my LoginForm
