@@ -1,5 +1,5 @@
 import { type Meta, type StoryObj } from "@storybook/nextjs-vite";
-import { expect, fn, userEvent, waitFor, within } from "storybook/test";
+import { expect, fn, screen, waitFor } from "storybook/test";
 import { type RedirectAction } from "~/lib/action-types";
 
 import { PreferencesForm } from "./preferences-form";
@@ -57,7 +57,7 @@ export const NoDefaultValues: Story = {
  * Verifies onContinueAction is NOT called on invalid submission.
  */
 export const ValidationEmptyForm: Story = {
-  play: async ({ canvas, args, step }) => {
+  play: async ({ canvas, userEvent, args, step }) => {
     await step("Submit form without filling any field", async () => {
       const continueButton = canvas.getByRole("button", { name: /continue/i });
       await userEvent.click(continueButton);
@@ -82,16 +82,13 @@ export const ValidationEmptyForm: Story = {
  * Demonstrates partial form validation behavior.
  */
 export const ValidationPartialForm: Story = {
-  play: async ({ canvas, canvasElement, args, step }) => {
-    const portalElement = canvasElement.parentElement as HTMLElement;
-    const portal = within(portalElement);
-
+  play: async ({ canvas, userEvent, args, step }) => {
     await step("Fill only currency field", async () => {
       const currencyTrigger = canvas.getByLabelText("Currency");
       await userEvent.click(currencyTrigger);
 
       await waitFor(async () => {
-        const eurOption = portal.getByRole("option", { name: /EUR - Euro/i });
+        const eurOption = screen.getByRole("option", { name: /EUR - Euro/i });
         await expect(eurOption).toBeVisible();
         await userEvent.click(eurOption);
       });
@@ -127,7 +124,7 @@ export const PrefilledValues: Story = {
       dateFormat: "DD/MM/YYYY"
     }
   },
-  play: async ({ canvas, args, step }) => {
+  play: async ({ canvas, userEvent, args, step }) => {
     await step("Verify prefilled values are displayed", async () => {
       await expect(canvas.getByLabelText(/Currency/)).toHaveTextContent("PLN - Polish Zloty");
       await expect(canvas.getByLabelText(/Date Format/)).toHaveTextContent("DD/MM/YYYY");
@@ -154,16 +151,13 @@ export const PrefilledValues: Story = {
  * Tests selecting both fields and successful submission.
  */
 export const CompleteUserFlow: Story = {
-  play: async ({ canvas, canvasElement, args, step }) => {
-    const portalElement = canvasElement.parentElement as HTMLElement;
-    const portal = within(portalElement);
-
+  play: async ({ canvas, userEvent, args, step }) => {
     await step("Select currency", async () => {
       const currencyTrigger = canvas.getByLabelText("Currency");
       await userEvent.click(currencyTrigger);
 
       await waitFor(async () => {
-        const usdOption = portal.getByRole("option", { name: /USD - US Dollar/i });
+        const usdOption = screen.getByRole("option", { name: /USD - US Dollar/i });
         await expect(usdOption).toBeVisible();
         await userEvent.click(usdOption);
       });
@@ -176,7 +170,7 @@ export const CompleteUserFlow: Story = {
       await userEvent.click(dateFormatTrigger);
 
       await waitFor(async () => {
-        const dateOption = portal.getByRole("option", { name: /YYYY-MM-DD/i });
+        const dateOption = screen.getByRole("option", { name: /YYYY-MM-DD/i });
         await expect(dateOption).toBeVisible();
         await userEvent.click(dateOption);
       });
@@ -211,7 +205,7 @@ export const BackButtonAction: Story = {
       dateFormat: "MM/DD/YYYY"
     }
   },
-  play: async ({ canvas, args, step }) => {
+  play: async ({ canvas, userEvent, args, step }) => {
     await step("Click back button", async () => {
       const backButton = canvas.getByRole("button", { name: /back/i });
       await userEvent.click(backButton);
@@ -239,7 +233,7 @@ export const ServerErrorHandling: Story = {
       error: "Failed to save preferences. Please try again."
     }))
   },
-  play: async ({ canvas, args, step }) => {
+  play: async ({ canvas, userEvent, args, step }) => {
     await step("Submit form", async () => {
       const continueButton = canvas.getByRole("button", { name: /continue/i });
       await userEvent.click(continueButton);
@@ -275,7 +269,7 @@ export const LoadingState: Story = {
         })
     )
   },
-  play: async ({ canvas, step }) => {
+  play: async ({ canvas, userEvent, step }) => {
     await step("Submit form to trigger loading state", async () => {
       const continueButton = canvas.getByRole("button", { name: /continue/i });
       await userEvent.click(continueButton);
@@ -299,10 +293,7 @@ export const ChangeSelection: Story = {
       dateFormat: "MM/DD/YYYY"
     }
   },
-  play: async ({ canvas, canvasElement, args, step }) => {
-    const portalElement = canvasElement.parentElement as HTMLElement;
-    const portal = within(portalElement);
-
+  play: async ({ canvas, userEvent, args, step }) => {
     await step("Verify initial values", async () => {
       await expect(canvas.getByLabelText(/Currency/)).toHaveTextContent("USD - US Dollar");
       await expect(canvas.getByLabelText(/Date Format/)).toHaveTextContent("MM/DD/YYYY");
@@ -313,7 +304,7 @@ export const ChangeSelection: Story = {
       await userEvent.click(currencyTrigger);
 
       await waitFor(async () => {
-        const eurOption = portal.getByRole("option", { name: /EUR - Euro/i });
+        const eurOption = screen.getByRole("option", { name: /EUR - Euro/i });
         await expect(eurOption).toBeVisible();
         await userEvent.click(eurOption);
       });
@@ -326,7 +317,7 @@ export const ChangeSelection: Story = {
       await userEvent.click(dateFormatTrigger);
 
       await waitFor(async () => {
-        const dateOption = portal.getByRole("option", { name: /DD\/MM\/YYYY/i });
+        const dateOption = screen.getByRole("option", { name: /DD\/MM\/YYYY/i });
         await expect(dateOption).toBeVisible();
         await userEvent.click(dateOption);
       });

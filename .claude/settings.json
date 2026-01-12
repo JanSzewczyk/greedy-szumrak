@@ -1,4 +1,11 @@
 {
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "next-devtools",
+    "playwright",
+    "context7",
+    "jetbrains"
+  ],
   "hooks": {
     "SessionStart": [
       {
@@ -58,11 +65,7 @@
       }
     ]
   },
-  "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": [
-    "next-devtools",
-    "playwright",
-    "context7",
-    "jetbrains"
-  ]
+  "enabledPlugins": {
+    "claude-mem@thedotmack": true
+  }
 }

@@ -1,10 +1,14 @@
 # Builder Examples
 
+Complete examples of test-data-bot builders for various use cases.
+
+> **Note:** Check `.claude/project-context.md` for your specific Faker locale and project types.
+
 ## Complete Builder with Traits
 
 ```typescript
 import { build, sequence, perBuild } from "@jackfranklin/test-data-bot";
-import { faker } from "@faker-js/faker/locale/pl";
+import { faker } from "@faker-js/faker"; // Check project-context.md for locale
 import type { User } from "~/types/user";
 
 export const userBuilder = build<User>({
@@ -49,7 +53,7 @@ export const userBuilder = build<User>({
 
 ```typescript
 import { build, sequence, perBuild } from "@jackfranklin/test-data-bot";
-import { faker } from "@faker-js/faker/locale/pl";
+import { faker } from "@faker-js/faker"; // Check project-context.md for locale
 import type { Order } from "~/types/order";
 
 export const orderBuilder = build<Order>({
@@ -85,7 +89,7 @@ export const addressBuilder = build<Address>({
     street: perBuild(() => faker.location.streetAddress()),
     city: perBuild(() => faker.location.city()),
     zipCode: perBuild(() => faker.location.zipCode()),
-    country: "Polska"
+    country: "USA" // Check project-context.md for your locale
   }
 });
 
@@ -101,67 +105,60 @@ export const userBuilder = build<User>({
 // Override nested
 const user = userBuilder.one({
   overrides: {
-    address: addressBuilder.one({ overrides: { city: "Warszawa" } })
+    address: addressBuilder.one({ overrides: { city: "New York" } })
   }
 });
 ```
 
-## Firebase Application Type Builder
+## Database Application Type Builder
+
+> **Note:** Check project-context.md for your specific database type patterns (Firestore, PostgreSQL, MongoDB, etc.)
 
 ```typescript
 import { build, sequence, perBuild } from "@jackfranklin/test-data-bot";
-import { faker } from "@faker-js/faker/locale/pl";
-import type { Onboarding, OnboardingBase } from "~/features/onboarding/types/onboarding";
-import { OnboardingSteps } from "~/features/onboarding/types/onboarding";
+import { faker } from "@faker-js/faker"; // Check project-context.md for locale
+import type { Resource, ResourceBase } from "~/features/resource/types/resource";
 
 // Base type builder (for DTOs)
-export const onboardingBaseBuilder = build<OnboardingBase>({
+export const resourceBaseBuilder = build<ResourceBase>({
   fields: {
-    completed: false,
-    completedAt: null,
-    currentStep: OnboardingSteps.PREFERENCES,
-    products: perBuild(() => productsBuilder.one())
+    name: perBuild(() => faker.commerce.productName()),
+    status: "active",
+    category: perBuild(() => faker.commerce.department())
   },
   traits: {
-    initial: {
+    inactive: {
       overrides: {
-        completed: false,
-        currentStep: OnboardingSteps.WELCOME
+        status: "inactive"
       }
     },
-    completed: {
+    pending: {
       overrides: {
-        completed: true,
-        completedAt: perBuild(() => faker.date.recent()),
-        currentStep: OnboardingSteps.CATEGORIES
+        status: "pending"
       }
     }
   }
 });
 
 // Application type builder (with id and timestamps)
-export const onboardingBuilder = build<Onboarding>({
+export const resourceBuilder = build<Resource>({
   fields: {
     id: perBuild(() => faker.string.uuid()),
-    completed: false,
-    completedAt: null,
-    currentStep: OnboardingSteps.PREFERENCES,
-    products: perBuild(() => productsBuilder.one()),
+    name: perBuild(() => faker.commerce.productName()),
+    status: "active",
+    category: perBuild(() => faker.commerce.department()),
     createdAt: perBuild(() => faker.date.past()),
     updatedAt: perBuild(() => faker.date.recent())
   },
   traits: {
-    initial: {
+    inactive: {
       overrides: {
-        completed: false,
-        currentStep: OnboardingSteps.WELCOME
+        status: "inactive"
       }
     },
-    completed: {
+    pending: {
       overrides: {
-        completed: true,
-        completedAt: perBuild(() => faker.date.recent()),
-        currentStep: OnboardingSteps.CATEGORIES
+        status: "pending"
       }
     }
   }

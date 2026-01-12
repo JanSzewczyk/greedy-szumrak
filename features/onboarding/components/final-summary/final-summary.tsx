@@ -86,7 +86,7 @@ export function FinalSummary({ onboarding, budgetTemplate, onBackAction, onCompl
             </CardHeader>
             <CardContent>
               {investments && investments.length > 0 ? (
-                <ItemGroup>
+                <ItemGroup className="space-y-2">
                   {investments.map((account, index) => {
                     const brokerInfo = getBrokerInfo(account.brokerId);
                     return (
@@ -162,8 +162,7 @@ export function FinalSummary({ onboarding, budgetTemplate, onBackAction, onCompl
           Back
         </Button>
 
-        <Button onClick={handleComplete} loading={isPending} size="lg">
-          <CheckCircle2Icon className="mr-2 size-5" />
+        <Button onClick={handleComplete} loading={isPending} size="lg" endIcon={<CheckCircle2Icon />}>
           Complete Setup
         </Button>
       </div>

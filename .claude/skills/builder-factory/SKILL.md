@@ -8,8 +8,8 @@ allowed-tools: Read, Write, Edit, Glob, Grep
 user-invocable: true
 examples:
   - Create a builder for User type
-  - Generate builder for my Budget model
-  - Build a builder for the Onboarding type with all relationships
+  - Generate builder for my Order model
+  - Build a builder for the Resource type with all relationships
   - Create builders for Product and Order types
 ---
 
@@ -21,9 +21,18 @@ Generate test-data-bot factory builders for TypeScript types.
 > - `field-mappings.md` - Field type to Faker method mappings
 > - `examples.md` - Complete builder examples and patterns
 
+## First Step: Read Project Context
+
+**IMPORTANT**: Check `.claude/project-context.md` for:
+
+- **Faker locale** (e.g., `@faker-js/faker/locale/pl` for Polish or `@faker-js/faker` for default English)
+- **Builder location convention** (e.g., `features/[feature]/test/builders/`)
+- **Database type patterns** (for Application/Base/DTO type builders)
+
 ## Context
 
-Builders using `@jackfranklin/test-data-bot` and `@faker-js/faker/locale/pl` for:
+Builders using `@jackfranklin/test-data-bot` and `@faker-js/faker` for:
+
 - Unit tests (Vitest)
 - Storybook stories
 - E2E test data
@@ -48,6 +57,8 @@ ls features/*/test/builders/ 2>/dev/null
 
 ### 3. Builder Location
 
+Check project-context.md for conventions. Common patterns:
+
 - Feature-specific: `features/[feature-name]/test/builders/`
 - Shared types: `tests/builders/`
 
@@ -60,16 +71,16 @@ ls features/*/test/builders/ 2>/dev/null
 export const onboardingProductsBuilder = build<OnboardingProducts>({...});
 // File: onboarding-products.builder.ts
 
-// Type: BudgetTemplate
-export const budgetTemplateBuilder = build<BudgetTemplate>({...});
-// File: budget-template.builder.ts
+// Type: UserProfile
+export const userProfileBuilder = build<UserProfile>({...});
+// File: user-profile.builder.ts
 ```
 
 ## Basic Template
 
 ```typescript
 import { build, sequence, perBuild } from "@jackfranklin/test-data-bot";
-import { faker } from "@faker-js/faker/locale/pl";
+import { faker } from "@faker-js/faker"; // Check project-context.md for locale
 import type { YourType } from "~/features/[feature]/types/your-type";
 
 /**
@@ -153,17 +164,25 @@ export const userBuilder = build<User>({
 });
 ```
 
-## Firebase Types Pattern
+## Database Types Pattern
+
+Check project-context.md for the specific type lifecycle pattern. Common pattern:
 
 ```typescript
 // Base type builder (without id, timestamps)
-export const onboardingBaseBuilder = build<OnboardingBase>({...});
+export const resourceBaseBuilder = build<ResourceBase>({
+  fields: {
+    name: perBuild(() => faker.commerce.productName()),
+    status: "active"
+  }
+});
 
 // Application type builder (with id, timestamps)
-export const onboardingBuilder = build<Onboarding>({
+export const resourceBuilder = build<Resource>({
   fields: {
     id: perBuild(() => faker.string.uuid()),
-    // ... business fields
+    name: perBuild(() => faker.commerce.productName()),
+    status: "active",
     createdAt: perBuild(() => faker.date.past()),
     updatedAt: perBuild(() => faker.date.recent())
   }
@@ -173,7 +192,7 @@ export const onboardingBuilder = build<Onboarding>({
 ## Important Notes
 
 - Always use `@jackfranklin/test-data-bot` (NOT Fishery)
-- Always use `@faker-js/faker/locale/pl` for Polish localization
+- Check project-context.md for Faker locale configuration
 - Use `sequence()` for IDs
 - Use `perBuild()` for values that should be fresh each time
 - Static values don't need `perBuild()` wrapper

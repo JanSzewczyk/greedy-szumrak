@@ -2,6 +2,8 @@
 
 Mapping field types to appropriate Faker methods.
 
+> **Note:** Check `.claude/project-context.md` for locale-specific values (currency, country, etc.)
+
 ## Identifiers
 
 ```typescript
@@ -28,7 +30,9 @@ avatar: perBuild(() => faker.image.avatar())
 street: perBuild(() => faker.location.streetAddress())
 city: perBuild(() => faker.location.city())
 zipCode: perBuild(() => faker.location.zipCode())
-country: "Polska"  // Static value
+country: perBuild(() => faker.location.country())
+// Or use static value for your locale:
+// country: "USA"  // Check project-context.md for your locale
 ```
 
 ## Commerce
@@ -36,7 +40,7 @@ country: "Polska"  // Static value
 ```typescript
 productName: perBuild(() => faker.commerce.productName())
 price: perBuild(() => parseFloat(faker.commerce.price({ min: 10, max: 1000 })))
-currency: "PLN"
+currency: "USD"  // Check project-context.md for your locale currency
 category: perBuild(() => faker.commerce.department())
 ```
 
@@ -87,7 +91,7 @@ items: perBuild(() => Array.from({ length: 3 }, () => itemBuilder.one()))
 images: perBuild(() => Array.from({ length: 3 }, () => faker.image.url()))
 ```
 
-## Project-Specific
+## Common Patterns
 
 ```typescript
 // Percentage/Allocation
@@ -96,9 +100,9 @@ allocation: perBuild(() => faker.number.int({ min: 0, max: 100 }))
 // Currency Amounts
 amount: perBuild(() => faker.number.float({ min: 0, max: 10000, fractionDigits: 2 }))
 
-// Icons (design system)
-icon: perBuild(() => faker.helpers.arrayElement(["home", "car", "food", "health"]))
+// Icons (common icon names)
+icon: perBuild(() => faker.helpers.arrayElement(["home", "user", "settings", "search"]))
 
-// Colors (Tailwind)
+// Colors (Tailwind palette)
 color: perBuild(() => faker.helpers.arrayElement(["red", "blue", "green", "yellow"]))
 ```
