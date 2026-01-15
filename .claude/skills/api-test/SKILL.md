@@ -19,6 +19,19 @@ examples:
 
 Test Next.js Route Handlers with real HTTP requests using Playwright. This skill creates comprehensive API tests that verify endpoint behavior, authentication, validation, and error handling.
 
+## First Step: Read Project Context
+
+**IMPORTANT**: Before creating API tests, check `.claude/project-context.md` for:
+
+- **Authentication method** (Clerk, NextAuth, JWT, API Key)
+- **Auth testing pattern** (test tokens, session cookies, headers)
+- **API response format** (ActionResponse, custom format)
+- **Error handling patterns** (DbError codes, HTTP status mapping)
+
+Also check `CLAUDE.md` for:
+- Server Actions patterns (ActionResponse type)
+- Database error handling (DbError class)
+
 ## Context
 
 This skill helps you test:
@@ -191,33 +204,47 @@ test.describe("API: [Endpoint Name]", () => {
 
 ### 3. Test Patterns
 
-#### Testing with Authentication (Clerk)
+#### Testing with Authentication
+
+Check `project-context.md` for your auth provider and use the appropriate pattern:
 
 ```typescript
 import { test, expect } from "@playwright/test";
 
 test.describe("Authenticated API Tests", () => {
-  // Use Clerk test tokens or mock authentication
   let authToken: string;
 
   test.beforeAll(async () => {
-    // Option 1: Use Clerk testing tokens
-    // authToken = process.env.CLERK_TEST_TOKEN;
-
-    // Option 2: Login via UI and extract token
-    // (done in global setup)
+    // Get auth token from environment or test setup
+    authToken = process.env.TEST_AUTH_TOKEN!;
   });
 
   test("authenticated request succeeds", async ({ request }) => {
     const response = await request.get(`${BASE_URL}/api/protected`, {
-      headers: {
-        Cookie: `__session=${authToken}` // Clerk session cookie
-      }
+      headers: getAuthHeaders(authToken)
     });
 
     expect(response.status()).toBe(200);
   });
 });
+
+// Auth header helpers - use the one matching your provider
+function getAuthHeaders(token: string): Record<string, string> {
+  // Clerk:
+  // return { Cookie: `__session=${token}` };
+
+  // NextAuth:
+  // return { Cookie: `next-auth.session-token=${token}` };
+
+  // JWT Bearer:
+  // return { Authorization: `Bearer ${token}` };
+
+  // API Key:
+  // return { 'X-API-Key': token };
+
+  // Check project-context.md for your pattern
+  return { Authorization: `Bearer ${token}` };
+}
 ```
 
 #### Testing Request Validation
@@ -322,12 +349,13 @@ test("health endpoint returns ok", async ({ request }) => {
 ### CRUD Operations
 
 ```typescript
-test.describe("CRUD: Budgets", () => {
+// Adapt endpoint paths and payloads to your domain
+test.describe("CRUD: Resources", () => {
   let createdId: string;
 
-  test("CREATE: POST /api/budgets", async ({ request }) => {
-    const response = await request.post(`${BASE_URL}/api/budgets`, {
-      data: { name: "Test Budget", amount: 1000 }
+  test("CREATE: POST /api/resources", async ({ request }) => {
+    const response = await request.post(`${BASE_URL}/api/resources`, {
+      data: { name: "Test Resource", /* add required fields */ }
     });
 
     expect(response.status()).toBe(201);
@@ -336,26 +364,26 @@ test.describe("CRUD: Budgets", () => {
     expect(createdId).toBeDefined();
   });
 
-  test("READ: GET /api/budgets/:id", async ({ request }) => {
-    const response = await request.get(`${BASE_URL}/api/budgets/${createdId}`);
+  test("READ: GET /api/resources/:id", async ({ request }) => {
+    const response = await request.get(`${BASE_URL}/api/resources/${createdId}`);
 
     expect(response.status()).toBe(200);
     const { data } = await response.json();
-    expect(data.name).toBe("Test Budget");
+    expect(data.name).toBe("Test Resource");
   });
 
-  test("UPDATE: PUT /api/budgets/:id", async ({ request }) => {
-    const response = await request.put(`${BASE_URL}/api/budgets/${createdId}`, {
-      data: { name: "Updated Budget" }
+  test("UPDATE: PUT /api/resources/:id", async ({ request }) => {
+    const response = await request.put(`${BASE_URL}/api/resources/${createdId}`, {
+      data: { name: "Updated Resource" }
     });
 
     expect(response.status()).toBe(200);
     const { data } = await response.json();
-    expect(data.name).toBe("Updated Budget");
+    expect(data.name).toBe("Updated Resource");
   });
 
-  test("DELETE: DELETE /api/budgets/:id", async ({ request }) => {
-    const response = await request.delete(`${BASE_URL}/api/budgets/${createdId}`);
+  test("DELETE: DELETE /api/resources/:id", async ({ request }) => {
+    const response = await request.delete(`${BASE_URL}/api/resources/${createdId}`);
 
     expect(response.status()).toBe(204);
   });
@@ -366,7 +394,7 @@ test.describe("CRUD: Budgets", () => {
 
 ```typescript
 test("filters by status", async ({ request }) => {
-  const response = await request.get(`${BASE_URL}/api/budgets?status=active`);
+  const response = await request.get(`${BASE_URL}/api/resources?status=active`);
 
   expect(response.status()).toBe(200);
   const { data } = await response.json();
@@ -374,6 +402,67 @@ test("filters by status", async ({ request }) => {
   for (const item of data) {
     expect(item.status).toBe("active");
   }
+});
+```
+
+## Testing ActionResponse Pattern
+
+If your project uses the ActionResponse pattern (check `CLAUDE.md`), use these assertions:
+
+```typescript
+// Test successful ActionResponse
+test("returns ActionResponse success format", async ({ request }) => {
+  const response = await request.post(`${BASE_URL}${API_ENDPOINT}`, {
+    data: validPayload
+  });
+
+  expect(response.status()).toBe(200);
+  const body = await response.json();
+
+  // ActionResponse success structure
+  expect(body).toMatchObject({
+    success: true,
+    data: expect.any(Object),
+  });
+  expect(body.message).toBeDefined(); // optional
+});
+
+// Test failed ActionResponse with validation errors
+test("returns fieldErrors on validation failure", async ({ request }) => {
+  const response = await request.post(`${BASE_URL}${API_ENDPOINT}`, {
+    data: {} // missing required fields
+  });
+
+  expect(response.status()).toBe(400);
+  const body = await response.json();
+
+  // ActionResponse error structure
+  expect(body).toMatchObject({
+    success: false,
+    error: expect.any(String),
+  });
+
+  // Check for field-level errors if applicable
+  if (body.fieldErrors) {
+    expect(body.fieldErrors).toEqual(
+      expect.objectContaining({
+        name: expect.arrayContaining([expect.any(String)])
+      })
+    );
+  }
+});
+
+// Test database error mapping
+test("maps DbError to appropriate HTTP status", async ({ request }) => {
+  const response = await request.get(
+    `${BASE_URL}${API_ENDPOINT}/non-existent-id`
+  );
+
+  // DbError.notFound → 404
+  expect(response.status()).toBe(404);
+  const body = await response.json();
+  expect(body.success).toBe(false);
+  expect(body.error).toContain("not found");
 });
 ```
 
