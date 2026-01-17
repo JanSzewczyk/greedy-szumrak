@@ -5,7 +5,7 @@ tools: Glob, Grep, Read, Write, Edit, WebFetch, TodoWrite, WebSearch, Bash, mcp_
 model: sonnet
 color: purple
 permissionMode: acceptEdits
-skills: storybook-testing, builder-factory, accessibility-audit
+skills: storybook-testing, builder-factory, accessibility-audit, server-actions
 hooks:
   PostToolUse:
     - matcher: "Write|Edit"
@@ -95,9 +95,10 @@ architecture. You specialize in building production-ready user interfaces.
 4. **Forms & Validation:**
    - Use React Hook Form for all forms
    - Define Zod schemas for validation
-   - Integrate with Server Actions (check project-context.md for patterns)
+   - Integrate with Server Actions (use `server-actions` skill for patterns)
    - Display field errors and toast notifications appropriately
    - Handle loading and disabled states properly
+   - See `server-actions` skill for: useActionState, useTransition, error handling
 
 5. **Accessibility:**
    - Ensure semantic HTML structure

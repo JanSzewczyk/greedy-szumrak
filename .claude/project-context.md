@@ -89,37 +89,31 @@ export async function getResourceById(id: string): Promise<[null, Resource] | [D
 
 ## Server Action Patterns
 
+> **Full documentation**: See `.claude/skills/server-actions/` skill for complete patterns, examples, and React integration.
+
+**Quick Reference:**
+
 ```typescript
 import type { ActionResponse, RedirectAction } from "~/lib/action-types";
 
-// Action that returns data
-export async function submitData(formData: FormData): ActionResponse<User> {
-  const parsed = schema.safeParse(formData);
-  if (!parsed.success) {
-    return {
-      success: false,
-      error: "Validation failed",
-      fieldErrors: parsed.error.flatten().fieldErrors
-    };
-  }
-
-  const [error, user] = await createUser(parsed.data);
-  if (error) {
-    await setToastCookie(error.message, "error");
-    return { success: false, error: error.message };
-  }
-
-  await setToastCookie("User created successfully", "success");
-  return { success: true, data: user };
-}
-
-// Action that redirects
-export async function submitAndRedirect(formData: FormData): RedirectAction {
-  const [error] = await updateData(formData);
-  if (error) return { success: false, error: error.message };
-  return redirect("/success");
-}
+// ActionResponse<T> - Returns data to client
+// RedirectAction - Redirects on success (never returns)
 ```
+
+**Server Action Structure:**
+1. `"use server"` directive
+2. Authentication check (`await auth()`)
+3. Zod validation (`schema.safeParse()`)
+4. Database operation (tuple error handling)
+5. Cache revalidation (`revalidatePath()` / `revalidateTag()`)
+6. Toast notification (for user feedback)
+7. Return `ActionResponse` or `redirect()`
+
+**File Location:** `features/[feature]/server/actions/[action-name].ts`
+
+**Related Skills:**
+- `server-actions` - Full patterns, types, validation, hooks integration
+- `api-test` - Testing route handlers and endpoints
 
 ## Import Conventions
 
@@ -166,9 +160,27 @@ logger.error({
 - Use Zod schemas for validation
 - Use ActionResponse pattern for server actions
 - Use toast notifications for user feedback
+- See `server-actions` skill for React Hook Form + Server Actions integration
 
 ## Test Data Pattern
 
 - Use `@jackfranklin/test-data-bot` for builders
 - Use `@faker-js/faker/locale/pl` for Polish localization
 - Builder location: `features/[feature]/test/builders/`
+
+## Available Skills
+
+Skills provide detailed documentation and patterns. Located in `.claude/skills/`.
+
+| Skill               | Description                                                  | Use When                                       |
+|---------------------|--------------------------------------------------------------|------------------------------------------------|
+| `server-actions`    | Server Actions patterns, types, validation, React integration | Creating/updating server actions, form handling |
+| `api-test`          | API endpoint testing with Playwright                         | Testing route handlers, API endpoints          |
+| `storybook-testing` | Component testing with Storybook play functions              | Writing component interaction tests            |
+| `builder-factory`   | Test data builders with test-data-bot                        | Creating mock data for tests/stories           |
+| `db-migration`      | Database migration scripts                                   | Migrating Firestore data                       |
+| `accessibility-audit` | WCAG accessibility audits                                  | Auditing components for a11y                   |
+
+**Invoking Skills:**
+- User: `/skill-name` (e.g., `/server-actions`)
+- Agent: Listed in agent's `skills` array in frontmatter

@@ -5,7 +5,7 @@ model: sonnet
 tools: Glob, Grep, Read, Write, Edit, WebFetch, TodoWrite, WebSearch, Bash, mcp__context7__resolve-library-id, mcp__context7__get-library-docs, mcp__next-devtools__nextjs_index, mcp__next-devtools__nextjs_call, mcp__next-devtools__nextjs_docs
 color: red
 permissionMode: acceptEdits
-skills: db-migration, api-test, builder-factory
+skills: server-actions, db-migration, api-test, builder-factory
 hooks:
   PostToolUse:
     - matcher: "Write|Edit"
@@ -131,34 +131,19 @@ export async function getResourceById(id: string): Promise<[null, Resource] | [E
 }
 ```
 
-**Server Action Pattern (check project-context.md for actual types):**
+**Server Action Pattern:**
 
-```typescript
-import type { ActionResponse, RedirectAction } from "~/lib/action-types";
+> **Use the `server-actions` skill for complete patterns, types, and examples.**
+>
+> The skill includes: ActionResponse/RedirectAction types, validation patterns, error handling, React Hook Form integration, and useActionState examples.
 
-export async function submitData(formData: FormData): ActionResponse<User> {
-  // 1. Validate with Zod
-  const parsed = schema.safeParse(formData);
-  if (!parsed.success) {
-    return {
-      success: false,
-      error: "Validation failed",
-      fieldErrors: parsed.error.flatten().fieldErrors
-    };
-  }
-
-  // 2. Database operation
-  const [error, user] = await createUser(parsed.data);
-  if (error) {
-    await setToastCookie(error.message, "error");
-    return { success: false, error: error.message };
-  }
-
-  // 3. Success response
-  await setToastCookie("User created successfully", "success");
-  return { success: true, data: user };
-}
-```
+Quick reference - Server actions follow this structure:
+1. Authentication check
+2. Zod validation
+3. Database operation (tuple error handling)
+4. Cache revalidation
+5. Toast notification (for redirects)
+6. Return ActionResponse or redirect
 
 **Page Data Loading Pattern:**
 

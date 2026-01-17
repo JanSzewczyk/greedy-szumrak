@@ -5,7 +5,7 @@ tools: Glob, Grep, Read, WebFetch, TodoWrite, WebSearch, BashOutput, KillShell, 
 model: opus
 color: cyan
 permissionMode: default
-skills: accessibility-audit
+skills: accessibility-audit, server-actions
 hooks:
   PostToolUse:
     - matcher: "Read"
