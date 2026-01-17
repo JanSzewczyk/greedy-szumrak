@@ -170,7 +170,7 @@ async function listUsers(filters?: UserFilters): Promise<[DbError | null, User[]
 ```typescript
 export async function getUserById(userId: string): Promise<[DbError | null, User | null]> {
   // Validate input before database call
-  if (!userId || userId.trim() === "") {
+  if (!userId?.trim()) {
     const error = DbError.validation("Invalid userId provided");
     logger.warn({ userId, errorCode: error.code }, "Invalid userId");
     return [error, null];

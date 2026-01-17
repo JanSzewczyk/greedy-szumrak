@@ -5,7 +5,7 @@ tools: Glob, Grep, Read, Write, Edit, WebFetch, TodoWrite, WebSearch, Bash, mcp_
 model: sonnet
 color: orange
 permissionMode: default
-skills: db-migration, builder-factory
+skills: firebase-firestore, db-migration, builder-factory
 hooks:
   PostToolUse:
     - matcher: "Write|Edit"
@@ -152,7 +152,7 @@ export async function getResourcesByUser(
   userId: string
 ): Promise<[null, Resource[]] | [Error, null]> {
   // Input validation
-  if (!userId || userId.trim() === "") {
+  if (!userId?.trim()) {
     return [new ValidationError("Invalid userId"), null];
   }
 

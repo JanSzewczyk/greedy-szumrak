@@ -5,7 +5,7 @@ model: sonnet
 tools: Glob, Grep, Read, Write, Edit, WebFetch, TodoWrite, WebSearch, Bash, mcp__context7__resolve-library-id, mcp__context7__get-library-docs, mcp__next-devtools__nextjs_index, mcp__next-devtools__nextjs_call, mcp__next-devtools__nextjs_docs
 color: red
 permissionMode: acceptEdits
-skills: server-actions, db-migration, api-test, builder-factory
+skills: server-actions, firebase-firestore, db-migration, api-test, builder-factory
 hooks:
   PostToolUse:
     - matcher: "Write|Edit"
@@ -115,7 +115,7 @@ function transformToResource(docId: string, data: DBData): Resource {
 // Use tuple return pattern for error handling
 export async function getResourceById(id: string): Promise<[null, Resource] | [Error, null]> {
   // Input validation
-  if (!id || id.trim() === "") {
+  if (!id?.trim()) {
     return [new ValidationError("Invalid id"), null];
   }
 

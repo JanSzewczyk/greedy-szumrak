@@ -30,7 +30,7 @@ function transformFirestoreToOnboarding(docId: string, data: FirebaseFirestore.D
 
 export async function getOnboardingById(userId: string): Promise<[null, Onboarding] | [DbError, null]> {
   // Input validation
-  if (!userId || userId.trim() === "") {
+  if (!userId?.trim()) {
     const error = DbError.validation("Invalid userId provided");
     logger.warn({ userId, errorCode: error.code }, "Invalid userId provided");
     return [error, null];
@@ -75,7 +75,7 @@ export async function createOnboardingByUserId(
   products: OnboardingProducts
 ): Promise<[null, Onboarding] | [DbError, null]> {
   // Input validation
-  if (!userId || userId.trim() === "") {
+  if (!userId?.trim()) {
     const error = DbError.validation("Invalid userId provided");
     logger.warn({ userId, errorCode: error.code }, "Invalid userId provided for create");
     return [error, null];
@@ -138,7 +138,7 @@ export async function updateOnboarding(
   updateData: UpdateOnboardingDto
 ): Promise<[null, Onboarding] | [DbError, null]> {
   // Input validation
-  if (!onboardingId || onboardingId.trim() === "") {
+  if (!onboardingId?.trim()) {
     const error = DbError.validation("Invalid onboardingId provided");
     logger.warn({ onboardingId, errorCode: error.code }, "Invalid onboardingId provided for update");
     return [error, null];

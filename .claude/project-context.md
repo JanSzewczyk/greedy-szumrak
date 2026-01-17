@@ -40,6 +40,8 @@ When using this configuration in other projects, update this file with your proj
 
 ## Database Patterns
 
+> **Full documentation**: See `.claude/skills/firebase-firestore/` skill for complete patterns, types, error handling, and seeding.
+
 ### Type Lifecycle (Firebase)
 
 ```typescript
@@ -68,7 +70,7 @@ export type UpdateResourceDto = UpdateDto<ResourceBase>;
 import { categorizeDbError, DbError } from "~/lib/firebase/errors";
 
 export async function getResourceById(id: string): Promise<[null, Resource] | [DbError, null]> {
-  if (!id || id.trim() === "") {
+  if (!id?.trim()) {
     const error = DbError.validation("Invalid id provided");
     return [error, null];
   }
@@ -86,6 +88,10 @@ export async function getResourceById(id: string): Promise<[null, Resource] | [D
   }
 }
 ```
+
+**Related Skills:**
+- `firebase-firestore` - Complete database patterns, types, error handling, seeding
+- `db-migration` - Database migration scripts
 
 ## Server Action Patterns
 
@@ -172,14 +178,15 @@ logger.error({
 
 Skills provide detailed documentation and patterns. Located in `.claude/skills/`.
 
-| Skill               | Description                                                  | Use When                                       |
-|---------------------|--------------------------------------------------------------|------------------------------------------------|
-| `server-actions`    | Server Actions patterns, types, validation, React integration | Creating/updating server actions, form handling |
-| `api-test`          | API endpoint testing with Playwright                         | Testing route handlers, API endpoints          |
-| `storybook-testing` | Component testing with Storybook play functions              | Writing component interaction tests            |
-| `builder-factory`   | Test data builders with test-data-bot                        | Creating mock data for tests/stories           |
-| `db-migration`      | Database migration scripts                                   | Migrating Firestore data                       |
-| `accessibility-audit` | WCAG accessibility audits                                  | Auditing components for a11y                   |
+| Skill                 | Description                                                  | Use When                                       |
+|-----------------------|--------------------------------------------------------------|------------------------------------------------|
+| `server-actions`      | Server Actions patterns, types, validation, React integration | Creating/updating server actions, form handling |
+| `firebase-firestore`  | Firebase Firestore queries, types, error handling, seeding   | Creating database queries, type definitions    |
+| `api-test`            | API endpoint testing with Playwright                         | Testing route handlers, API endpoints          |
+| `storybook-testing`   | Component testing with Storybook play functions              | Writing component interaction tests            |
+| `builder-factory`     | Test data builders with test-data-bot                        | Creating mock data for tests/stories           |
+| `db-migration`        | Database migration scripts                                   | Migrating Firestore data                       |
+| `accessibility-audit` | WCAG accessibility audits                                    | Auditing components for a11y                   |
 
 **Invoking Skills:**
 - User: `/skill-name` (e.g., `/server-actions`)

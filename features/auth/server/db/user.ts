@@ -19,7 +19,7 @@ export async function updateUserMetadata(
   metadata: Partial<UserPublicMetadata>
 ): Promise<[null, User] | [DbError, null]> {
   // Input validation
-  if (!userId || userId.trim() === "") {
+  if (!userId?.trim()) {
     const error = DbError.validation("Invalid userId provided");
     logger.warn({ userId, errorCode: error.code }, "Invalid userId provided for metadata update");
     return [error, null];
