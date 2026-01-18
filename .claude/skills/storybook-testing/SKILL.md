@@ -1,6 +1,7 @@
 ---
 name: storybook-testing
 version: 3.0.0
+lastUpdated: 2026-01-18
 description: Create comprehensive Storybook stories with interactive tests for React components using CSF Next format and play functions. Use when writing component tests, interaction tests, or documenting component behavior.
 tags: [testing, storybook, react, component-testing, integration-testing, play-function, csf-next]
 author: Szum Tech Team

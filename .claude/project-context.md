@@ -174,6 +174,178 @@ logger.error({
 - Use `@faker-js/faker/locale/pl` for Polish localization
 - Builder location: `features/[feature]/test/builders/`
 
+## Common Pitfalls
+
+These are frequent mistakes to avoid when working with this stack:
+
+### Authentication
+
+❌ **Don't:** Use `middleware.ts` for Clerk auth in Next.js 16
+```typescript
+// ❌ WRONG - middleware.ts doesn't work with Clerk in Next.js 16
+export default clerkMiddleware();
+```
+
+✅ **Do:** Use `proxy.ts` instead
+```typescript
+// ✅ CORRECT - proxy.ts is the Next.js 16 way
+import { clerkProxy } from "@clerk/nextjs/server";
+export default clerkProxy();
+```
+
+### Database Types
+
+❌ **Don't:** Return raw Firestore Timestamp to client components
+```typescript
+// ❌ WRONG
+return { createdAt: firestoreDoc.createdAt }; // Timestamp object
+```
+
+✅ **Do:** Transform to Date using transform functions
+```typescript
+// ✅ CORRECT
+return {
+  createdAt: firestoreDoc.createdAt?.toDate()
+};
+```
+
+### Server Actions
+
+❌ **Don't:** Forget to check authentication
+```typescript
+// ❌ WRONG - No auth check
+export async function updateProfile(data: ProfileData) {
+  await db.update(data);
+}
+```
+
+✅ **Do:** Always verify authentication first
+```typescript
+// ✅ CORRECT
+export async function updateProfile(data: ProfileData): ActionResponse {
+  const { userId } = await auth();
+  if (!userId) {
+    return { success: false, error: "Unauthorized" };
+  }
+  // ... rest of logic
+}
+```
+
+❌ **Don't:** Use inconsistent return types
+```typescript
+// ❌ WRONG - Throwing errors in server actions
+export async function createUser(data: UserData) {
+  if (!data.email) throw new Error("Email required");
+  return user;
+}
+```
+
+✅ **Do:** Use standardized ActionResponse pattern
+```typescript
+// ✅ CORRECT
+export async function createUser(data: UserData): ActionResponse<User> {
+  if (!data.email) {
+    return { success: false, error: "Email required" };
+  }
+  return { success: true, data: user };
+}
+```
+
+### Error Handling
+
+❌ **Don't:** Expose internal error details to client
+```typescript
+// ❌ WRONG
+catch (error) {
+  return { success: false, error: error.message }; // Could leak sensitive info
+}
+```
+
+✅ **Do:** Use categorized errors and log internally
+```typescript
+// ✅ CORRECT
+catch (error) {
+  const dbError = categorizeDbError(error, "User");
+  logger.error({ errorCode: dbError.code, userId }, "Operation failed");
+  return { success: false, error: "Unable to complete operation" };
+}
+```
+
+### Imports
+
+❌ **Don't:** Use relative imports for project files
+```typescript
+// ❌ WRONG
+import { db } from "../../../lib/firebase";
+```
+
+✅ **Do:** Use path aliases
+```typescript
+// ✅ CORRECT
+import { db } from "~/lib/firebase";
+```
+
+### React Components
+
+❌ **Don't:** Add 'use client' unnecessarily
+```typescript
+// ❌ WRONG - No interactivity needed
+'use client'
+export function UserProfile({ user }) {
+  return <div>{user.name}</div>;
+}
+```
+
+✅ **Do:** Default to Server Components
+```typescript
+// ✅ CORRECT - Server Component by default
+export function UserProfile({ user }) {
+  return <div>{user.name}</div>;
+}
+```
+
+### Database Queries
+
+❌ **Don't:** Return errors by throwing
+```typescript
+// ❌ WRONG
+export async function getUserById(id: string) {
+  if (!id) throw new Error("Invalid id");
+  const user = await db.get(id);
+  if (!user) throw new Error("Not found");
+  return user;
+}
+```
+
+✅ **Do:** Use tuple pattern for explicit error handling
+```typescript
+// ✅ CORRECT
+export async function getUserById(
+  id: string
+): Promise<[null, User] | [DbError, null]> {
+  if (!id) return [DbError.validation("Invalid id"), null];
+
+  const doc = await db.get(id);
+  if (!doc.exists) return [DbError.notFound("User"), null];
+
+  return [null, transformToUser(doc)];
+}
+```
+
+### Logging
+
+❌ **Don't:** Use console.log in production code
+```typescript
+// ❌ WRONG
+console.log("User created:", userId);
+```
+
+✅ **Do:** Use structured logging with Pino
+```typescript
+// ✅ CORRECT
+logger.info({ userId, operation: "create" }, "User created");
+```
+
 ## Available Skills
 
 Skills provide detailed documentation and patterns. Located in `.claude/skills/`.

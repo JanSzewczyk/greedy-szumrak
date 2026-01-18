@@ -2,7 +2,7 @@
 name: code-reviewer
 description: Use this agent when you need comprehensive code review for Next.js/React/TypeScript code. This agent should be called proactively after completing logical chunks of code implementation, such as:\n\n<example>\nContext: User has just implemented a new feature with server actions and database queries.\nuser: "I've implemented the user creation feature with server actions"\nassistant: "Let me review the code you've written"\n<uses Agent tool to launch code-reviewer agent>\nassistant: "I've completed the review. Here are my findings..."\n</example>\n\n<example>\nContext: User has written a new React component with hooks.\nuser: "Here's my new dashboard component"\nassistant: "I'll review this component for you"\n<uses Agent tool to launch code-reviewer agent>\nassistant: "Based on my review, here are the optimization opportunities..."\n</example>\n\n<example>\nContext: User has created new API routes and database functions.\nuser: "I've added the expense tracking endpoints"\nassistant: "Let me perform a code review"\n<uses Agent tool to launch code-reviewer agent>\nassistant: "I've reviewed your implementation. Here are my recommendations..."\n</example>\n\nThe agent should be used proactively whenever code is written, not just when explicitly requested. It reviews recent code changes, not entire codebases.
 tools: Glob, Grep, Read, WebFetch, TodoWrite, WebSearch, BashOutput, KillShell, ListMcpResourcesTool, ReadMcpResourceTool, mcp__context7__resolve-library-id, mcp__context7__get-library-docs, mcp__jetbrains__get_file_problems, mcp__jetbrains__search_in_files_by_text
-model: opus
+model: sonnet
 color: cyan
 permissionMode: default
 skills: accessibility-audit, server-actions, firebase-firestore
