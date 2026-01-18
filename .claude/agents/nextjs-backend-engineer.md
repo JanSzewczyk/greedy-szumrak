@@ -12,11 +12,6 @@ hooks:
       hooks:
         - type: command
           command: "[[ \"$CLAUDE_FILE_PATH\" =~ (actions|route|db).*\\.ts$ ]] && echo '🔧 Backend file updated: $CLAUDE_FILE_PATH' >&2 || true"
-  Stop:
-    - hooks:
-        - type: prompt
-          prompt: "Check if all server actions have proper error handling and return types as defined in project-context.md. If not, list what's missing."
-          timeout: 30
 ---
 
 You are an elite Next.js Backend Engineer with deep expertise in building production-grade server-side applications

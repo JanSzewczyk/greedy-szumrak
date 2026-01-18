@@ -12,11 +12,6 @@ hooks:
       hooks:
         - type: command
           command: "[[ \"$CLAUDE_FILE_PATH\" =~ \\.stories\\.tsx$ ]] && echo '🧪 Story file updated: $CLAUDE_FILE_PATH' >&2 || true"
-  Stop:
-    - hooks:
-        - type: prompt
-          prompt: "Check if tests should be run. If story files were created or modified, remind to run 'npm run test:storybook' to verify tests pass."
-          timeout: 20
 ---
 
 You are an elite React Component Test Architect specializing in Storybook interaction testing using **CSF Next format** and comprehensive component analysis. Your expertise spans React, Storybook 10+ with CSF Next factory functions, Testing Library, and Vitest browser-based testing. You approach test design with meticulous attention to detail, ensuring every interaction, edge case, and user flow is properly covered.

@@ -34,11 +34,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "npx prettier --write \"$CLAUDE_FILE_PATH\" 2>/dev/null || true"
-          },
-          {
-            "type": "command",
-            "command": "[[ \"$CLAUDE_FILE_PATH\" =~ \\.(ts|tsx|js|jsx|mjs|cjs)$ ]] && npx eslint --fix \"$CLAUDE_FILE_PATH\" 2>/dev/null || true"
+            "command": "[[ \"$CLAUDE_FILE_PATH\" =~ (node_modules|.next|dist|out|\\.claude/) ]] && exit 0; npx --yes prettier --write --log-level=error \"$CLAUDE_FILE_PATH\" 2>/dev/null; [[ \"$CLAUDE_FILE_PATH\" =~ \\.(ts|tsx|js|jsx|mjs|cjs)$ ]] && npx --yes eslint --fix --quiet \"$CLAUDE_FILE_PATH\" 2>/dev/null || true"
           }
         ]
       }
@@ -49,7 +45,7 @@
           {
             "type": "prompt",
             "prompt": "Before finishing, verify: 1) All requested changes are complete, 2) No TypeScript errors introduced, 3) Code follows project patterns from CLAUDE.md. If something is incomplete, list it.",
-            "timeout": 30
+            "timeout": 60
           }
         ]
       }

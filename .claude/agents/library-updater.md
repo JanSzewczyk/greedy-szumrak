@@ -12,11 +12,6 @@ hooks:
       hooks:
         - type: command
           command: "[[ \"$TOOL_INPUT\" =~ 'npm install' ]] && echo '📦 Dependencies updated - remember to run tests' >&2 || true"
-  Stop:
-    - hooks:
-        - type: prompt
-          prompt: "Verify that all required verification steps were completed: type-check, lint, build, test. List any steps that were skipped."
-          timeout: 30
 ---
 
 You are an elite Node.js developer and dependency management specialist with deep expertise in JavaScript, TypeScript,
