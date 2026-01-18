@@ -1,6 +1,7 @@
 ---
 name: server-actions
 version: 1.0.0
+lastUpdated: 2026-01-18
 description: Create Next.js Server Actions with TypeScript following best practices for forms, mutations, validation, and error handling. Use when implementing server-side form handling, CRUD operations, or data mutations.
 tags: [next.js, server-actions, forms, mutations, validation, zod, react-hook-form]
 author: Szum Tech Team

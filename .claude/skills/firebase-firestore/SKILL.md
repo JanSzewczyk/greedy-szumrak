@@ -1,6 +1,7 @@
 ---
 name: firebase-firestore
 version: 1.0.0
+lastUpdated: 2026-01-18
 description: Create Firebase Firestore database queries with TypeScript, proper type lifecycle, error handling, and best practices for Next.js applications.
 tags: [firebase, firestore, database, typescript, error-handling, server-only]
 author: Szum Tech Team

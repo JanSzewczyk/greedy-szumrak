@@ -121,15 +121,19 @@ play: async ({ canvas, userEvent, step }) => {
 ### 7. Handle Portals Correctly
 
 ```typescript
-import { within } from "storybook/test";
+import { screen } from "storybook/test";
 
-// BAD - Won't find portal content
+// BAD - Won't find portal content (portals render outside canvas)
 const option = canvas.getByRole("option");
 
-// GOOD - Query parent element for portals
-const portal = within(canvasElement.parentElement as HTMLElement);
-const option = await portal.findByRole("option");
+// GOOD - Use screen for portals
+const option = await screen.findByRole("option");
 ```
+
+**Portal query strategy:**
+- **Use `screen`** for portal content (modals, tooltips, dropdowns)
+- Portals render to document.body, so `screen` is the natural choice
+- Simpler and more readable than `within(canvasElement.parentElement)`
 
 ### 8. Use queryBy* for Negative Assertions
 
@@ -215,13 +219,24 @@ await waitFor(async () => {
 ### 4. Forgetting Portal Queries
 
 ```typescript
+import { screen } from "storybook/test";
+
 // BAD - Portal content not in canvas
 const tooltip = canvas.getByRole("tooltip");
 
-// GOOD - Query parent element
-const portal = within(canvasElement.parentElement as HTMLElement);
-const tooltip = await portal.findByRole("tooltip");
+// GOOD - Use screen for portals
+const tooltip = await screen.findByRole("tooltip");
 ```
+
+**Why use `screen` for portals:**
+- Portals (modals, tooltips, dropdowns) render outside the story canvas (usually to document.body)
+- `canvas` won't find them (they're not children of the story)
+- `screen` is the standard Testing Library pattern for querying document
+- Simpler and more readable than `within(canvasElement.parentElement)`
+
+**When to use `within(canvasElement.parentElement)` instead:**
+- Only if you experience test isolation issues in your specific setup
+- If you need more explicit scoping for complex scenarios
 
 ### 5. Hardcoding Test Data
 
