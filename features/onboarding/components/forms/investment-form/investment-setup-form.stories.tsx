@@ -1,4 +1,3 @@
-import { type Meta, type StoryObj } from "@storybook/nextjs-vite";
 import { expect, fn, userEvent, waitFor } from "storybook/test";
 import { BrokerId } from "~/features/onboarding/constants/investments";
 import {
@@ -8,7 +7,9 @@ import {
 
 import { InvestmentSetupForm } from "./investment-setup-form";
 
-const meta = {
+import preview from "~/.storybook/preview";
+
+const meta = preview.meta({
   title: "Features/Onboarding/Investment Setup Form",
   component: InvestmentSetupForm,
   decorators: [(story) => <div className="w-full max-w-4xl">{story()}</div>],
@@ -17,17 +18,14 @@ const meta = {
     onContinueAction: fn(),
     onSkipAction: fn()
   }
-} satisfies Meta<typeof InvestmentSetupForm>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+});
 
 /**
  * Default empty state of the investment setup form.
  * Verifies the component renders correctly with no initial accounts,
  * showing the empty state message and "Add Investment Account" button.
  */
-export const DefaultEmptyState: Story = {
+export const DefaultEmptyState = meta.story({
   args: {
     initialAccounts: []
   },
@@ -60,13 +58,13 @@ export const DefaultEmptyState: Story = {
       await expect(canvas.getByRole("button", { name: /skip for now/i })).toBeVisible();
     });
   }
-};
+});
 
 /**
  * Form with pre-populated accounts from initialAccounts prop.
  * Verifies the component correctly displays existing accounts with proper formatting.
  */
-export const WithInitialAccounts: Story = {
+export const WithInitialAccounts = meta.story({
   args: {
     initialAccounts: [
       onboardingInvestmentBuilder.one({
@@ -113,12 +111,12 @@ export const WithInitialAccounts: Story = {
       await expect(canvas.queryByText(/no accounts added yet/i)).not.toBeInTheDocument();
     });
   }
-};
+});
 
 /**
  * Tests that clicking "Add Investment Account" displays the InvestmentAccountCardForm in create mode.
  */
-export const AddAccountButtonOpensForm: Story = {
+export const AddAccountButtonOpensForm = meta.story({
   args: {
     initialAccounts: []
   },
@@ -148,12 +146,12 @@ export const AddAccountButtonOpensForm: Story = {
       await expect(canvas.queryByRole("button", { name: /add investment account/i })).not.toBeInTheDocument();
     });
   }
-};
+});
 
 /**
  * Tests that canceling the account form returns to the add button state.
  */
-export const CancelFormReturnsToDefaultView: Story = {
+export const CancelFormReturnsToDefaultView = meta.story({
   args: {
     initialAccounts: []
   },
@@ -181,12 +179,12 @@ export const CancelFormReturnsToDefaultView: Story = {
       await expect(canvas.getByText(/no accounts added yet/i)).toBeVisible();
     });
   }
-};
+});
 
 /**
  * Tests that clicking edit on an existing account opens the form pre-populated with that account's data.
  */
-export const EditAccountOpensFormWithData: Story = {
+export const EditAccountOpensFormWithData = meta.story({
   args: {
     initialAccounts: [
       onboardingInvestmentBuilder.one({
@@ -222,12 +220,12 @@ export const EditAccountOpensFormWithData: Story = {
       await expect(canvas.queryByRole("button", { name: /add account/i })).not.toBeInTheDocument();
     });
   }
-};
+});
 
 /**
  * Tests that clicking remove on an account removes it from the list and updates the count.
  */
-export const RemoveAccountFromList: Story = {
+export const RemoveAccountFromList = meta.story({
   args: {
     initialAccounts: [
       onboardingInvestmentBuilder.one({
@@ -274,12 +272,12 @@ export const RemoveAccountFromList: Story = {
       await expect(canvas.getByRole("button", { name: /continue with accounts/i })).toBeVisible();
     });
   }
-};
+});
 
 /**
  * Tests that clicking "Back" button triggers the onBackAction callback.
  */
-export const BackButtonCallsOnBackAction: Story = {
+export const BackButtonCallsOnBackAction = meta.story({
   args: {
     initialAccounts: []
   },
@@ -293,12 +291,12 @@ export const BackButtonCallsOnBackAction: Story = {
       await expect(args.onBackAction).toHaveBeenCalledTimes(1);
     });
   }
-};
+});
 
 /**
  * Tests that "Skip for now" button appears when no accounts exist and triggers onSkipAction.
  */
-export const SkipButtonWhenNoAccounts: Story = {
+export const SkipButtonWhenNoAccounts = meta.story({
   args: {
     initialAccounts: []
   },
@@ -320,12 +318,12 @@ export const SkipButtonWhenNoAccounts: Story = {
       await expect(args.onSkipAction).toHaveBeenCalledTimes(1);
     });
   }
-};
+});
 
 /**
  * Tests that "Continue with accounts" button appears when accounts are present.
  */
-export const ContinueButtonWhenAccountsExist: Story = {
+export const ContinueButtonWhenAccountsExist = meta.story({
   args: {
     initialAccounts: [createTestOnboardingInvestment.xtb()]
   },
@@ -346,12 +344,12 @@ export const ContinueButtonWhenAccountsExist: Story = {
       await expect(svg).toBeInTheDocument();
     });
   }
-};
+});
 
 /**
  * Tests account item displays custom name with broker as description.
  */
-export const AccountDisplayWithCustomName: Story = {
+export const AccountDisplayWithCustomName = meta.story({
   args: {
     initialAccounts: [
       onboardingInvestmentBuilder.one({
@@ -379,12 +377,12 @@ export const AccountDisplayWithCustomName: Story = {
       await expect(canvas.getByText("PLN")).toBeVisible();
     });
   }
-};
+});
 
 /**
  * Tests account item displays broker name when no custom name is provided.
  */
-export const AccountDisplayWithoutCustomName: Story = {
+export const AccountDisplayWithoutCustomName = meta.story({
   args: {
     initialAccounts: [
       onboardingInvestmentBuilder.one({
@@ -413,12 +411,12 @@ export const AccountDisplayWithoutCustomName: Story = {
       await expect(canvas.getByText("EUR")).toBeVisible();
     });
   }
-};
+});
 
 /**
  * Tests that account numbers are properly masked (showing only last 4 digits).
  */
-export const MaskedAccountNumberDisplay: Story = {
+export const MaskedAccountNumberDisplay = meta.story({
   args: {
     initialAccounts: [
       onboardingInvestmentBuilder.one({
@@ -447,4 +445,4 @@ export const MaskedAccountNumberDisplay: Story = {
       await expect(accountText.textContent).toContain("*");
     });
   }
-};
+});

@@ -107,7 +107,7 @@ export async function getBudgetTemplates(): Promise<[null, Array<BudgetTemplate>
 
 export async function getBudgetTemplateById(templateId: string): Promise<[null, BudgetTemplate] | [DbError, null]> {
   // Input validation
-  if (!templateId || templateId.trim() === "") {
+  if (!templateId?.trim()) {
     const error = DbError.validation("Invalid templateId provided");
     logger.warn({ templateId, errorCode: error.code }, "Invalid templateId provided");
     return [error, null];

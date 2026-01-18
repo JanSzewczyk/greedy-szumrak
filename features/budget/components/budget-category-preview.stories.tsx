@@ -1,22 +1,19 @@
-import { type Meta, type StoryObj } from "@storybook/react";
 import { expect } from "storybook/test";
+import preview from "~/.storybook/preview";
 
 import { BudgetCategoryPreview } from "./budget-category-preview";
 
-const meta = {
+const meta = preview.meta({
   title: "Features/Budget/Budget Category Preview",
   component: BudgetCategoryPreview,
   decorators: [(story) => <div className="w-full max-w-xl">{story()}</div>]
-} satisfies Meta<typeof BudgetCategoryPreview>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+});
 
 /**
  * Complete category with all fields populated.
  * Shows icon, name, description, and amount.
  */
-export const Complete: Story = {
+export const Complete = meta.story({
   args: {
     category: {
       name: "Groceries",
@@ -41,13 +38,13 @@ export const Complete: Story = {
     const removeButton = canvas.getByRole("button", { name: /preview remove groceries/i });
     await expect(removeButton).toBeVisible();
   }
-};
+});
 
 /**
  * Category without description.
  * Shows only icon, name, and amount.
  */
-export const WithoutDescription: Story = {
+export const WithoutDescription = meta.story({
   args: {
     category: {
       name: "Entertainment",
@@ -69,13 +66,13 @@ export const WithoutDescription: Story = {
     const removeButton = canvas.getByRole("button", { name: /preview remove entertainment/i });
     await expect(removeButton).toBeVisible();
   }
-};
+});
 
 /**
  * Category with zero amount.
  * Shows empty placeholder in amount field.
  */
-export const ZeroAmount: Story = {
+export const ZeroAmount = meta.story({
   args: {
     category: {
       name: "Savings",
@@ -97,4 +94,4 @@ export const ZeroAmount: Story = {
     const removeButton = canvas.getByRole("button", { name: /preview remove savings/i });
     await expect(removeButton).toBeVisible();
   }
-};
+});

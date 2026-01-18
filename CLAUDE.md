@@ -205,7 +205,7 @@ const RESOURCE_NAME = "Onboarding";
 // READ - with input validation and structured errors
 export async function getOnboardingById(userId: string): Promise<[null, Onboarding] | [DbError, null]> {
   // Input validation
-  if (!userId || userId.trim() === "") {
+  if (!userId?.trim()) {
     const error = DbError.validation("Invalid userId provided");
     logger.warn({ userId, errorCode: error.code }, "Invalid userId");
     return [error, null];

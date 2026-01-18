@@ -1,8 +1,9 @@
-import { type Meta, type StoryObj } from "@storybook/nextjs-vite";
+import preview from "~/.storybook/preview";
+
 import { expect, fn, userEvent, waitFor, within } from "storybook/test";
 import { InvestmentAccountCardForm } from "~/features/onboarding/components/forms/investment-form/investment-account-card-form";
 
-const meta = {
+const meta = preview.meta({
   title: "Features/Onboarding/Investment Account Card Form",
   component: InvestmentAccountCardForm,
   decorators: [(story) => <div className="w-full max-w-xl">{story()}</div>],
@@ -10,10 +11,7 @@ const meta = {
     onSave: fn(),
     onCancel: fn()
   }
-} satisfies Meta<typeof InvestmentAccountCardForm>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+});
 
 /**
  * Default form for adding a new investment account.
@@ -22,7 +20,7 @@ type Story = StoryObj<typeof meta>;
  * 2. Fills in all required fields
  * 3. Submits the form and verifies callback is called
  */
-export const Default: Story = {
+export const Default = meta.story({
   // play: async ({ canvasElement, args, step }) => {
   //   const canvas = within(canvasElement);
   //
@@ -83,4 +81,4 @@ export const Default: Story = {
   //     });
   //   });
   // }
-};
+});

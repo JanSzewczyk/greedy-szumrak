@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import { BriefcaseIcon, HandshakeIcon, ListIcon, Settings2Icon, SettingsIcon } from "lucide-react";
+import { BriefcaseIcon, CheckCircle2Icon, HandshakeIcon, ListIcon, Settings2Icon, SettingsIcon } from "lucide-react";
 
 import {
   Stepper,
@@ -68,6 +68,14 @@ export function OnboardingStepper({ children, hideNav }: { children: React.React
               <StepperTitle>Investments</StepperTitle>
               <StepperDescription>Add Accounts</StepperDescription>
             </div>
+          </StepperTrigger>
+        </StepperItem>
+        <StepperItem value={OnboardingSteps.COMPLETE}>
+          <StepperTrigger>
+            <StepperIndicator>
+              <CheckCircle2Icon className="size-4" />
+            </StepperIndicator>
+            <StepperTitle>Complete</StepperTitle>
           </StepperTrigger>
         </StepperItem>
       </StepperNav>

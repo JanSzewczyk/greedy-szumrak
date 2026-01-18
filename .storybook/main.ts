@@ -1,6 +1,6 @@
 import tsConfigPaths from "vite-tsconfig-paths";
 
-import { type StorybookConfig } from "@storybook/nextjs-vite";
+import { defineMain } from "@storybook/nextjs-vite/node";
 import { type PresetValue, type TagsOptions } from "storybook/internal/types";
 
 process.env.STORYBOOK = "true";
@@ -12,8 +12,11 @@ const tags: PresetValue<TagsOptions | undefined> = {
   }
 };
 
-export default {
+export default defineMain({
   stories: ["../**/*.mdx", "../**/*.stories.@(js|jsx|ts|tsx)"],
+  features: {
+    experimentalTestSyntax: true
+  },
   addons: [
     "@storybook/addon-a11y",
     "@chromatic-com/storybook",
@@ -36,4 +39,4 @@ export default {
       plugins: [tsConfigPaths()]
     });
   }
-} satisfies StorybookConfig;
+});

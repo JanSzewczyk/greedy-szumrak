@@ -1,7 +1,9 @@
 import * as React from "react";
 
+import addonA11y from "@storybook/addon-a11y";
+import addonDocs from "@storybook/addon-docs";
 import { DocsContainer, type DocsContainerProps } from "@storybook/addon-docs/blocks";
-import { type Preview } from "@storybook/nextjs-vite";
+import { definePreview } from "@storybook/nextjs-vite";
 import { DARK_MODE_EVENT_NAME } from "@storybook-community/storybook-dark-mode";
 
 import dark from "./theme/dark";
@@ -20,7 +22,8 @@ export function DarkModeDocsContainer(props: DocsContainerProps) {
   return <DocsContainer {...props} theme={isDark ? dark : light} />;
 }
 
-export default {
+export default definePreview({
+  addons: [addonA11y(), addonDocs()],
   parameters: {
     darkMode: {
       dark,
@@ -48,8 +51,11 @@ export default {
       // 'todo' - show a11y violations in the test UI only
       // 'error' - fail CI on a11y violations
       // 'off' - skip a11y checks entirely
-      test: "todo"
+      test: "todo",
+      options: {
+        xpath: true
+      }
     }
   },
   decorators: []
-} satisfies Preview;
+});

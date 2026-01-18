@@ -1,23 +1,20 @@
-import { type Meta, type StoryObj } from "@storybook/nextjs-vite";
 import { fn, userEvent, within, expect } from "storybook/test";
+import preview from "~/.storybook/preview";
 
 import { ProductsForm } from "./products-form";
 
-const meta = {
+const meta = preview.meta({
   title: "Features/Onboarding/Products Form",
   component: ProductsForm,
   decorators: [(story) => <div className="w-full max-w-xl">{story()}</div>]
-} satisfies Meta<typeof ProductsForm>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+});
 
 /**
  * Default state with no default values provided.
  * Budget is true and investment is false by default.
  * Button shows "Get Started" and is full width.
  */
-export const NoDefaultValues: Story = {
+export const NoDefaultValues = meta.story({
   args: {
     onContinueAction: fn()
   },
@@ -43,14 +40,14 @@ export const NoDefaultValues: Story = {
       investment: false
     });
   }
-};
+});
 
 /**
  * Form with prefilled values.
  * Both checkboxes are checked.
  * Button shows "Continue" and is not full width.
  */
-export const PrefilledValues: Story = {
+export const PrefilledValues = meta.story({
   args: {
     defaultValues: {
       budget: true,
@@ -79,13 +76,13 @@ export const PrefilledValues: Story = {
       investment: true
     });
   }
-};
+});
 
 /**
  * Test user interaction - toggling checkboxes.
  * Verifies that user can change form values.
  */
-export const UserInteraction: Story = {
+export const UserInteraction = meta.story({
   args: {
     onContinueAction: fn()
   },
@@ -114,13 +111,13 @@ export const UserInteraction: Story = {
       investment: true
     });
   }
-};
+});
 
 /**
  * Test form with both options disabled.
  * Edge case where user unchecks everything.
  */
-export const BothUnchecked: Story = {
+export const BothUnchecked = meta.story({
   args: {
     defaultValues: {
       budget: false,
@@ -143,13 +140,13 @@ export const BothUnchecked: Story = {
       investment: false
     });
   }
-};
+});
 
 /**
  * Test loading state during form submission.
  * Verifies button shows loading indicator.
  */
-export const LoadingState: Story = {
+export const LoadingState = meta.story({
   args: {
     onContinueAction: async () =>
       new Promise((resolve) => {
@@ -166,13 +163,13 @@ export const LoadingState: Story = {
     await expect(submitButton).toBeDisabled();
     await expect(submitButton).toHaveAttribute("data-state", "loading");
   }
-};
+});
 
 /**
  * Integration test: Complete user flow.
  * User starts with defaults, modifies both fields, and submits.
  */
-export const CompleteUserFlow: Story = {
+export const CompleteUserFlow = meta.story({
   args: {
     onContinueAction: fn()
   },
@@ -207,4 +204,4 @@ export const CompleteUserFlow: Story = {
       investment: true
     });
   }
-};
+});
