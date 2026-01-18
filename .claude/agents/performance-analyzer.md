@@ -9,6 +9,7 @@ tools: Glob, Grep, Read, Write, Edit, WebFetch, TodoWrite, WebSearch, Bash, mcp_
 model: sonnet
 color: blue
 permissionMode: default
+skills: performance-optimization, structured-logging, firebase-firestore
 hooks:
   PreToolUse:
     - matcher: "Bash"

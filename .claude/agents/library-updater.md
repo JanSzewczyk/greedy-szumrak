@@ -9,7 +9,7 @@ tools: Glob, Grep, Read, Write, Edit, WebFetch, TodoWrite, WebSearch, Bash, mcp_
 model: sonnet
 color: yellow
 permissionMode: acceptEdits
-skills: db-migration
+skills: db-migration, t3-env-validation
 hooks:
   PostToolUse:
     - matcher: "Bash"

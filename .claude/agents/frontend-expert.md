@@ -9,7 +9,7 @@ tools: Glob, Grep, Read, Write, Edit, WebFetch, TodoWrite, WebSearch, Bash, mcp_
 model: sonnet
 color: purple
 permissionMode: acceptEdits
-skills: storybook-testing, builder-factory, accessibility-audit, server-actions
+skills: storybook-testing, builder-factory, accessibility-audit, tailwind-css-4, react-19-compiler
 hooks:
   PostToolUse:
     - matcher: "Write|Edit"

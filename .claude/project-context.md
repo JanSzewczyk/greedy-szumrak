@@ -160,9 +160,47 @@ logger.error({
 }, "Operation failed");
 ```
 
+## React 19 Patterns
+
+> **Full documentation**: See `.claude/skills/react-19-compiler/` skill for complete patterns.
+
+### React Compiler
+
+The project has React Compiler enabled in `next.config.ts`:
+- **Remove unnecessary memoization** - Compiler handles `useMemo`, `useCallback`, `React.memo`
+- **Keep memoization only for** - External library callbacks, complex context values, >100ms computations
+
+### Form Handling with useActionState
+
+```typescript
+"use client";
+import { useActionState } from "react";
+
+function ContactForm() {
+  const [state, formAction, isPending] = useActionState(submitForm, null);
+
+  return (
+    <form action={formAction}>
+      <input name="email" type="email" />
+      <SubmitButton />
+      {state?.error && <p>{state.error}</p>}
+    </form>
+  );
+}
+
+// useFormStatus MUST be in child component
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return <button disabled={pending}>{pending ? "Sending..." : "Send"}</button>;
+}
+```
+
+**Related Skills:**
+- `react-19-compiler` - Complete React 19 patterns, hooks, Server/Client Components
+
 ## Form Pattern
 
-- Use React Hook Form for all forms
+- Use React Hook Form for complex forms, useActionState for simple forms
 - Use Zod schemas for validation
 - Use ActionResponse pattern for server actions
 - Use toast notifications for user feedback
@@ -178,7 +216,9 @@ logger.error({
 
 These are frequent mistakes to avoid when working with this stack:
 
-### Authentication
+### Authentication (Clerk)
+
+> **Full documentation**: See `.claude/skills/clerk-auth-proxy/` skill for complete patterns.
 
 ❌ **Don't:** Use `middleware.ts` for Clerk auth in Next.js 16
 ```typescript
@@ -192,6 +232,9 @@ export default clerkMiddleware();
 import { clerkProxy } from "@clerk/nextjs/server";
 export default clerkProxy();
 ```
+
+**Related Skills:**
+- `clerk-auth-proxy` - Proxy patterns, session claims, onboarding gates, testing
 
 ### Database Types
 
@@ -287,6 +330,8 @@ import { db } from "~/lib/firebase";
 
 ### React Components
 
+> **Full documentation**: See `.claude/skills/react-19-compiler/` skill for complete patterns.
+
 ❌ **Don't:** Add 'use client' unnecessarily
 ```typescript
 // ❌ WRONG - No interactivity needed
@@ -303,6 +348,21 @@ export function UserProfile({ user }) {
   return <div>{user.name}</div>;
 }
 ```
+
+❌ **Don't:** Use unnecessary memoization with React Compiler
+```typescript
+// ❌ WRONG - Compiler handles this automatically
+const sorted = useMemo(() => items.sort(), [items]);
+```
+
+✅ **Do:** Let compiler optimize
+```typescript
+// ✅ CORRECT - Compiler handles memoization
+const sorted = [...items].sort((a, b) => a.name.localeCompare(b.name));
+```
+
+**Related Skills:**
+- `react-19-compiler` - Server/Client Components, hooks, memoization decisions
 
 ### Database Queries
 
@@ -352,6 +412,8 @@ Skills provide detailed documentation and patterns. Located in `.claude/skills/`
 
 | Skill                 | Description                                                  | Use When                                       |
 |-----------------------|--------------------------------------------------------------|------------------------------------------------|
+| `clerk-auth-proxy`    | Clerk auth with Next.js 16 proxy pattern, session claims     | Authentication, onboarding gates, session claims |
+| `react-19-compiler`   | React 19 hooks, React Compiler optimization guidance         | Forms with useActionState, memoization decisions |
 | `server-actions`      | Server Actions patterns, types, validation, React integration | Creating/updating server actions, form handling |
 | `firebase-firestore`  | Firebase Firestore queries, types, error handling, seeding   | Creating database queries, type definitions    |
 | `api-test`            | API endpoint testing with Playwright                         | Testing route handlers, API endpoints          |
@@ -359,6 +421,12 @@ Skills provide detailed documentation and patterns. Located in `.claude/skills/`
 | `builder-factory`     | Test data builders with test-data-bot                        | Creating mock data for tests/stories           |
 | `db-migration`        | Database migration scripts                                   | Migrating Firestore data                       |
 | `accessibility-audit` | WCAG accessibility audits                                    | Auditing components for a11y                   |
+| `tailwind-css-4`      | Tailwind v4 CSS-first config, design system integration      | Styling components, responsive design, theming |
+| `t3-env-validation`   | Type-safe env vars with @t3-oss/env-nextjs and Zod           | Environment configuration, validation          |
+| `structured-logging`  | Pino logging with context enrichment and log levels          | Server-side logging, debugging, monitoring     |
+| `toast-notifications` | Cookie-based toast system for server-to-client messaging     | User feedback after server actions, redirects  |
+| `error-handling`      | DbError patterns, error boundaries, toast errors             | Error handling across all layers               |
+| `performance-optimization` | Bundle analysis, React rendering, DB query optimization | Performance issues, slow pages, large bundles  |
 
 **Invoking Skills:**
 - User: `/skill-name` (e.g., `/server-actions`)

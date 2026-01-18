@@ -35,10 +35,18 @@ This directory contains configuration and documentation for Claude Code agents a
     ├── accessibility-audit/
     ├── api-test/
     ├── builder-factory/
+    ├── clerk-auth-proxy/      # Clerk auth with Next.js 16 proxy
     ├── db-migration/
     ├── firebase-firestore/
+    ├── react-19-compiler/     # React 19 & React Compiler patterns
     ├── server-actions/
-    └── storybook-testing/
+    ├── storybook-testing/
+    ├── structured-logging/    # Pino structured logging patterns
+    ├── t3-env-validation/     # T3 Env type-safe environment variables
+    ├── tailwind-css-4/        # Tailwind CSS v4 patterns
+    ├── toast-notifications/   # Cookie-based toast system
+    ├── error-handling/        # Error handling patterns (DbError, boundaries)
+    └── performance-optimization/  # Bundle, React, DB optimization
 ```
 
 ## 🎯 Skills
@@ -47,6 +55,8 @@ Skills are reusable knowledge modules that provide detailed patterns and example
 
 | Skill | Invoke With | Use When |
 |-------|-------------|----------|
+| **clerk-auth-proxy** | `/clerk-auth-proxy` | Clerk authentication with Next.js 16 proxy pattern |
+| **react-19-compiler** | `/react-19-compiler` | React 19 hooks, React Compiler, memoization decisions |
 | **firebase-firestore** | `/firebase-firestore` | Creating database queries, type definitions, error handling |
 | **server-actions** | `/server-actions` | Next.js Server Actions, form handling, validation |
 | **storybook-testing** | `/storybook-testing` | Writing Storybook stories with interaction tests |
@@ -54,6 +64,12 @@ Skills are reusable knowledge modules that provide detailed patterns and example
 | **builder-factory** | `/builder-factory` | Creating test data builders with test-data-bot |
 | **db-migration** | `/db-migration` | Firestore data migration scripts |
 | **accessibility-audit** | `/accessibility-audit` | WCAG accessibility audits for React components |
+| **tailwind-css-4** | `/tailwind-css-4` | Tailwind CSS v4 patterns, CSS-first config, design system |
+| **t3-env-validation** | `/t3-env-validation` | Type-safe environment variables with Zod validation |
+| **structured-logging** | `/structured-logging` | Pino logging patterns, context enrichment, log levels |
+| **toast-notifications** | `/toast-notifications` | Cookie-based toast system for server actions |
+| **error-handling** | `/error-handling` | DbError, error boundaries, toast errors, logging |
+| **performance-optimization** | `/performance-optimization` | Bundle analysis, React rendering, DB queries |
 
 ### Skill Documentation Structure
 
@@ -245,10 +261,10 @@ When updating:
 
 **Current Setup:**
 - **8 agents** (specialized AI assistants)
-- **7 skills** (knowledge modules)
+- **15 skills** (knowledge modules)
 - **4 MCP servers** (next-devtools, playwright, context7, jetbrains)
-- **~10,500 lines** of documentation
-- **60+ practical examples** across all skills
+- **~15,000 lines** of documentation
+- **100+ practical examples** across all skills
 
 ---
 

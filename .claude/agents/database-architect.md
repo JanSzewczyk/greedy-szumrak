@@ -9,7 +9,7 @@ tools: Glob, Grep, Read, Write, Edit, WebFetch, TodoWrite, WebSearch, Bash, mcp_
 model: sonnet
 color: orange
 permissionMode: default
-skills: firebase-firestore, db-migration, builder-factory
+skills: firebase-firestore, db-migration, builder-factory, structured-logging, error-handling
 hooks:
   PostToolUse:
     - matcher: "Write|Edit"
