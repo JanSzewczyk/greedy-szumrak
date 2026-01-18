@@ -19,7 +19,6 @@ export const Default = meta.story({});
 
 ```typescript
 // CSF 3.0 (old)
-export default meta;
 
 // CSF Next (new) - No default export required
 const meta = preview.meta({ ... });
@@ -29,8 +28,7 @@ const meta = preview.meta({ ... });
 
 ```typescript
 // BAD - Unnecessary type annotations
-import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-type Story = StoryObj<typeof meta>;
+import preview from "~/.storybook/preview";
 export const Default: Story = { };
 
 // GOOD - Types inferred automatically

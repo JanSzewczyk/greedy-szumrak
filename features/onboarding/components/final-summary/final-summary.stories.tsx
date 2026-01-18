@@ -1,4 +1,4 @@
-import { type Meta, type StoryObj } from "@storybook/nextjs-vite";
+import preview from "~/.storybook/preview";
 import { expect, fn, waitFor, within } from "storybook/test";
 import { budgetTemplateBuilder } from "~/features/budget/test/builders/budget-template.builder";
 import { onboardingBuilder } from "~/features/onboarding/test/builders/onboarding.builder";
@@ -6,7 +6,7 @@ import { type RedirectAction } from "~/lib/action-types";
 
 import { FinalSummary } from "./final-summary";
 
-const meta = {
+const meta = preview.meta({
   title: "Features/Onboarding/Final Summary",
   component: FinalSummary,
   decorators: [(story) => <div className="w-full">{story()}</div>],
@@ -19,17 +19,14 @@ const meta = {
         }) as unknown as RedirectAction
     )
   }
-} satisfies Meta<typeof FinalSummary>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+});
 
 /**
  * Test 1: Renders with complete onboarding data (preferences, budget, investments).
  * This is the happy path showing all sections populated with data.
  * Validates that preferences, budget, and investments sections display correctly.
  */
-export const WithCompleteData: Story = {
+export const WithCompleteData = meta.story({
   args: {
     onboarding: onboardingBuilder.one({ traits: ["completed"] }),
     budgetTemplate: budgetTemplateBuilder.one({ traits: ["youngProfessional"] })
@@ -63,14 +60,14 @@ export const WithCompleteData: Story = {
       await expect(canvas.getByRole("button", { name: /complete setup/i })).toBeInTheDocument();
     });
   }
-};
+});
 
 /**
  * Test 2: Renders with preferences only (no budget or investments).
  * Validates component handles minimal data gracefully.
  * Only preferences section should be visible.
  */
-export const WithPreferencesOnly: Story = {
+export const WithPreferencesOnly = meta.story({
   args: {
     onboarding: onboardingBuilder.one({
       overrides: {
@@ -113,13 +110,13 @@ export const WithPreferencesOnly: Story = {
       await expect(canvas.getByRole("button", { name: /complete setup/i })).toBeInTheDocument();
     });
   }
-};
+});
 
 /**
  * Test 8: Displays empty state for investments when investments array is empty.
  * Shows that investment section handles empty state gracefully with helpful message.
  */
-export const EmptyInvestments: Story = {
+export const EmptyInvestments = meta.story({
   args: {
     onboarding: onboardingBuilder.one({
       overrides: {
@@ -147,13 +144,13 @@ export const EmptyInvestments: Story = {
       await expect(canvas.queryByText(/Account:/i)).not.toBeInTheDocument();
     });
   }
-};
+});
 
 /**
  * Test 10: Shows correct header text and description.
  * Validates that the header content is accurate and encourages user to finalize setup.
  */
-export const HeaderContent: Story = {
+export const HeaderContent = meta.story({
   args: {
     onboarding: onboardingBuilder.one({ traits: ["withAllData"] }),
     budgetTemplate: budgetTemplateBuilder.one({ traits: ["youngProfessional"] })
@@ -171,13 +168,13 @@ export const HeaderContent: Story = {
       await expect(description.tagName).toBe("P");
     });
   }
-};
+});
 
 /**
  * Test 17: Back button click triggers onBackAction callback.
  * Verifies navigation back to previous step works correctly.
  */
-export const BackButtonAction: Story = {
+export const BackButtonAction = meta.story({
   args: {
     onboarding: onboardingBuilder.one({ traits: ["withAllData"] }),
     budgetTemplate: budgetTemplateBuilder.one({ traits: ["youngProfessional"] })
@@ -192,13 +189,13 @@ export const BackButtonAction: Story = {
       await expect(args.onBackAction).toHaveBeenCalledOnce();
     });
   }
-};
+});
 
 /**
  * Test 18: Complete Setup button click triggers onCompleteAction.
  * Verifies successful completion flow when all validations pass.
  */
-export const CompleteButtonAction: Story = {
+export const CompleteButtonAction = meta.story({
   args: {
     onboarding: onboardingBuilder.one({ traits: ["completed"] }),
     budgetTemplate: budgetTemplateBuilder.one({ traits: ["youngProfessional"] })
@@ -215,13 +212,13 @@ export const CompleteButtonAction: Story = {
       });
     });
   }
-};
+});
 
 /**
  * Test 19: Complete button shows loading state during async action.
  * Validates that button displays loading spinner during submission.
  */
-export const LoadingState: Story = {
+export const LoadingState = meta.story({
   args: {
     onboarding: onboardingBuilder.one({ traits: ["withAllData"] }),
     budgetTemplate: budgetTemplateBuilder.one({ traits: ["youngProfessional"] }),
@@ -244,13 +241,13 @@ export const LoadingState: Story = {
       // Note: Visual loading spinner verification requires additional checks
     });
   }
-};
+});
 
 /**
  * Test 20: Complete button is disabled during submission.
  * Ensures user cannot submit multiple times while action is in progress.
  */
-export const DisabledDuringSubmission: Story = {
+export const DisabledDuringSubmission = meta.story({
   args: {
     onboarding: onboardingBuilder.one({ traits: ["completed"] }),
     budgetTemplate: budgetTemplateBuilder.one({ traits: ["youngProfessional"] }),
@@ -284,14 +281,14 @@ export const DisabledDuringSubmission: Story = {
       );
     });
   }
-};
+});
 
 /**
  * Test 21: Displays toast error when onCompleteAction returns error.
  * Validates error handling and user feedback on submission failure.
  * Note: Toast display verification requires Toaster setup in Storybook decorators.
  */
-export const ServerErrorHandling: Story = {
+export const ServerErrorHandling = meta.story({
   args: {
     onboarding: onboardingBuilder.one({ traits: ["withAllData"] }),
     budgetTemplate: budgetTemplateBuilder.one({ traits: ["youngProfessional"] }),
@@ -318,14 +315,14 @@ export const ServerErrorHandling: Story = {
     // const errorToast = await canvas.findByText("Failed to complete onboarding. Please try again.");
     // await expect(errorToast).toBeVisible();
   }
-};
+});
 
 /**
  * Test 22: Does not display toast when onCompleteAction succeeds.
  * Validates that successful submission doesn't show error messages.
  * Redirect should happen without toast notification.
  */
-export const SuccessfulCompletion: Story = {
+export const SuccessfulCompletion = meta.story({
   args: {
     onboarding: onboardingBuilder.one({ traits: ["completed"] }),
     budgetTemplate: budgetTemplateBuilder.one({ traits: ["youngProfessional"] }),
@@ -352,13 +349,13 @@ export const SuccessfulCompletion: Story = {
     // No toast.error() should be called on success
     // In production, user would be redirected to dashboard
   }
-};
+});
 
 /**
  * Test 26: All interactive elements are keyboard accessible.
  * Validates that users can navigate and interact with all buttons using keyboard.
  */
-export const KeyboardAccessibility: Story = {
+export const KeyboardAccessibility = meta.story({
   args: {
     onboarding: onboardingBuilder.one({ traits: ["withAllData"] }),
     budgetTemplate: budgetTemplateBuilder.one({ traits: ["youngProfessional"] })
@@ -414,13 +411,13 @@ export const KeyboardAccessibility: Story = {
       });
     });
   }
-};
+});
 
 /**
  * Test 27: Buttons have proper aria labels.
  * Validates that all interactive elements have accessible names for screen readers.
  */
-export const AriaLabelsAccessibility: Story = {
+export const AriaLabelsAccessibility = meta.story({
   args: {
     onboarding: onboardingBuilder.one({ traits: ["completed"] }),
     budgetTemplate: budgetTemplateBuilder.one({ traits: ["youngProfessional"] })
@@ -455,4 +452,4 @@ export const AriaLabelsAccessibility: Story = {
       await expect(buttons.length).toBeGreaterThanOrEqual(2); // Back + Complete Setup
     });
   }
-};
+});

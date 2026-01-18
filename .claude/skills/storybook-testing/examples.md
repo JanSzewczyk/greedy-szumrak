@@ -50,11 +50,11 @@ export function Button({
 **Story File:**
 ```tsx
 // components/Button.stories.tsx
-import type { Meta, StoryObj } from "@storybook/react";
+import preview from "~/.storybook/preview";
 import { expect, fn, userEvent, within } from "@storybook/test";
 import { Button } from "./Button";
 
-const meta = {
+const meta = preview.meta({
   title: "Components/Button",
   component: Button,
   parameters: {
@@ -64,65 +64,63 @@ const meta = {
   args: {
     onClick: fn() // Mock function for tracking clicks
   }
-} satisfies Meta<typeof Button>;
+});
 
-export default meta;
-type Story = StoryObj<typeof meta>;
 
 // Basic variants
-export const Primary: Story = {
+export const Primary= meta.story({
   args: {
     variant: "primary",
     children: "Primary Button"
   }
-};
+});
 
-export const Secondary: Story = {
+export const Secondary= meta.story({
   args: {
     variant: "secondary",
     children: "Secondary Button"
   }
-};
+});
 
-export const Destructive: Story = {
+export const Destructive= meta.story({
   args: {
     variant: "destructive",
     children: "Delete"
   }
-};
+});
 
 // Sizes
-export const Small: Story = {
+export const Small= meta.story({
   args: {
     size: "sm",
     children: "Small Button"
   }
-};
+});
 
-export const Large: Story = {
+export const Large= meta.story({
   args: {
     size: "lg",
     children: "Large Button"
   }
-};
+});
 
 // States
-export const Disabled: Story = {
+export const Disabled= meta.story({
   args: {
     children: "Disabled Button",
     disabled: true
   }
-};
+});
 
-export const Loading: Story = {
+export const Loading= meta.story({
   args: {
     children: "Loading...",
     isLoading: true
   }
-};
+});
 
 // Interaction Tests
-export const ClickTest: Story = {
+export const ClickTest= meta.story({
   args: {
     children: "Click Me"
   },
@@ -143,9 +141,9 @@ export const ClickTest: Story = {
       expect(args.onClick).toHaveBeenCalledTimes(1);
     });
   }
-};
+});
 
-export const DisabledNotClickable: Story = {
+export const DisabledNotClickable= meta.story({
   args: {
     children: "Disabled",
     disabled: true
@@ -163,9 +161,9 @@ export const DisabledNotClickable: Story = {
     // Verify onClick was NOT called
     expect(args.onClick).not.toHaveBeenCalled();
   }
-};
+});
 
-export const KeyboardAccessible: Story = {
+export const KeyboardAccessible= meta.story({
   args: {
     children: "Press Enter or Space"
   },
@@ -185,7 +183,7 @@ export const KeyboardAccessible: Story = {
     await userEvent.keyboard(" ");
     expect(args.onClick).toHaveBeenCalledTimes(2);
   }
-};
+});
 ```
 
 ---
@@ -268,11 +266,11 @@ export function LoginForm({ onSubmit, isLoading = false }: LoginFormProps) {
 **Story File:**
 ```tsx
 // components/LoginForm.stories.tsx
-import type { Meta, StoryObj } from "@storybook/react";
+import preview from "~/.storybook/preview";
 import { expect, fn, userEvent, within } from "@storybook/test";
 import { LoginForm } from "./LoginForm";
 
-const meta = {
+const meta = preview.meta({
   title: "Components/LoginForm",
   component: LoginForm,
   parameters: {
@@ -288,21 +286,19 @@ const meta = {
       </div>
     )
   ]
-} satisfies Meta<typeof LoginForm>;
+});
 
-export default meta;
-type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-export const Loading: Story = {
+export const Loading= meta.story({
   args: {
     isLoading: true
   }
-};
+});
 
 // Interaction Tests
-export const ValidSubmission: Story = {
+export const ValidSubmission= meta.story({
   play: async ({ args, canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -326,9 +322,9 @@ export const ValidSubmission: Story = {
       });
     });
   }
-};
+});
 
-export const InvalidEmail: Story = {
+export const InvalidEmail= meta.story({
   play: async ({ args, canvasElement, step }) => {
     const canvas = within(canvasElement);
 
@@ -354,9 +350,9 @@ export const InvalidEmail: Story = {
       expect(args.onSubmit).not.toHaveBeenCalled();
     });
   }
-};
+});
 
-export const ShortPassword: Story = {
+export const ShortPassword= meta.story({
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -374,9 +370,9 @@ export const ShortPassword: Story = {
     // Verify onSubmit was NOT called
     expect(args.onSubmit).not.toHaveBeenCalled();
   }
-};
+});
 
-export const EmptyFields: Story = {
+export const EmptyFields= meta.story({
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -390,7 +386,7 @@ export const EmptyFields: Story = {
     // Verify onSubmit was NOT called
     expect(args.onSubmit).not.toHaveBeenCalled();
   }
-};
+});
 ```
 
 ---
@@ -460,11 +456,11 @@ export function ConfirmDialog({
 **Story File:**
 ```tsx
 // components/ConfirmDialog.stories.tsx
-import type { Meta, StoryObj } from "@storybook/react";
+import preview from "~/.storybook/preview";
 import { expect, fn, userEvent, within } from "@storybook/test";
 import { ConfirmDialog } from "./ConfirmDialog";
 
-const meta = {
+const meta = preview.meta({
   title: "Components/ConfirmDialog",
   component: ConfirmDialog,
   parameters: {
@@ -475,19 +471,17 @@ const meta = {
     onConfirm: fn(),
     onCancel: fn()
   }
-} satisfies Meta<typeof ConfirmDialog>;
+});
 
-export default meta;
-type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+export const Default= meta.story({
   args: {
     title: "Confirm Action",
     message: "Are you sure you want to proceed?"
   }
-};
+});
 
-export const Destructive: Story = {
+export const Destructive= meta.story({
   args: {
     title: "Delete Item",
     message: "This action cannot be undone. Are you sure?",
@@ -495,18 +489,18 @@ export const Destructive: Story = {
     cancelLabel: "Keep",
     variant: "destructive"
   }
-};
+});
 
-export const Closed: Story = {
+export const Closed= meta.story({
   args: {
     isOpen: false,
     title: "This won't be visible",
     message: "Dialog is closed"
   }
-};
+});
 
 // Interaction Tests
-export const ConfirmAction: Story = {
+export const ConfirmAction= meta.story({
   args: {
     title: "Confirm Action",
     message: "Are you sure?"
@@ -530,9 +524,9 @@ export const ConfirmAction: Story = {
       expect(args.onCancel).not.toHaveBeenCalled();
     });
   }
-};
+});
 
-export const CancelAction: Story = {
+export const CancelAction= meta.story({
   args: {
     title: "Confirm Action",
     message: "Are you sure?"
@@ -548,9 +542,9 @@ export const CancelAction: Story = {
     expect(args.onCancel).toHaveBeenCalledTimes(1);
     expect(args.onConfirm).not.toHaveBeenCalled();
   }
-};
+});
 
-export const KeyboardNavigation: Story = {
+export const KeyboardNavigation= meta.story({
   args: {
     title: "Keyboard Test",
     message: "Test keyboard navigation"
@@ -572,7 +566,7 @@ export const KeyboardNavigation: Story = {
     await userEvent.keyboard("{Enter}");
     expect(args.onConfirm).toHaveBeenCalled();
   }
-};
+});
 ```
 
 ---
@@ -582,10 +576,10 @@ export const KeyboardNavigation: Story = {
 **Story File:**
 ```tsx
 // components/Select.stories.tsx
-import type { Meta, StoryObj } from "@storybook/react";
+import preview from "~/.storybook/preview";
 import { expect, fn, userEvent, within } from "@storybook/test";
 
-const meta = {
+const meta = preview.meta({
   title: "Components/Select",
   render: (args) => (
     <select
@@ -608,18 +602,16 @@ const meta = {
   defaultValue: string;
 }>;
 
-export default meta;
-type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
-export const WithDefaultValue: Story = {
+export const WithDefaultValue= meta.story({
   args: {
     defaultValue: "option2"
   }
-};
+});
 
-export const SelectOption: Story = {
+export const SelectOption= meta.story({
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
     const select = canvas.getByRole("combobox");
@@ -633,7 +625,7 @@ export const SelectOption: Story = {
     // Verify selected value
     expect(select).toHaveValue("option2");
   }
-};
+});
 ```
 
 ---
@@ -686,17 +678,17 @@ const successMessage = await canvas.findByText(/success/i);
 ### 5. Separate Visual Stories from Test Stories
 ```tsx
 // Visual story (for docs)
-export const Primary: Story = {
+export const Primary= meta.story({
   args: { variant: "primary" }
-};
+});
 
 // Test story (with play function)
-export const ClickTest: Story = {
+export const ClickTest= meta.story({
   args: { variant: "primary" },
   play: async () => {
     // Interaction tests
   }
-};
+});
 ```
 
 ### 6. Use Decorators for Layout

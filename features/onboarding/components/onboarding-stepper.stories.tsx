@@ -1,4 +1,4 @@
-import { type Meta, type StoryObj } from "@storybook/nextjs-vite";
+import preview from "~/.storybook/preview";
 import { expect } from "storybook/test";
 import { OnboardingStepper } from "~/features/onboarding/components/onboarding-stepper";
 import { OnboardingSteps } from "~/features/onboarding/types/onboarding";
@@ -22,7 +22,7 @@ import { OnboardingSteps } from "~/features/onboarding/types/onboarding";
  * 4. **Budget Details** - Detailed budget configuration
  * 5. **Investments** - Add investment accounts (with description)
  */
-const meta = {
+const meta = preview.meta({
   title: "Features/Onboarding/Onboarding Stepper",
   component: OnboardingStepper,
   parameters: {
@@ -38,16 +38,13 @@ const meta = {
     hideNav: false,
     children: <div className="p-4">Step content goes here</div>
   }
-} satisfies Meta<typeof OnboardingStepper>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+});
 
 /**
  * Default state showing the stepper at the Welcome step.
  * All navigation items are visible and the welcome step is active.
  */
-export const AtWelcomeStep: Story = {
+export const AtWelcomeStep = meta.story({
   play: async ({ canvas, step }) => {
     await step("Verify all step titles are visible", async () => {
       await expect(canvas.getByText("Welcome")).toBeVisible();
@@ -66,13 +63,13 @@ export const AtWelcomeStep: Story = {
       await expect(canvas.getByText("Step content goes here")).toBeVisible();
     });
   }
-};
+});
 
 /**
  * Stepper at the Preferences step.
  * Shows progression through the onboarding flow.
  */
-export const AtPreferencesStep: Story = {
+export const AtPreferencesStep = meta.story({
   parameters: {
     nextjs: {
       navigation: {
@@ -96,12 +93,12 @@ export const AtPreferencesStep: Story = {
       await expect(canvas.getByText("Investments")).toBeVisible();
     });
   }
-};
+});
 
 /**
  * Stepper at the Budget Setup step.
  */
-export const AtBudgetSetupStep: Story = {
+export const AtBudgetSetupStep = meta.story({
   parameters: {
     nextjs: {
       navigation: {
@@ -125,13 +122,13 @@ export const AtBudgetSetupStep: Story = {
       await expect(canvas.getByText("Investments")).toBeVisible();
     });
   }
-};
+});
 
 /**
  * Stepper at the Budget Details step.
  * This step allows users to configure detailed budget allocations.
  */
-export const AtBudgetDetailsStep: Story = {
+export const AtBudgetDetailsStep = meta.story({
   parameters: {
     nextjs: {
       navigation: {
@@ -155,13 +152,13 @@ export const AtBudgetDetailsStep: Story = {
       await expect(canvas.getByText("Investments")).toBeVisible();
     });
   }
-};
+});
 
 /**
  * Stepper at the Investments step.
  * This is the final step in the visible stepper navigation where users add investment accounts.
  */
-export const AtInvestmentsStep: Story = {
+export const AtInvestmentsStep = meta.story({
   parameters: {
     nextjs: {
       navigation: {
@@ -189,14 +186,14 @@ export const AtInvestmentsStep: Story = {
       await expect(canvas.getByText("Add Accounts")).toBeVisible();
     });
   }
-};
+});
 
 /**
  * Stepper at the Categories step.
  * Note: The Categories step is part of the onboarding flow but not displayed
  * in the stepper navigation. The stepper still renders children content.
  */
-export const AtCategoriesStep: Story = {
+export const AtCategoriesStep = meta.story({
   parameters: {
     nextjs: {
       navigation: {
@@ -217,14 +214,14 @@ export const AtCategoriesStep: Story = {
       await expect(canvas.getByText("Investments")).toBeVisible();
     });
   }
-};
+});
 
 /**
  * Stepper at the Complete step.
  * Note: The Complete step is part of the onboarding flow but not displayed
  * in the stepper navigation. This represents the final confirmation screen.
  */
-export const AtCompleteStep: Story = {
+export const AtCompleteStep = meta.story({
   parameters: {
     nextjs: {
       navigation: {
@@ -245,14 +242,14 @@ export const AtCompleteStep: Story = {
       await expect(canvas.getByText("Investments")).toBeVisible();
     });
   }
-};
+});
 
 /**
  * Stepper with hidden navigation.
  * Used on the welcome screen where navigation should not be visible.
  * The navigation is rendered but invisible (for layout consistency).
  */
-export const HiddenNavigation: Story = {
+export const HiddenNavigation = meta.story({
   args: {
     hideNav: true,
     children: <div className="p-4">Welcome screen without visible navigation</div>
@@ -267,13 +264,13 @@ export const HiddenNavigation: Story = {
       await expect(navElement).toBeNull();
     });
   }
-};
+});
 
 /**
  * Tests step navigation interaction.
  * Clicking on a step should trigger navigation to that step.
  */
-export const StepNavigation: Story = {
+export const StepNavigation = meta.story({
   play: async ({ canvas, step }) => {
     await step("Verify stepper is interactive", async () => {
       const preferencesStep = canvas.getByText("Preferences");
@@ -297,4 +294,4 @@ export const StepNavigation: Story = {
       await expect(investmentsStep.closest("button")).toBeVisible();
     });
   }
-};
+});

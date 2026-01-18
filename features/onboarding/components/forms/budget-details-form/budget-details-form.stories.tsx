@@ -1,4 +1,4 @@
-import { type Meta, type StoryObj } from "@storybook/nextjs-vite";
+import preview from "~/.storybook/preview";
 import { expect, fn, userEvent, waitFor } from "storybook/test";
 import { DEFAULT_BUDGET_TEMPLATES } from "~/features/budget/data/predefined-budget-templates";
 import { BudgetProfile, type BudgetTemplate, type BudgetTemplateBase } from "~/features/budget/types/budget-template";
@@ -26,7 +26,7 @@ const familyTemplate = getTemplate(BudgetProfile.FAMILY);
 const aggressiveSaverTemplate = getTemplate(BudgetProfile.AGGRESSIVE_SAVER);
 const studentTemplate = getTemplate(BudgetProfile.STUDENT);
 
-const meta = {
+const meta = preview.meta({
   title: "Features/Onboarding/Budget Details Form",
   component: BudgetDetailsForm,
   decorators: [(story) => <div className="w-full max-w-2xl">{story()}</div>],
@@ -42,16 +42,13 @@ const meta = {
     monthlyIncome: 8000,
     preferences: onboardingPreferencesBuilder.one()
   }
-} satisfies Meta<typeof BudgetDetailsForm>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+});
 
 /**
  * Initial state of the form with categories pre-populated from budget template.
  * Shows all categories grouped by allocation type (needs, wants, savings) with calculated amounts based on monthly income.
  */
-export const InitialForm: Story = {
+export const InitialForm = meta.story({
   play: async ({ canvas, step }) => {
     await step("Verify form header and description are visible", async () => {
       await expect(canvas.getByRole("group", { name: /budget details/i })).toBeVisible();
@@ -103,13 +100,13 @@ export const InitialForm: Story = {
       await expect(amountInputs.length).toBeGreaterThan(0);
     });
   }
-};
+});
 
 /**
  * Form prefilled with default values showing saved budget details.
  * Uses real predefined budget template data transformed to form defaults.
  */
-export const Prefilled: Story = {
+export const Prefilled = meta.story({
   args: {
     defaultValues: templateToFormDefaults(youngProfessionalTemplate, 8000)
   },
@@ -144,12 +141,12 @@ export const Prefilled: Story = {
       });
     });
   }
-};
+});
 
 // /**
 //  * Form prefilled using the budget details builder with young professional trait.
 //  */
-// export const PrefilledWithBuilder: Story = {
+// export const PrefilledWithBuilder= meta.story({
 //   args: {
 //     defaultValues: createTestBudgetDetails.withIncome(8000)
 //   },
@@ -182,7 +179,7 @@ export const Prefilled: Story = {
 // /**
 //  * Tests validation errors when submitting with invalid data (empty allocations).
 //  */
-// export const ErrorValidation: Story = {
+// export const ErrorValidation= meta.story({
 //   args: {
 //     defaultValues: {
 //       budgetProfileId: "custom",
@@ -219,7 +216,7 @@ export const Prefilled: Story = {
 //  * 2. Add new category to an allocation
 //  * 3. Submit form
 //  */
-// export const Interaction: Story = {
+// export const Interaction= meta.story({
 //   play: async ({ canvas, args, step }) => {
 //     await step("Wait for initial render with allocation sections", async () => {
 //       await waitFor(async () => {
@@ -272,7 +269,7 @@ export const Prefilled: Story = {
 // /**
 //  * Tests modifying multiple category amounts and verifying totals update correctly.
 //  */
-// export const ModifyMultipleAmounts: Story = {
+// export const ModifyMultipleAmounts= meta.story({
 //   play: async ({ canvas, step }) => {
 //     await step("Wait for form to render", async () => {
 //       await waitFor(async () => {
@@ -309,7 +306,7 @@ export const Prefilled: Story = {
 // /**
 //  * Tests back button functionality.
 //  */
-// export const BackNavigation: Story = {
+// export const BackNavigation= meta.story({
 //   play: async ({ canvas, args, step }) => {
 //     await step("Verify back button is visible", async () => {
 //       const backButton = canvas.getByRole("button", { name: /back/i });
@@ -330,7 +327,7 @@ export const Prefilled: Story = {
 // /**
 //  * Tests that categories can be added dynamically to allocations.
 //  */
-// export const AddMultipleCategories: Story = {
+// export const AddMultipleCategories= meta.story({
 //   play: async ({ canvas, step }) => {
 //     let initialInputCount: number;
 //
@@ -374,7 +371,7 @@ export const Prefilled: Story = {
 // /**
 //  * Tests removing a category from an allocation.
 //  */
-// export const RemoveCategory: Story = {
+// export const RemoveCategory= meta.story({
 //   play: async ({ canvas, step }) => {
 //     let initialInputCount: number;
 //
@@ -407,7 +404,7 @@ export const Prefilled: Story = {
 // /**
 //  * Tests that the last category in an allocation cannot be removed (delete button should be disabled).
 //  */
-// export const CannotRemoveLastCategory: Story = {
+// export const CannotRemoveLastCategory= meta.story({
 //   args: {
 //     defaultValues: {
 //       budgetProfileId: "custom",
@@ -452,7 +449,7 @@ export const Prefilled: Story = {
 // /**
 //  * Tests that remaining amount shows negative value when over-allocated.
 //  */
-// export const OverBudget: Story = {
+// export const OverBudget= meta.story({
 //   args: {
 //     defaultValues: {
 //       budgetProfileId: "custom",
@@ -526,7 +523,7 @@ export const Prefilled: Story = {
 // /**
 //  * Tests under-budget scenario where not all income is allocated.
 //  */
-// export const UnderBudget: Story = {
+// export const UnderBudget= meta.story({
 //   args: {
 //     defaultValues: {
 //       budgetProfileId: "custom",
@@ -588,7 +585,7 @@ export const Prefilled: Story = {
 // /**
 //  * Tests that form works with custom budget template.
 //  */
-// export const CustomTemplate: Story = {
+// export const CustomTemplate= meta.story({
 //   args: {
 //     budgetTemplate: createTestBudgetTemplate.custom(),
 //     defaultValues: undefined
@@ -612,7 +609,7 @@ export const Prefilled: Story = {
 // /**
 //  * Tests the family budget template with more categories.
 //  */
-// export const FamilyTemplate: Story = {
+// export const FamilyTemplate= meta.story({
 //   args: {
 //     budgetTemplate: createTestBudgetTemplate.family(),
 //     monthlyIncome: 12000,
@@ -641,7 +638,7 @@ export const Prefilled: Story = {
 // /**
 //  * Tests the aggressive saver template (40/10/50 split).
 //  */
-// export const AggressiveSaverTemplate: Story = {
+// export const AggressiveSaverTemplate= meta.story({
 //   args: {
 //     budgetTemplate: createTestBudgetTemplate.aggressiveSaver(),
 //     monthlyIncome: 10000,
@@ -665,7 +662,7 @@ export const Prefilled: Story = {
 // /**
 //  * Tests the student template (60/25/15 split).
 //  */
-// export const StudentTemplate: Story = {
+// export const StudentTemplate= meta.story({
 //   args: {
 //     budgetTemplate: createTestBudgetTemplate.student(),
 //     monthlyIncome: 3000,
@@ -689,7 +686,7 @@ export const Prefilled: Story = {
 // /**
 //  * Tests error handling when server action returns failure.
 //  */
-// export const ServerErrorHandling: Story = {
+// export const ServerErrorHandling= meta.story({
 //   args: {
 //     onContinueAction: fn(
 //       async () =>
@@ -719,7 +716,7 @@ export const Prefilled: Story = {
 // /**
 //  * Tests complete user flow: view form, modify amounts, add category, and submit.
 //  */
-// export const CompleteUserFlow: Story = {
+// export const CompleteUserFlow= meta.story({
 //   args: {
 //     onContinueAction: fn(
 //       () =>
@@ -780,7 +777,7 @@ export const Prefilled: Story = {
 // /**
 //  * Tests form with different currency display (USD).
 //  */
-// export const WithUSDCurrency: Story = {
+// export const WithUSDCurrency= meta.story({
 //   args: {
 //     preferences: onboardingPreferencesBuilder.one({ traits: ["usd"] }),
 //     monthlyIncome: 5000
@@ -803,7 +800,7 @@ export const Prefilled: Story = {
 // /**
 //  * Tests form with builder-generated data for family profile.
 //  */
-// export const BuilderFamilyData: Story = {
+// export const BuilderFamilyData= meta.story({
 //   args: {
 //     defaultValues: createTestBudgetDetails.family(),
 //     budgetTemplate: createTestBudgetTemplate.family(),
@@ -827,7 +824,7 @@ export const Prefilled: Story = {
 // /**
 //  * Tests loading state when form is submitting.
 //  */
-// export const LoadingState: Story = {
+// export const LoadingState= meta.story({
 //   args: {
 //     onContinueAction: fn(
 //       async () =>

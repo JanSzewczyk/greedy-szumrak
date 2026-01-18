@@ -1,11 +1,11 @@
-import { type Meta, type StoryObj } from "@storybook/nextjs-vite";
+import preview from "~/.storybook/preview";
 import { expect, fn, userEvent, waitFor } from "storybook/test";
 import { createTestBudgetTemplate } from "~/features/budget/test/builders";
 import { BudgetSetupForm } from "~/features/onboarding/components/forms/budget-setup-form";
 import { onboardingBudgetBuilder, onboardingPreferencesBuilder } from "~/features/onboarding/test/builders";
 import { type RedirectAction } from "~/lib/action-types";
 
-const meta = {
+const meta = preview.meta({
   title: "Features/Onboarding/Budget Setup Form",
   component: BudgetSetupForm,
   decorators: [(story) => <div className="w-full max-w-xl">{story()}</div>],
@@ -20,16 +20,13 @@ const meta = {
     budgetTemplates: createTestBudgetTemplate.all(),
     preferences: onboardingPreferencesBuilder.one()
   }
-} satisfies Meta<typeof BudgetSetupForm>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+});
 
 /**
  * Initial state of the form with no data filled in.
  * Shows the monthly income input and no budget template options yet.
  */
-export const InitialForm: Story = {
+export const InitialForm = meta.story({
   play: async ({ canvas, step }) => {
     await step("Verify text content", async () => {
       await expect(canvas.getByRole("group", { name: /set up budgets/i })).toBeVisible();
@@ -54,12 +51,12 @@ export const InitialForm: Story = {
       await expect(continueButton).toBeVisible();
     });
   }
-};
+});
 
 /**
  * Form prefilled with default values showing both income and selected template.
  */
-export const Prefilled: Story = {
+export const Prefilled = meta.story({
   args: {
     defaultValues: onboardingBudgetBuilder.one()
   },
@@ -96,12 +93,12 @@ export const Prefilled: Story = {
       await expect(args.onContinueAction).toHaveBeenCalledOnce();
     });
   }
-};
+});
 
 /**
  * Tests validation errors when submitting without required fields.
  */
-export const ErrorValidation: Story = {
+export const ErrorValidation = meta.story({
   play: async ({ canvas, args, step }) => {
     await step("Try to submit without filling anything", async () => {
       const continueButton = canvas.getByRole("button", { name: /continue/i });
@@ -170,7 +167,7 @@ export const ErrorValidation: Story = {
       await expect(args.onContinueAction).not.toHaveBeenCalled();
     });
   }
-};
+});
 
 /**
  * Tests the interaction flow:
@@ -179,7 +176,7 @@ export const ErrorValidation: Story = {
  * 3. Verify allocation values update based on income
  * 4. Select a budget template and submit
  */
-export const Interaction: Story = {
+export const Interaction = meta.story({
   play: async ({ canvas, args, step }) => {
     await step("Enter monthly income (10000)", async () => {
       const monthlyIncomeInput = canvas.getByLabelText(/what is your monthly net income/i);
@@ -260,12 +257,12 @@ export const Interaction: Story = {
       });
     });
   }
-};
+});
 
 /**
  * Tests back button functionality.
  */
-export const BackNavigation: Story = {
+export const BackNavigation = meta.story({
   play: async ({ canvas, args, step }) => {
     await step("Click back button", async () => {
       const backButton = canvas.getByRole("button", { name: /back/i });
@@ -276,12 +273,12 @@ export const BackNavigation: Story = {
       await expect(args.onBackAction).toHaveBeenCalledOnce();
     });
   }
-};
+});
 
 /**
  * Tests selecting custom template option.
  */
-export const SelectCustomTemplate: Story = {
+export const SelectCustomTemplate = meta.story({
   // Enable in feature
   // play: async ({ canvas, args, step }) => {
   //   await step("Enter income (6000)", async () => {
@@ -317,12 +314,12 @@ export const SelectCustomTemplate: Story = {
   //     });
   //   });
   // }
-};
+});
 
 /**
  * Tests that Recommended badge is shown on the appropriate template.
  */
-export const RecommendedBadge: Story = {
+export const RecommendedBadge = meta.story({
   args: {
     defaultValues: {
       monthlyIncome: 7000,
@@ -342,4 +339,4 @@ export const RecommendedBadge: Story = {
       await expect(recommendedBadge).toBeInTheDocument();
     });
   }
-};
+});
